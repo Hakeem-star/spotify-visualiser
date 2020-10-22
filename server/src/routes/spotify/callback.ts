@@ -5,7 +5,7 @@ var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
 var redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
 var querystring = require("querystring");
 
-module.exports = (app) => {
+export default (app) => {
   app.get("/spotify/callback", function (req, res) {
     // your application requests refresh and access tokens
     // after checking the state parameter
@@ -22,7 +22,6 @@ module.exports = (app) => {
       );
     } else {
       res.clearCookie(stateKey);
-
       var authOptions = {
         headers: {
           Authorization:
@@ -41,20 +40,46 @@ module.exports = (app) => {
           }),
           authOptions
         )
-        .then((axiosRes) => {
+        .then(async (axiosRes) => {
           var access_token = axiosRes.data.access_token,
             refresh_token = axiosRes.data.refresh_token;
 
+          interface axiRes {
+            country: string;
+            display_name: string;
+            email: string;
+            explicit_content: { filter_enabled: false; filter_locked: false };
+            external_urls: {
+              spotify: string;
+            };
+            followers: { href: string | null; total: number };
+            href: string;
+            id: string;
+            images: [];
+            product: string;
+            type: string;
+            uri: string;
+          }
           // use the access token to access the Spotify Web API
-          axios
-            .get("https://api.spotify.com/v1/me", {
+          const userInfoResponse = await axios.get<axiRes>(
+            "https://api.spotify.com/v1/me",
+            {
               headers: { Authorization: "Bearer " + access_token },
-            })
-            .then((axiosRes) => {
-              //create or load an associated account on firebase
+            }
+          );
 
-              console.log(axiosRes.data);
-            });
+          //Write data to cookies before redirecting so they can be picked up on client side
+          //create or load an associated account on firebase
+
+          console.log({ userInfoResponse });
+
+          res.cookie("ACCESS_TOKEN", access_token);
+          res.cookie("REFRESH_TOKEN", refresh_token);
+          res.cookie("REFRESH_CODE", code);
+          res.cookie("USER_EMAIL", JSON.stringify(userInfoResponse.data.email));
+          res.cookie("USER_ID", JSON.stringify(userInfoResponse.data.id));
+          res.cookie("USER_NAME", userInfoResponse.data.display_name);
+          res.redirect("/");
 
           // // we can also pass the token to the browser to make requests from there
           // res.redirect(

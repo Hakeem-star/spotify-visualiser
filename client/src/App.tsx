@@ -1,13 +1,5 @@
-import React, { ReactElement } from 'react'
+import React, { ReactElement } from "react";
 
-interface Props {
-    
-}
-
-export default function App({}: Props): ReactElement {
-    return (
-        <div>
-            WOOOOO!
-        </div>
-    )
+export default function App(): ReactElement {
+  return <div>WOOOOO!</div>;
 }
