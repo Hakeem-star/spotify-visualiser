@@ -18,6 +18,7 @@ import search from "./routes/visualiser/search";
 var app = express();
 app
   .use(express.static(__dirname + "/public"))
+
   .use(cors())
   .use(cookieParser());
 

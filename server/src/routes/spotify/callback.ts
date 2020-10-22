@@ -79,7 +79,8 @@ export default (app) => {
           res.cookie("USER_EMAIL", JSON.stringify(userInfoResponse.data.email));
           res.cookie("USER_ID", JSON.stringify(userInfoResponse.data.id));
           res.cookie("USER_NAME", userInfoResponse.data.display_name);
-          res.redirect("/");
+
+          res.redirect("http://localhost:4000/");
 
           // // we can also pass the token to the browser to make requests from there
           // res.redirect(

@@ -21,7 +21,7 @@ export default async (app) => {
         }),
       ])
       .catch((e) => {
-        console.log(e.response.data);
+        console.log(req.cookies, e.response.data);
         res.send([e, e.response.data]);
       });
 
@@ -30,7 +30,7 @@ export default async (app) => {
 
     console.log(spotifyresults.data.tracks);
     console.log(youtubeResults.data.items);
-    res.send([spotifyresults.data.tracks.items, youtubeResults.data.items]);
+    res.send(spotifyresults.data.tracks);
 
     //   .then((axiosResponse) => {
     //     res.send(axiosResponse.data);
