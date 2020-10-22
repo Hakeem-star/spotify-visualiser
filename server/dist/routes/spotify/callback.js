@@ -43,13 +43,18 @@ module.exports = (app) => {
                     .get("https://api.spotify.com/v1/me", {
                     headers: { Authorization: "Bearer " + access_token },
                 })
-                    .then((axiosRes) => console.log(axiosRes.data));
-                // we can also pass the token to the browser to make requests from there
-                res.redirect("/#" +
-                    querystring.stringify({
-                        access_token: access_token,
-                        refresh_token: refresh_token,
-                    }));
+                    .then((axiosRes) => {
+                    //create or load an associated account on firebase
+                    console.log(axiosRes.data);
+                });
+                // // we can also pass the token to the browser to make requests from there
+                // res.redirect(
+                //   "/#" +
+                //     querystring.stringify({
+                //       access_token: access_token,
+                //       refresh_token: refresh_token,
+                //     })
+                // );
             })
                 .catch((error) => {
                 res.redirect("/#" +
