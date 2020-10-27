@@ -4,7 +4,7 @@ export function getCookie(name: string): string | undefined {
   if (parts.length === 2) return parts.pop()?.split(";").shift();
 }
 
-export function deleteAllCookies() {
+export function deleteAllCookies(): void {
   const cookies = document.cookie.split(";");
 
   for (let i = 0; i < cookies.length; i++) {

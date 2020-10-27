@@ -2,11 +2,18 @@
   "name": "spotify-visualiser",
   "version": "0.0.1",
   "dependencies": {
+    "@chakra-ui/core": "^0.8.0",
+    "@emotion/core": "^10.0.35",
+    "@emotion/styled": "^10.0.27",
     "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.6",
     "axios": "^0.20.0",
+    "emotion-theming": "^10.0.27",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-icons": "^3.11.0",
     "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0"

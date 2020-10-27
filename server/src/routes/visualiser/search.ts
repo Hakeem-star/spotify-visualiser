@@ -2,22 +2,23 @@ import axios from "axios";
 import youtube from "../youtube";
 
 export default async (app) => {
-  app.get("/search/:title", async (req, res) => {
+  app.get("/search/", async (req, res) => {
+    console.log("WOO", req.query.spotifyToken);
     const songs = await axios
       .all([
         axios.get("https://api.spotify.com/v1/search", {
           params: {
-            q: req.params.title,
+            q: req.query.q,
             type: "track",
             limit: 5,
           },
           headers: {
-            Authorization: `Bearer ${req.cookies.ACCESS_TOKEN}`,
+            Authorization: `Bearer ${req.query.spotifyToken}`,
           },
         }),
 
         youtube.get("/search", {
-          params: { q: req.params.title },
+          params: { q: req.query.q },
         }),
       ])
       .catch((e) => {
@@ -30,7 +31,7 @@ export default async (app) => {
 
     console.log(spotifyresults.data.tracks);
     console.log(youtubeResults.data.items);
-    res.send(spotifyresults.data.tracks);
+    res.send([spotifyresults.data.tracks, youtubeResults.data]);
 
     //   .then((axiosResponse) => {
     //     res.send(axiosResponse.data);

@@ -1,33 +1,31 @@
-import { SIGN_IN, SIGN_OUT } from "../actions/types";
-
+import { Reducer } from "redux";
+import { AuthActionTypes, SIGN_IN, SIGN_OUT } from "../actions/types";
+import { authState } from "../types";
 const INITIAL_STATE = {
   isSignedIn: null,
   userData: null,
+  spotifyToken: null,
 };
 
-interface userData {
-  country: string;
-  display_name: string;
-  email: string;
-  explicit_content: { filter_enabled: boolean; filter_locked: boolean };
-  external_urls: { spotify: string };
-  followers: { href: null | string; total: number };
-  href: string;
-  id: string;
-  images: string[];
-  product: string;
-  type: string;
-  uri: string;
-}
-export default (
+export const authReducer: Reducer<authState> = (
   state = INITIAL_STATE,
-  action: { type: string; payload: userData }
-): { isSignedIn: boolean | null; userData: userData | null } => {
+  action: AuthActionTypes
+) => {
   switch (action.type) {
     case SIGN_IN:
-      return { ...state, isSignedIn: true, userData: action.payload };
+      return {
+        ...state,
+        isSignedIn: true,
+        userData: action.payload.userData,
+        spotifyToken: action.payload.spotifyToken,
+      };
     case SIGN_OUT:
-      return { ...state, isSignedIn: false, userData: null };
+      return {
+        ...state,
+        isSignedIn: false,
+        userData: null,
+        spotifyToken: null,
+      };
     default:
       return state;
   }

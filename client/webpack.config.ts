@@ -1,6 +1,6 @@
 import path from "path";
-import * as webpack from 'webpack';
-import * as webpackDevServer from 'webpack-dev-server';
+import * as webpack from "webpack";
+import * as webpackDevServer from "webpack-dev-server";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 
 const config: webpack.Configuration = {
@@ -33,7 +33,8 @@ const config: webpack.Configuration = {
   devServer: {
     contentBase: path.join(__dirname, "build"),
     compress: true,
-    port: 4000, 
+    port: 4000,
+    historyApiFallback: true,
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({
