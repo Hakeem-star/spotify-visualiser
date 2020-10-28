@@ -68,23 +68,25 @@ export const songSearch = (title: string): ThunkResult<void> => {
     arrangedResults.spotify = remapSongSearchResult(
       songResults.data[0] as Record<string, any>,
       "next",
-      "",
+      "previous",
       "items",
       "album.images.1.url",
       "name",
       "artists.0.name",
-      "album.release_date"
+      "album.release_date",
+      "uri"
     );
     console.log({ spotify: arrangedResults.spotify });
     arrangedResults.youtube = remapSongSearchResult(
       songResults.data[1] as Record<string, any>,
-      "next",
-      "",
+      "nextPageToken",
+      "prevPageToken",
       "items",
       "snippet.thumbnails.high.url",
       "snippet.title",
       "snippet.channelTitle",
-      "snippet.publishedAt"
+      "snippet.publishedAt",
+      "id.videoId"
     );
 
     //Next page tokens
@@ -96,8 +98,27 @@ export const songSearch = (title: string): ThunkResult<void> => {
   };
 };
 
-export const playSong = (id: string): ThunkResult<void> => {
+export const playSong = (id: string, type: string): ThunkResult<void> => {
   //Check if Spotify or Youtube song
+
+  if (type === "youtube") {
+    return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
+      const spotifyToken = getState().auth.spotifyToken;
+      const songResults = await axios.get(`http://localhost:3000/search/`, {
+        params: {},
+      });
+
+      //Sanitise results
+
+      //Next page tokens
+
+      console.log(songResults.data);
+      dispatch({
+        type: "PLAY_SONG",
+        payload: { id, type },
+      });
+    };
+  }
 
   //Do something
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {

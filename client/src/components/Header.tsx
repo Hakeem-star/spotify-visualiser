@@ -1,7 +1,6 @@
 import {
   Box,
   Flex,
-  FormControl,
   Input,
   InputGroup,
   InputRightElement,

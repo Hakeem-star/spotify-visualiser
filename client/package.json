@@ -7,6 +7,7 @@
     "@emotion/styled": "^10.0.27",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.6",
+    "@types/youtube": "0.0.39",
     "axios": "^0.20.0",
     "emotion-theming": "^10.0.27",
     "react": "^16.14.0",

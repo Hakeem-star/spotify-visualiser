@@ -1,4 +1,4 @@
-import { songSearchResult, userData } from "../types";
+import { playSongPayload, songSearchResult, userData } from "../types";
 
 export const SONG_SEARCH = "SONG_SEARCH";
 export const PLAY_SONG = "PLAY_SONG";
@@ -23,4 +23,9 @@ export interface songSearch {
 
 export type SongSearchTypes = songSearch;
 
-export type AppActions = AuthActionTypes | SongSearchTypes;
+export interface playSong {
+  type: typeof PLAY_SONG;
+  payload: playSongPayload;
+}
+
+export type AppActions = AuthActionTypes | SongSearchTypes | playSong;

@@ -10,16 +10,19 @@ import { getCookie } from "../util/cookie";
 import { Flex } from "@chakra-ui/core";
 import Header from "./Header";
 import SearchResultContainer from "./SearchResultContainer";
+import YouTubePlayer from "./YouTubePlayer";
 declare global {
   interface Window {
     onSpotifyWebPlaybackSDKReady: () => void;
     Spotify: { Player: any };
+    YT: any;
   }
 }
 
 function Home(): ReactElement {
-  const [state, setstate] = useState("");
+  const [ytReady, setYtReady] = useState(false);
 
+  //Load Spotify
   useEffect(() => {
     window.onSpotifyWebPlaybackSDKReady = () => {
       const token = getCookie("ACCESS_TOKEN");
@@ -66,11 +69,44 @@ function Home(): ReactElement {
       player.connect();
     };
   }, []);
+
+  useEffect(() => {
+    //insert the Youtube Player API src if not on page
+    const tag = document.createElement("script");
+    if (!window.YT) {
+      tag.src = "https://www.youtube.com/iframe_api";
+      tag.async = true;
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      // console.log({ first: firstScriptTag.parentNode });
+      if (firstScriptTag !== null) {
+        firstScriptTag.appendChild(tag);
+        tag.onload = () => {
+          console.log("DONE", window.YT);
+          const clearcheck = setInterval(repeatcheck, 500, 0);
+          function repeatcheck(oldvalue: number) {
+            if (window.YT.loaded !== oldvalue) {
+              // do something
+              clearInterval(clearcheck);
+              setYtReady(true);
+              console.log(
+                "check1 value changed from " +
+                  oldvalue +
+                  " to " +
+                  window.YT.loaded
+              );
+            }
+          }
+        };
+      }
+    }
+  }, []);
+
   return (
     <Flex direction="column" h="100vh">
       <Header />
       {/* //If a search is being made, display search Results component */}
       <SearchResultContainer />
+      {ytReady ? <YouTubePlayer /> : null}
     </Flex>
   );
 }

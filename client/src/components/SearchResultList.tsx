@@ -12,6 +12,7 @@ interface Props {
     name: string;
     artist: string;
     year: string;
+    url: string;
   }[];
 }
 
@@ -30,6 +31,7 @@ export default function SearchResultList({
             name={item.name}
             artist={item.artist}
             year={item.year}
+            url={item.url}
           />
         );
       })}

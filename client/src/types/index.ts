@@ -137,6 +137,23 @@ export interface songSearchResult {
   youtube: youtubeResult | Record<string, any>;
 }
 
+export interface playSongPayload {
+  id: string;
+  type: string;
+}
+
+export interface remappedSearchResult {
+  arrayOfResults: Record<string, any>;
+  next: string;
+  previous: string | null;
+  items: string;
+  imageUrl: string;
+  name: string;
+  artist: string;
+  year: string;
+  url: string;
+}
+
 export interface authState {
   isSignedIn: boolean | null;
   userData: userData | null;
