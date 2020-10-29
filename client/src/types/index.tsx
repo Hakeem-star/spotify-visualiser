@@ -137,10 +137,17 @@ export interface songSearchResult {
   youtube: youtubeResult | Record<string, any>;
 }
 
-export interface playSongPayload {
+export type playSongPayload = {
   id: string;
   type: string;
-}
+  details: {
+    imageUrl: string;
+    name: string;
+    artist: string;
+    year: string;
+    url: string;
+  };
+} | null;
 
 export interface remappedSearchResult {
   arrayOfResults: Record<string, any>;

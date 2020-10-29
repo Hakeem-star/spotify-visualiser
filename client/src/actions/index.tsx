@@ -9,6 +9,7 @@ import {
   youtubeResult,
   spotifyResult,
   songSearchResult,
+  playSongPayload,
 } from "../types";
 import { remapSongSearchResult } from "../util/remapSongSearchResult";
 
@@ -76,7 +77,6 @@ export const songSearch = (title: string): ThunkResult<void> => {
       "album.release_date",
       "uri"
     );
-    console.log({ spotify: arrangedResults.spotify });
     arrangedResults.youtube = remapSongSearchResult(
       songResults.data[1] as Record<string, any>,
       "nextPageToken",
@@ -98,43 +98,26 @@ export const songSearch = (title: string): ThunkResult<void> => {
   };
 };
 
-export const playSong = (id: string, type: string): ThunkResult<void> => {
-  //Check if Spotify or Youtube song
-
-  if (type === "youtube") {
-    return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-      const spotifyToken = getState().auth.spotifyToken;
-      const songResults = await axios.get(`http://localhost:3000/search/`, {
-        params: {},
-      });
-
-      //Sanitise results
-
-      //Next page tokens
-
-      console.log(songResults.data);
-      dispatch({
-        type: "PLAY_SONG",
-        payload: { id, type },
-      });
+export const playSong = (
+  id: string | null,
+  details: {
+    imageUrl: string;
+    name: string;
+    artist: string;
+    year: string;
+    url: string;
+  } | null,
+  type: string
+): { type: string; payload?: playSongPayload } => {
+  if (id && details) {
+    //Check if Spotify or Youtube song
+    return {
+      type: type,
+      payload: { id, type, details },
+    };
+  } else {
+    return {
+      type: type,
     };
   }
-
-  //Do something
-  return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    const spotifyToken = getState().auth.spotifyToken;
-    const songResults = await axios.get(`http://localhost:3000/search/`, {
-      params: {},
-    });
-
-    //Sanitise results
-
-    //Next page tokens
-
-    console.log(songResults.data);
-    // dispatch({
-    //   type: SONG_SEARCH,
-    //   payload:null
-    // });
-  };
 };

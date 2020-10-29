@@ -6,7 +6,7 @@ import { songSearchResult } from "../types";
 import SearchResult from "./SearchResult";
 
 interface Props {
-  header: string;
+  source: string;
   results: {
     imageUrl: string;
     name: string;
@@ -18,14 +18,15 @@ interface Props {
 
 export default function SearchResultList({
   results,
-  header,
+  source,
 }: Props): ReactElement {
   return (
     <Flex direction="column">
-      <Heading>{header}</Heading>
+      <Heading>{source}</Heading>
       {results.map((item) => {
         return (
           <SearchResult
+            source={source}
             key={item.name}
             imageUrl={item.imageUrl}
             name={item.name}

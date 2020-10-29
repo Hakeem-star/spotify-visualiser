@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 import { AppState } from "../reducers";
@@ -17,13 +17,12 @@ function SearchResultContainer({ songSearchResults }: Props): ReactElement {
   ) {
     return (
       <Flex direction="row" w="100" h="100">
-        WOOO
         <SearchResultList
-          header="Spotify"
+          source="Spotify"
           results={songSearchResults.spotify.items}
         />
         <SearchResultList
-          header="YouTube"
+          source="YouTube"
           results={songSearchResults.youtube.items}
         />
       </Flex>

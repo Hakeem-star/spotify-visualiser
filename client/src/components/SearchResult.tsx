@@ -1,7 +1,10 @@
 import { Flex, Image, Text } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
 import { playSong } from "../actions";
+import { AppActions } from "../actions/types";
+import { playSongPayload, ThunkResult } from "../types";
 
 interface Props {
   imageUrl: string;
@@ -9,19 +12,17 @@ interface Props {
   artist: string;
   year: string;
   url: string;
+  source: string;
+  playSong: typeof playSong;
 }
 
-function SearchResult({
-  imageUrl,
-  name,
-  artist,
-  year,
-  url,
-}: Props): ReactElement {
+function SearchResult(props: Props): ReactElement {
+  const { imageUrl, name, artist, year, url, playSong, source } = props;
+
   return (
     <Flex
       onClick={() => {
-        playSong;
+        playSong(url, props, source.toUpperCase());
         console.log(url);
       }}
     >
@@ -34,4 +35,8 @@ function SearchResult({
     </Flex>
   );
 }
-export default connect()(SearchResult);
+
+const mapDispatchToProps = {
+  playSong,
+};
+export default connect(null, mapDispatchToProps)(SearchResult);

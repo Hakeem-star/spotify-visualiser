@@ -11,6 +11,7 @@ import { Flex } from "@chakra-ui/core";
 import Header from "./Header";
 import SearchResultContainer from "./SearchResultContainer";
 import YouTubePlayer from "./YouTubePlayer";
+import Player from "./Player";
 declare global {
   interface Window {
     onSpotifyWebPlaybackSDKReady: () => void;
@@ -107,6 +108,7 @@ function Home(): ReactElement {
       {/* //If a search is being made, display search Results component */}
       <SearchResultContainer />
       {ytReady ? <YouTubePlayer /> : null}
+      <Player />
     </Flex>
   );
 }
