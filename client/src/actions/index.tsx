@@ -99,15 +99,15 @@ export const songSearch = (title: string): ThunkResult<void> => {
 };
 
 export const playSong = (
-  id: string | null,
-  details: {
+  type: string,
+  id?: string | null,
+  details?: {
     imageUrl: string;
     name: string;
     artist: string;
     year: string;
     url: string;
-  } | null,
-  type: string
+  } | null
 ): { type: string; payload?: playSongPayload } => {
   if (id && details) {
     //Check if Spotify or Youtube song

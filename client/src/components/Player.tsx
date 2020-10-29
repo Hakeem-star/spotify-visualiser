@@ -6,10 +6,10 @@ import { playSong } from "../actions";
 import { IoIosSkipBackward } from "react-icons/io";
 import { Flex } from "@chakra-ui/core";
 import { BsPlay, BsPause } from "react-icons/bs";
-import { playSongPayload } from "../types";
-import { PLAY_PAUSE } from "../actions/types";
+import { TOGGLE_PLAY_STATE } from "../actions/types";
+import { playSongReducedState } from "../reducers/playSongReducer";
 interface Props {
-  playerState: { playing: boolean; source: string };
+  playerState: playSongReducedState;
   playSong: typeof playSong;
 }
 
@@ -18,6 +18,8 @@ function Player({ playerState, playSong }: Props): ReactElement {
 
   return (
     <Flex
+      position="fixed"
+      bottom="0"
       w="100%"
       alignSelf="center"
       mt="auto"
@@ -26,17 +28,17 @@ function Player({ playerState, playSong }: Props): ReactElement {
       alignItems="center"
     >
       <IoIosSkipBackward fontSize="6rem" />
-      {playerState.playing ? (
+      {playerState.play ? (
         <BsPause
           onClick={() => {
-            playSong(null, null, PLAY_PAUSE);
+            playSong(TOGGLE_PLAY_STATE);
           }}
           fontSize="6rem"
         />
       ) : (
         <BsPlay
           onClick={() => {
-            playSong(null, null, "PLAY");
+            playSong(TOGGLE_PLAY_STATE);
           }}
           fontSize="6rem"
         />

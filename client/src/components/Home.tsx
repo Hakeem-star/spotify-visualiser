@@ -12,6 +12,9 @@ import Header from "./Header";
 import SearchResultContainer from "./SearchResultContainer";
 import YouTubePlayer from "./YouTubePlayer";
 import Player from "./Player";
+import ConnectToSpotify from "./ConnectToSpotify";
+import { PLAYER_NAME } from "../util/appVariables";
+import SpotifyPlayer from "./SpotifyPlayer";
 declare global {
   interface Window {
     onSpotifyWebPlaybackSDKReady: () => void;
@@ -22,54 +25,6 @@ declare global {
 
 function Home(): ReactElement {
   const [ytReady, setYtReady] = useState(false);
-
-  //Load Spotify
-  useEffect(() => {
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const token = getCookie("ACCESS_TOKEN");
-      const player = new window.Spotify.Player({
-        name: "Hakeem in da house Player",
-        getOAuthToken: (cb: (a: string | undefined) => void) => {
-          cb(token);
-        },
-      });
-
-      // Error handling
-      player.addListener("initialization_error", ({ message }: any) => {
-        console.error(message);
-      });
-      player.addListener("authentication_error", ({ message }: any) => {
-        console.error(message);
-      });
-      player.addListener("account_error", ({ message }: any) => {
-        console.error(message);
-      });
-      player.addListener("playback_error", ({ message }: any) => {
-        console.error(message);
-      });
-
-      // Playback status updates
-      player.addListener("player_state_changed", (state: string) => {
-        console.log(state);
-      });
-
-      // Ready
-      player.addListener("ready", ({ device_id }: { device_id: string }) => {
-        console.log("Ready with Device ID", device_id);
-      });
-
-      // Not Ready
-      player.addListener(
-        "not_ready",
-        ({ device_id }: { device_id: string }) => {
-          console.log("Device ID has gone offline", device_id);
-        }
-      );
-
-      // Connect to the player!
-      player.connect();
-    };
-  }, []);
 
   useEffect(() => {
     //insert the Youtube Player API src if not on page
@@ -107,6 +62,8 @@ function Home(): ReactElement {
       <Header />
       {/* //If a search is being made, display search Results component */}
       <SearchResultContainer />
+      <ConnectToSpotify />
+      <SpotifyPlayer />
       {ytReady ? <YouTubePlayer /> : null}
       <Player />
     </Flex>

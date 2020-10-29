@@ -2,13 +2,14 @@ import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
+import { playSongReducedState } from "../reducers/playSongReducer";
 
 interface Props {
   play?: () => void;
   pause?: () => void;
   mute?: () => void;
   setVolume?: () => void;
-  playerState: { playing: boolean; source: string; url: string };
+  playerState: playSongReducedState;
 }
 
 function YouTubePlayer({ playerState }: Props): ReactElement {
@@ -16,6 +17,7 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
   const previousVidId = useRef("");
 
   useEffect(() => {
+    //Setup player
     ytPlayer.current = new window.YT.Player("player", {
       height: "390",
       width: "640",
@@ -33,6 +35,7 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
   }, []);
 
   useEffect(() => {
+    //When the URL or the source changes
     if (playerState.source === YOUTUBE) {
       if (playerState.url) ytPlayer.current.loadVideoById(playerState.url);
     } else {
@@ -47,8 +50,10 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
 
   useEffect(() => {
     if (playerState.source === YOUTUBE) {
-      if (playerState.url && previousVidId.current === playerState.url)
-        if (playerState.playing) {
+      console.log("URL", previousVidId.current, playerState.url);
+
+      if (previousVidId.current === playerState?.url)
+        if (playerState.play) {
           //If we have a video url and we have clicked on the same video, pause the video
           //Play and stop Youtube video
           ytPlayer.current.playVideo();
@@ -63,9 +68,8 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
         console.log(error);
       }
     }
+    previousVidId.current = playerState.url;
   }, [playerState]);
-
-  previousVidId.current = playerState.url;
 
   return (
     // Hide the youtube video

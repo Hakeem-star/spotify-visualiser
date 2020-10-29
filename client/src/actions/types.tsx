@@ -6,7 +6,7 @@ export const SIGN_IN = "SIGN_IN";
 export const SIGN_OUT = "SIGN_OUT";
 export const SPOTIFY = "SPOTIFY";
 export const YOUTUBE = "YOUTUBE";
-export const PLAY_PAUSE = "PLAY_PAUSE";
+export const TOGGLE_PLAY_STATE = "TOGGLE_PLAY_STATE";
 
 export interface signInAction {
   type: typeof SIGN_IN;
@@ -34,6 +34,6 @@ export interface playSong {
 export type songPlatforms =
   | typeof SPOTIFY
   | typeof YOUTUBE
-  | typeof PLAY_PAUSE
+  | typeof TOGGLE_PLAY_STATE
   | null;
 export type AppActions = AuthActionTypes | SongSearchTypes | playSong;

@@ -18,11 +18,18 @@ function SignIn(): ReactElement {
         justifyContent: "center",
       }}
     >
-      <a href="http://localhost:3000/spotify/login">
+      <a
+        title="Access to Spotify songs"
+        href="http://localhost:3000/spotify/login"
+      >
         <button>Sign in</button>
       </a>
-      <a href="">Create an account</a>
-      <Link to="/">Continue without an Account</Link>
+      <a title="Create an account" href="">
+        Create an account
+      </a>
+      <Link title="No access to Spotify songs" to="/">
+        Continue without an Account
+      </Link>
     </div>
   );
 }

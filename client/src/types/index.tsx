@@ -139,7 +139,7 @@ export interface songSearchResult {
 
 export type playSongPayload = {
   id: string;
-  type: string;
+  type?: string;
   details: {
     imageUrl: string;
     name: string;

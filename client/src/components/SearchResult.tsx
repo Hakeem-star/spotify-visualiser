@@ -22,7 +22,7 @@ function SearchResult(props: Props): ReactElement {
   return (
     <Flex
       onClick={() => {
-        playSong(url, props, source.toUpperCase());
+        playSong(source.toUpperCase(), url, props);
         console.log(url);
       }}
     >

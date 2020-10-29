@@ -38,6 +38,8 @@ function Header({ songSearch }: HeaderProps): ReactElement {
 
   return (
     <Flex
+      position="fixed"
+      top="0"
       background="grey"
       justifyContent="left"
       w="100%"
