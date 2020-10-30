@@ -15,6 +15,7 @@ import Player from "./Player";
 import ConnectToSpotify from "./ConnectToSpotify";
 import { PLAYER_NAME } from "../util/appVariables";
 import SpotifyPlayer from "./SpotifyPlayer";
+import { Visualiser } from "./Visualiser";
 declare global {
   interface Window {
     onSpotifyWebPlaybackSDKReady: () => void;
@@ -65,6 +66,7 @@ function Home(): ReactElement {
       <ConnectToSpotify />
       <SpotifyPlayer />
       {ytReady ? <YouTubePlayer /> : null}
+      <Visualiser />
       <Player />
     </Flex>
   );
