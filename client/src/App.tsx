@@ -10,6 +10,8 @@ import { ThunkDispatch } from "redux-thunk";
 import { AppActions } from "./actions/types";
 import SignIn from "./components/SignIn";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import Auth from "./components/Auth/Auth";
+import { fbAuth } from "./util/firebase_init";
 
 interface AppProps {
   signIn: () => ThunkResult<void>;
@@ -26,8 +28,9 @@ function App({ signIn, isSignedIn }: AppProps): ReactElement {
   return (
     <ThemeProvider>
       <CSSReset />
+      <Auth />
       <Router>
-        <Route exact path="/">
+        <Route exact path="/home">
           <Home />
         </Route>
         <Route path="/login">

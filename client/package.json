@@ -10,6 +10,8 @@
     "@types/youtube": "0.0.39",
     "axios": "^0.20.0",
     "emotion-theming": "^10.0.27",
+    "firebase": "^8.0.0",
+    "formik": "^2.2.1",
     "pts": "^0.9.5",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
