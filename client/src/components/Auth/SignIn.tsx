@@ -2,11 +2,11 @@ import React, { ReactElement, useEffect } from "react";
 import { Button, Flex, useDisclosure } from "@chakra-ui/core";
 import AuthForm from "./AuthForm";
 import { useDispatch, useSelector } from "react-redux";
-import { signUp } from "../../actions";
+import { signIn } from "../../actions";
 import { AppState } from "../../reducers";
 import FormErrorModal from "./FormErrorModal";
 
-export default function SignUp(): ReactElement {
+export default function SignIn(): ReactElement {
   const dispatch = useDispatch();
   const formError = useSelector((state: AppState) => state.formError);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,11 +25,12 @@ export default function SignUp(): ReactElement {
         isOpen={isOpen}
         onClose={onClose}
       />
-      <Button>Sign up with Google</Button>
-      <p>Sign up with email</p>
+      <Button>Sign in with Google</Button>
+      <p>Sign in with email</p>
       <AuthForm
-        handleSubmit={(email, password, setSubmitting, displayName) => {
-          dispatch(signUp(email, password, setSubmitting, displayName));
+        signInForm
+        handleSubmit={(email, password, setSubmitting) => {
+          dispatch(signIn(email, password, setSubmitting));
         }}
       />
     </Flex>

@@ -71,7 +71,5 @@ function Home(): ReactElement {
     </Flex>
   );
 }
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<any, any, AppActions>
-) => ({});
-export default connect(null, mapDispatchToProps)(Home);
+
+export default connect()(Home);

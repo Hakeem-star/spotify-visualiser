@@ -1,11 +1,13 @@
 import { Flex } from "@chakra-ui/core";
 import axios from "axios";
 import React, { ReactElement } from "react";
-import { connect } from "react-redux";
-import { signIn } from "../actions";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { signInAsGuest } from "../actions";
 import { Link } from "react-router-dom";
 
-function SignIn(): ReactElement {
+export default function AuthOptions(): ReactElement {
+  const dispatch = useDispatch();
+
   return (
     <div
       style={{
@@ -18,20 +20,21 @@ function SignIn(): ReactElement {
         justifyContent: "center",
       }}
     >
-      <a
-        title="Access to Spotify songs"
-        href="http://localhost:3000/spotify/login"
-      >
+      <Link title="Sign in" to="/sign-in">
         <button>Sign in</button>
-      </a>
-      <a title="Create an account" href="">
+      </Link>
+      <Link title="Create an account" to="/new-account">
         Create an account
-      </a>
-      <Link title="No access to Spotify songs" to="/">
+      </Link>
+      <Link
+        onClick={() => {
+          dispatch(signInAsGuest());
+        }}
+        title="No access to Spotify songs"
+        to="/"
+      >
         Continue without an Account
       </Link>
     </div>
   );
 }
-Link;
-export default connect(null, { signIn })(SignIn);

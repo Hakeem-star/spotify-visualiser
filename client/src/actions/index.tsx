@@ -1,19 +1,118 @@
 import axios from "axios";
-import { getCookie, deleteAllCookies } from "../util/cookie";
-import { SONG_SEARCH, PLAY_SONG, SIGN_IN, SIGN_OUT, AppActions } from "./types";
+import { getCookie } from "../util/cookie";
+import {
+  SONG_SEARCH,
+  SIGN_IN,
+  SIGN_OUT,
+  SIGN_UP,
+  AppActions,
+  SPOTIFY_SIGN_IN,
+  SIGN_IN_AS_GUEST,
+  signInAsGuestType,
+  FAILED_AUTH_FORM,
+} from "./types";
 import { Dispatch } from "redux";
 import { AppState } from "../reducers";
 import {
   userData,
   ThunkResult,
-  youtubeResult,
-  spotifyResult,
   songSearchResult,
   playSongPayload,
 } from "../types";
 import { remapSongSearchResult } from "../util/remapSongSearchResult";
+import { fbAuth, fbStore } from "../util/firebase_init";
 
-export const signIn = (): ThunkResult<void> => {
+export const signUp = (
+  email: string,
+  password: string,
+  setSubmitting: (boolean: boolean) => void,
+  displayName = ""
+): ThunkResult<void> => {
+  return async (dispatch: Dispatch<AppActions>) => {
+    try {
+      //Create user
+      await fbAuth.createUserWithEmailAndPassword(email, password);
+      await fbAuth.currentUser?.updateProfile({
+        displayName,
+      });
+      //Add user to firestore
+      await fbStore.collection("users").doc(email).set({ displayName, email });
+      //dispatch to reducer so we can keep track of the user in the app
+      dispatch({
+        type: SIGN_UP,
+        payload: { displayName, email },
+      });
+    } catch (error) {
+      console.log("OOps Error", JSON.stringify(error));
+      if (error) {
+        //Reset form
+        setSubmitting(false);
+        dispatch({
+          type: FAILED_AUTH_FORM,
+          payload: error.message,
+        });
+      }
+    }
+  };
+};
+
+export const signIn = (
+  email: string,
+  password: string,
+  setSubmitting: (boolean: boolean) => void
+): ThunkResult<void> => {
+  return async (dispatch: Dispatch<AppActions>) => {
+    try {
+      await fbAuth.signInWithEmailAndPassword(email, password);
+      //If we are able to sign in, get display name from store using email
+      const doc = await fbStore.collection("users").doc(email).get();
+
+      let displayName = "";
+      if (!doc.exists) {
+        displayName = email;
+      } else {
+        console.log("Document data:", doc.data());
+        displayName = doc.data()?.displyName;
+      }
+      dispatch({
+        type: SIGN_IN,
+        payload: { email, displayName },
+      });
+    } catch (error) {
+      if (error) {
+        //Reset form
+        setSubmitting(false);
+        console.error("OOps Error", error);
+        dispatch({
+          type: FAILED_AUTH_FORM,
+          payload: error.message,
+        });
+      }
+    }
+  };
+};
+
+export const signInAsGuest = (): signInAsGuestType => {
+  return {
+    type: SIGN_IN_AS_GUEST,
+    payload: { displayName: "Guest", email: "Guest" },
+  };
+};
+
+export const signOut = (): ThunkResult<void> => {
+  return async (dispatch: Dispatch<AppActions>) => {
+    try {
+      await fbAuth.signOut();
+      dispatch({
+        type: SIGN_OUT,
+      });
+    } catch (error) {
+      console.error("OOps Error", error);
+    }
+  };
+};
+
+export const spotifySignIn = (): ThunkResult<void> => {
   const accessToken = getCookie("ACCESS_TOKEN");
   return async (dispatch: Dispatch<AppActions>) => {
     if (accessToken) {
@@ -26,7 +125,7 @@ export const signIn = (): ThunkResult<void> => {
           }
         );
         dispatch({
-          type: SIGN_IN,
+          type: SPOTIFY_SIGN_IN,
           payload: { userData, spotifyToken: accessToken },
         });
       } catch (error) {
@@ -36,17 +135,10 @@ export const signIn = (): ThunkResult<void> => {
   };
 };
 
-export const signOut = (): AppActions => {
-  deleteAllCookies();
-  return {
-    type: SIGN_OUT,
-  };
-};
-
 export const songSearch = (title: string): ThunkResult<void> => {
   console.log("searching for song " + title);
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    const spotifyToken = getState().auth.spotifyToken;
+    const spotifyToken = getState().spotifyAuth.spotifyToken;
     console.log("proper searching for song " + title);
 
     const songResults = await axios.get(
@@ -67,7 +159,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
     const arrangedResults: songSearchResult = { spotify: {}, youtube: {} };
 
     arrangedResults.spotify = remapSongSearchResult(
-      songResults.data[0] as Record<string, any>,
+      songResults.data[0],
       "next",
       "previous",
       "items",
@@ -78,7 +170,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
       "uri"
     );
     arrangedResults.youtube = remapSongSearchResult(
-      songResults.data[1] as Record<string, any>,
+      songResults.data[1],
       "nextPageToken",
       "prevPageToken",
       "items",

@@ -161,10 +161,19 @@ export interface remappedSearchResult {
   url: string;
 }
 
-export interface authState {
+export interface spotifyAuthState {
   isSignedIn: boolean | null;
   userData: userData | null;
   spotifyToken: string | null;
+}
+
+export interface appAuthState {
+  isSignedIn: boolean | null;
+  userData: { displayName: string; email: string } | null;
+}
+export interface authFormErrorState {
+  error: null | string;
+  count: number;
 }
 
 export interface noTokenError {
