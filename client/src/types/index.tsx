@@ -16,7 +16,12 @@ export interface userData {
   type: string;
   uri: string;
 }
-
+interface songSearchError {
+  error?: {
+    status: number;
+    message: string;
+  };
+}
 export interface youtubeResult {
   kind: string;
   etag: string;
@@ -132,10 +137,6 @@ export interface spotifyResult {
   previous: null | string;
   total: number;
 }
-export interface songSearchResult {
-  spotify: spotifyResult | Record<string, any>;
-  youtube: youtubeResult | Record<string, any>;
-}
 
 export type playSongPayload = {
   id: string;
@@ -149,11 +150,17 @@ export type playSongPayload = {
   };
 } | null;
 
-export interface remappedSearchResult {
+export interface remappedSearchResult extends songSearchError {
   arrayOfResults: Record<string, any>;
   next: string;
   previous: string | null;
-  items: string;
+  items: {
+    imageUrl: string;
+    name: string;
+    artist: string;
+    year: string;
+    url: string;
+  }[];
   imageUrl: string;
   name: string;
   artist: string;
@@ -161,6 +168,10 @@ export interface remappedSearchResult {
   url: string;
 }
 
+export interface songSearchResult {
+  spotify: remappedSearchResult;
+  youtube: remappedSearchResult;
+}
 export interface spotifyAuthState {
   isSignedIn: boolean | null;
   userData: userData | null;

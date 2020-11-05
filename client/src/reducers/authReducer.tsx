@@ -35,7 +35,7 @@ export const spotifyAuthReducer: Reducer<spotifyAuthState> = (
 };
 
 const APP_INITIAL_STATE = {
-  isSignedIn: null,
+  isSignedIn: false,
   userData: null,
 };
 
@@ -62,7 +62,12 @@ export const appAuthReducer: Reducer<appAuthState> = (
         isSignedIn: true,
         userData: action.payload,
       };
-
+    case SIGN_OUT:
+      return {
+        ...state,
+        isSignedIn: false,
+        userData: null,
+      };
     default:
       return state;
   }

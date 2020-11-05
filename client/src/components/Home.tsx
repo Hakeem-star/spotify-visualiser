@@ -7,7 +7,14 @@ import { AppActions } from "../actions/types";
 import { ThunkResult } from "../types";
 import { getCookie } from "../util/cookie";
 
-import { Flex } from "@chakra-ui/core";
+import {
+  Checkbox,
+  CheckboxGroup,
+  Flex,
+  List,
+  Modal,
+  Text,
+} from "@chakra-ui/core";
 import Header from "./Header";
 import SearchResultContainer from "./SearchResultContainer";
 import YouTubePlayer from "./YouTubePlayer";
@@ -24,7 +31,7 @@ declare global {
   }
 }
 
-function Home(): ReactElement {
+export default function Home(): ReactElement {
   const [ytReady, setYtReady] = useState(false);
 
   useEffect(() => {
@@ -61,9 +68,19 @@ function Home(): ReactElement {
   return (
     <Flex direction="column" h="100vh">
       <Header />
-      {/* //If a search is being made, display search Results component */}
-      <SearchResultContainer />
+      <Flex flex="1">
+        <Flex height="100%" w="10%" background="red" position="fixed">
+          <CheckboxGroup mt="50px" defaultValue={["Youtube"]}>
+            <Checkbox value="Spotify">Spotify</Checkbox>
+            <Checkbox value="Youtube">Youtube</Checkbox>
+          </CheckboxGroup>
+        </Flex>
+        {/* //If a search is being made, display search Results component */}
+        <SearchResultContainer />
+      </Flex>
+      {/* Modal to prompt connection to Spotify */}
       <ConnectToSpotify />
+
       <SpotifyPlayer />
       {ytReady ? <YouTubePlayer /> : null}
       <Visualiser />
@@ -71,5 +88,3 @@ function Home(): ReactElement {
     </Flex>
   );
 }
-
-export default connect()(Home);

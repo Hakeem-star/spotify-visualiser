@@ -18,6 +18,8 @@ import {
   ThunkResult,
   songSearchResult,
   playSongPayload,
+  spotifyResult,
+  remappedSearchResult,
 } from "../types";
 import { remapSongSearchResult } from "../util/remapSongSearchResult";
 import { fbAuth, fbStore } from "../util/firebase_init";
@@ -92,7 +94,17 @@ export const signIn = (
   };
 };
 
-export const signInAsGuest = (): signInAsGuestType => {
+export const alreadySignedIn = (
+  email: string,
+  displayName: string
+): AppActions => {
+  return {
+    type: SIGN_IN,
+    payload: { email, displayName },
+  };
+};
+
+export const signInAsGuest = (): AppActions => {
   return {
     type: SIGN_IN_AS_GUEST,
     payload: { displayName: "Guest", email: "Guest" },
@@ -137,49 +149,65 @@ export const spotifySignIn = (): ThunkResult<void> => {
 
 export const songSearch = (title: string): ThunkResult<void> => {
   console.log("searching for song " + title);
+
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
     const spotifyToken = getState().spotifyAuth.spotifyToken;
-    console.log("proper searching for song " + title);
+    let songResults;
 
-    const songResults = await axios.get(
-      `http://localhost:3000/search/?q=${title}`,
-      {
-        params: {
-          spotifyToken,
-        },
-      }
-    );
-
-    if (songResults?.data[1]?.error) {
+    try {
+      songResults = await axios.get(
+        `http://localhost:3000/search/?q=${title}`,
+        {
+          params: {
+            spotifyToken,
+          },
+        }
+      );
+    } catch (error) {
+      // if (songResults?.data[1]?.error) {
+      //   return;
+      // }
+      console.log(error.response.data);
       return;
     }
     console.log({ songResults: songResults });
 
     //Sanitise results
-    const arrangedResults: songSearchResult = { spotify: {}, youtube: {} };
+    const arrangedResults = {} as songSearchResult;
 
-    arrangedResults.spotify = remapSongSearchResult(
-      songResults.data[0],
-      "next",
-      "previous",
-      "items",
-      "album.images.1.url",
-      "name",
-      "artists.0.name",
-      "album.release_date",
-      "uri"
-    );
-    arrangedResults.youtube = remapSongSearchResult(
-      songResults.data[1],
-      "nextPageToken",
-      "prevPageToken",
-      "items",
-      "snippet.thumbnails.high.url",
-      "snippet.title",
-      "snippet.channelTitle",
-      "snippet.publishedAt",
-      "id.videoId"
-    );
+    console.log({ res: songResults }, songResults.data);
+
+    arrangedResults.spotify =
+      (songResults.data.spotifyResults.error &&
+        songResults.data.spotifyResults) ||
+      remapSongSearchResult(
+        songResults.data.spotifyResults,
+        "next",
+        "previous",
+        "items",
+        "album.images.1.url",
+        "name",
+        "artists.0.name",
+        "album.release_date",
+        "uri"
+      );
+
+    arrangedResults.youtube =
+      (songResults.data.youtubeResults.error &&
+        songResults.data.youtubeResults) ||
+      remapSongSearchResult(
+        songResults.data.youtubeResults,
+        "nextPageToken",
+        "prevPageToken",
+        "items",
+        "snippet.thumbnails.high.url",
+        "snippet.title",
+        "snippet.channelTitle",
+        "snippet.publishedAt",
+        "id.videoId"
+      );
+
+    console.log({ songResults: songResults });
 
     //Next page tokens
 

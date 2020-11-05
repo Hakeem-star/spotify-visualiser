@@ -1,19 +1,11 @@
 import { Flex, PseudoBox, Heading } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
-import { connect } from "react-redux";
-import { AppState } from "../reducers";
-import { songSearchResult } from "../types";
+import { remappedSearchResult } from "../types";
 import SearchResult from "./SearchResult";
 
 interface Props {
   source: string;
-  results: {
-    imageUrl: string;
-    name: string;
-    artist: string;
-    year: string;
-    url: string;
-  }[];
+  results: remappedSearchResult["items"];
 }
 
 export default function SearchResultList({

@@ -1,33 +1,40 @@
 import {
   Box,
+  Button,
   Flex,
   Input,
   InputGroup,
   InputRightElement,
   List,
   ListItem,
+  Text,
 } from "@chakra-ui/core";
 import React, { ReactElement, useRef, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiFireWave } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import { ThunkResult } from "../types";
 import { bindActionCreators } from "redux";
-import { songSearch } from "../actions";
+import { signOut, songSearch } from "../actions";
 import { ThunkDispatch } from "redux-thunk";
 import { AppActions } from "../actions/types";
 import { debounce } from "../util/debounce";
+import { AppState } from "../reducers";
 interface HeaderProps {
   songSearch: (val: string) => ThunkResult<void>;
 }
 // const debounceSearch = debounce();
 
-function Header({ songSearch }: HeaderProps): ReactElement {
+export default function Header(): ReactElement {
+  const dispatch = useDispatch();
+  const displayName = useSelector(
+    (state: AppState) => state.auth.userData?.displayName
+  );
   const [searchInputValue, setSearchInputValue] = useState("");
   const debounceSearch = useRef(
     debounce((value) => {
-      songSearch(value);
+      dispatch(songSearch(value));
     }, 1000)
   );
 
@@ -38,7 +45,7 @@ function Header({ songSearch }: HeaderProps): ReactElement {
 
   return (
     <Flex
-      position="fixed"
+      position="sticky"
       top="0"
       background="grey"
       justifyContent="left"
@@ -78,12 +85,15 @@ function Header({ songSearch }: HeaderProps): ReactElement {
           <Link to="/">Create new Playlist</Link>
         </ListItem>
       </List>
+      <Box>{displayName}</Box>
+      <Button
+        ml="auto"
+        onClick={() => {
+          dispatch(signOut());
+        }}
+      >
+        Log out
+      </Button>
     </Flex>
   );
 }
-
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>) => ({
-  songSearch: bindActionCreators(songSearch, dispatch),
-});
-
-export default connect(null, mapDispatchToProps)(Header);

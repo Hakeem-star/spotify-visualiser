@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect } from "react";
 import { ThemeProvider, CSSReset } from "@chakra-ui/core";
-import { connect } from "react-redux";
-import { spotifySignIn } from "./actions";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { alreadySignedIn, spotifySignIn } from "./actions";
 import Home from "./components/Home";
 import { AppState } from "./reducers";
 import { ThunkResult } from "./types";
@@ -14,16 +14,15 @@ import AuthOptions from "./components/AuthOptions";
 import SignIn from "./components/Auth/SignIn";
 import SignUp from "./components/Auth/SignUp";
 
-interface AppProps {
-  signIn: () => ThunkResult<void>;
-  isSignedIn: boolean | null;
-}
+export default function App(): ReactElement {
+  const dispatch = useDispatch();
+  const isSignedIn = useSelector((state: AppState) => state.auth.isSignedIn);
 
-function App({ signIn, isSignedIn }: AppProps): ReactElement {
   useEffect(() => {
     //get and set cookies to store
     fbAuth.onAuthStateChanged(function (user) {
-      if (user) {
+      if (user?.email && user.displayName) {
+        dispatch(alreadySignedIn(user.email, user.displayName));
         // User is signed in.
         console.log("signed", user);
       } else {
@@ -31,6 +30,15 @@ function App({ signIn, isSignedIn }: AppProps): ReactElement {
         console.log("NOT SIgned");
       }
     });
+
+    // const user = fbAuth.currentUser;
+    // if (user) {
+    //   // User is signed in.
+    //   console.log("signed", user);
+    // } else {
+    //   // No user is signed in.
+    //   console.log("NOT SIgned");
+    // }
   }, []);
 
   return (
@@ -53,15 +61,3 @@ function App({ signIn, isSignedIn }: AppProps): ReactElement {
     </ThemeProvider>
   );
 }
-
-const mapStateToProps = (state: AppState) => {
-  console.log(state);
-  return {
-    isSignedIn: state.auth.isSignedIn,
-  };
-};
-const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, AppActions>) => ({
-  signIn: bindActionCreators(spotifySignIn, dispatch),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);

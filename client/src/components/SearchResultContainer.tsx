@@ -1,39 +1,57 @@
-import { Flex } from "@chakra-ui/core";
+import { Flex, Text } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { AppState } from "../reducers";
-import { songSearchResult } from "../types";
 import SearchResultList from "./SearchResultList";
 
-interface Props {
-  songSearchResults: songSearchResult;
-}
+export default function SearchResultContainer(): ReactElement {
+  const songSearchResults = useSelector(
+    (state: AppState) => state.songSearchResults
+  );
+  console.log({ songSearchResults });
 
-function SearchResultContainer({ songSearchResults }: Props): ReactElement {
-  console.log(songSearchResults);
-  if (
-    songSearchResults.spotify.items &&
-    songSearchResults.spotify.items.length > 0
-  ) {
-    return (
-      <Flex direction="row" w="100" h="100">
+  //Build results based on values from songSearchResults
+
+  const results = [];
+
+  if (songSearchResults.spotify.error) {
+    //if there is an error, push error message
+    results.push(<Text>{songSearchResults.spotify.error?.message}</Text>);
+  } else {
+    if (songSearchResults.spotify.items?.length > 0) {
+      //if there is at least 1 item in the response, show that
+      results.push(
         <SearchResultList
           source="Spotify"
           results={songSearchResults.spotify.items}
         />
+      );
+    } else {
+      //else nothing
+      results.push(null);
+    }
+  }
+
+  if (songSearchResults.youtube.error) {
+    //if there is an error, push error message
+
+    results.push(<Text>{songSearchResults.youtube.error?.message}</Text>);
+  } else {
+    if (songSearchResults.youtube.items?.length > 0) {
+      //if there is at least 1 item in the response, show that
+      results.push(
         <SearchResultList
           source="YouTube"
           results={songSearchResults.youtube.items}
         />
-      </Flex>
-    );
-  } else return <div>BOOO</div>;
+      );
+      //else nothing
+    } else results.push(null);
+  }
+
+  return (
+    <Flex direction="row" w="100%" h="100%" justifyContent="space-between">
+      {results}
+    </Flex>
+  );
 }
-
-const matchStateToProps = (state: AppState) => {
-  return {
-    songSearchResults: state.songSearchResults,
-  };
-};
-
-export default connect(matchStateToProps)(SearchResultContainer);

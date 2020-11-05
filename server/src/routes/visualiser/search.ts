@@ -4,42 +4,41 @@ import youtube from "../youtube";
 export default async (app) => {
   app.get("/search/", async (req, res) => {
     console.log("WOO", req.query.spotifyToken);
-    const songs = await axios
-      .all([
-        axios.get("https://api.spotify.com/v1/search", {
-          params: {
-            q: req.query.q,
-            type: "track",
-            limit: 5,
-          },
-          headers: {
-            Authorization: `Bearer ${req.query.spotifyToken}`,
-          },
-        }),
 
-        youtube.get("/search", {
-          params: { q: req.query.q },
-        }),
-      ])
-      .catch((e) => {
-        console.log(req.cookies, e.response.data);
-        res.send([e, e.response.data]);
+    let spotifyResponse: any;
+    //Spotify call
+    try {
+      spotifyResponse = await axios.get("https://api.spotify.com/v1/search", {
+        params: {
+          q: req.query.q,
+          type: "track",
+          limit: 5,
+        },
+        headers: {
+          Authorization: `Bearer ${req.query.spotifyToken}`,
+        },
       });
+    } catch (error) {
+      console.log("here", error.response.data);
+      spotifyResponse = error.response.data;
+    }
 
-    const spotifyresults = songs[0];
-    const youtubeResults = songs[1];
+    let youtubeResponse: any;
+    //Youtube call
+    try {
+      youtubeResponse = await youtube.get("/search", {
+        params: { q: req.query.q },
+      });
+    } catch (error) {
+      console.log("here", error.response.data);
+      youtubeResponse = error.response.data;
+    }
 
-    console.log(spotifyresults.data.tracks);
-    console.log(youtubeResults.data.items);
-    res.send([spotifyresults.data.tracks, youtubeResults.data]);
+    //If there is data, assign that value, else assign error
+    const spotifyResults = spotifyResponse?.data || spotifyResponse;
+    const youtubeResults = youtubeResponse?.data || youtubeResponse;
 
-    //   .then((axiosResponse) => {
-    //     res.send(axiosResponse.data);
-    //     console.log(axiosResponse.data);
-    //   })
-
-    //   .catch((error) => {
-    //     console.log({ error });
-    //   });
+    console.log(spotifyResults);
+    res.send({ spotifyResults, youtubeResults });
   });
 };

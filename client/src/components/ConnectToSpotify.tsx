@@ -25,9 +25,14 @@ export default function ConnectToSpotify({}): ReactElement {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody m="20px">
-            Please connect to this Spotify player from your device. <br />
-            <br /> In your Spotify App, select{" "}
-            <span style={{ color: "red" }}>{PLAYER_NAME}</span>
+            <Text>
+              To access your spotify songs, you need to connect to a Spotify on
+              your computer or mobile device.
+            </Text>
+            <Text>
+              Log in to Spotify to get started{" "}
+              <span style={{ color: "red" }}>{PLAYER_NAME}</span>
+            </Text>
           </ModalBody>
         </ModalContent>
       </Modal>
