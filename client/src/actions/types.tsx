@@ -1,5 +1,7 @@
+import { DraggableLocation } from "react-beautiful-dnd";
 import {
   playSongPayload,
+  remappedSearchResult,
   songSearchResult,
   updateSongSourcesType,
   userData,
@@ -17,6 +19,10 @@ export const YOUTUBE = "YOUTUBE";
 export const TOGGLE_PLAY_STATE = "TOGGLE_PLAY_STATE";
 export const FAILED_AUTH_FORM = "FAILED_AUTH_FORM";
 export const UPDATE_SONG_SOURCE = "UPDATE_SONG_SOURCE";
+export const REORDER = "REORDER";
+export const ADDTODRAGNDROP = "ADDTODRAGNDROP";
+export const SETCREATEPLAYLISTSIDEBAR = "SETCREATEPLAYLISTSIDEBAR";
+export const TOGGLECREATEPLAYLISTSIDEBAR = "TOGGLECREATEPLAYLISTSIDEBAR";
 
 export interface spotifySignInAction {
   type: typeof SPOTIFY_SIGN_IN;
@@ -75,4 +81,38 @@ export type songPlatforms =
   | typeof YOUTUBE
   | typeof TOGGLE_PLAY_STATE
   | null;
-export type AppActions = AuthActionTypes | SongSearchTypes | playSong;
+
+export interface reorderDragNDrop {
+  type: typeof REORDER;
+  payload: { startIndex: number; endIndex: number };
+}
+
+export interface addToDragNDrop {
+  type: typeof ADDTODRAGNDROP;
+  payload: {
+    droppableDestination: DraggableLocation;
+    item: remappedSearchResult["items"][0];
+  };
+}
+
+export type playlistDragDrop = reorderDragNDrop | addToDragNDrop;
+
+export interface setCreatePlaylistSidebar {
+  type: typeof SETCREATEPLAYLISTSIDEBAR;
+  payload: boolean;
+}
+
+export interface toggleCreatePlaylistSidebarOpen {
+  type: typeof TOGGLECREATEPLAYLISTSIDEBAR;
+  payload?: any;
+}
+
+export type createPlaylistSidebarOpen =
+  | setCreatePlaylistSidebar
+  | toggleCreatePlaylistSidebarOpen;
+
+export type AppActions =
+  | AuthActionTypes
+  | SongSearchTypes
+  | playSong
+  | playlistDragDrop;

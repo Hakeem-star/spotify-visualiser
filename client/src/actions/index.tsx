@@ -156,7 +156,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
     const spotifyToken = getCookie("ACCESS_TOKEN");
     const songSources = getState().songSources;
     let songResults;
-    console.log({ title });
+
     if (!title) {
       dispatch({
         type: SONG_SEARCH,

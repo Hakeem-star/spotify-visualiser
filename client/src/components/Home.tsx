@@ -1,13 +1,10 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { updateSongSources } from "../actions";
-import { updateSongSourcesType } from "../types";
 import { getCookie } from "../util/cookie";
 
-import { Checkbox, CheckboxGroup, Flex, useDisclosure } from "@chakra-ui/core";
+import { Flex, useDisclosure } from "@chakra-ui/core";
 import Header from "./Header";
-import SearchResultContainer from "./SearchResultContainer";
 import YouTubePlayer from "./YouTubePlayer";
 import Player from "./Player";
 import ConnectToSpotify from "./ConnectToSpotify";
@@ -15,7 +12,8 @@ import useSpotifyPlayer from "./SpotifyPlayer";
 import { Visualiser } from "./Visualiser";
 import axios from "axios";
 import SourceSelector from "./SourceSelector";
-import CreatePlaylist from "./CreatePlaylist";
+
+import SearchResultWithPlaylistCreator from "./SearchResultWithPlaylistCreator";
 
 declare global {
   interface Window {
@@ -26,7 +24,6 @@ declare global {
 }
 
 export default function Home(): ReactElement {
-  const dispatch = useDispatch();
   const [ytReady, setYtReady] = useState(false);
   useSpotifyPlayer();
 
@@ -105,7 +102,7 @@ export default function Home(): ReactElement {
       <Flex flex="1" overflow="hidden">
         <SourceSelector />
         {/* //If a search is being made, display search Results component */}
-        <SearchResultContainer />
+        <SearchResultWithPlaylistCreator />
       </Flex>
 
       {/* Modal to prompt connection to Spotify */}

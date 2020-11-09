@@ -8,12 +8,13 @@ import {
   List,
   ListItem,
   Text,
+  Link as ChakLink,
 } from "@chakra-ui/core";
 import React, { ReactElement, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiFireWave } from "react-icons/gi";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { ThunkResult } from "../types";
 import { bindActionCreators } from "redux";
 import { signOut, songSearch } from "../actions";
@@ -21,12 +22,14 @@ import { ThunkDispatch } from "redux-thunk";
 import { AppActions } from "../actions/types";
 import { debounce } from "../util/debounce";
 import { AppState } from "../reducers";
+import { setCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
 interface HeaderProps {
   songSearch: (val: string) => ThunkResult<void>;
 }
 // const debounceSearch = debounce();
 
 export default function Header(): ReactElement {
+  const history = useHistory();
   const dispatch = useDispatch();
   const displayName = useSelector(
     (state: AppState) => state.auth.userData?.displayName
@@ -83,7 +86,16 @@ export default function Header(): ReactElement {
           <Link to="/">Your Playlists</Link>
         </ListItem>
         <ListItem ml="10%">
-          <Link to="/">Create new Playlist</Link>
+          <ChakLink
+            as="button"
+            onClick={() => {
+              //go to home and show the playlist creator sidebar
+              history.push("/");
+              dispatch(setCreatePlaylistSidebar(true));
+            }}
+          >
+            Create new Playlist
+          </ChakLink>
         </ListItem>
       </List>
       <Box>{displayName}</Box>

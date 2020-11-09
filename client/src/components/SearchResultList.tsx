@@ -13,12 +13,13 @@ export default function SearchResultList({
   source,
 }: Props): ReactElement {
   return (
-    <Flex direction="column">
+    <div>
       <Heading>{source}</Heading>
       {results.map((item, index) => {
         return (
           <SearchResult
             source={source}
+            index={index}
             key={item.url + index}
             imageUrl={item.imageUrl}
             name={item.name}
@@ -28,6 +29,6 @@ export default function SearchResultList({
           />
         );
       })}
-    </Flex>
+    </div>
   );
 }
