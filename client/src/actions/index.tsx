@@ -10,6 +10,7 @@ import {
   SIGN_IN_AS_GUEST,
   signInAsGuestType,
   FAILED_AUTH_FORM,
+  UPDATE_SONG_SOURCE,
 } from "./types";
 import { Dispatch } from "redux";
 import { AppState } from "../reducers";
@@ -20,6 +21,7 @@ import {
   playSongPayload,
   spotifyResult,
   remappedSearchResult,
+  updateSongSourcesType,
 } from "../types";
 import { remapSongSearchResult } from "../util/remapSongSearchResult";
 import { fbAuth, fbStore } from "../util/firebase_init";
@@ -151,8 +153,17 @@ export const songSearch = (title: string): ThunkResult<void> => {
   console.log("searching for song " + title);
 
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    const spotifyToken = getState().spotifyAuth.spotifyToken;
+    const spotifyToken = getCookie("ACCESS_TOKEN");
+    const songSources = getState().songSources;
     let songResults;
+    console.log({ title });
+    if (!title) {
+      dispatch({
+        type: SONG_SEARCH,
+        payload: { spotify: null, youtube: null },
+      });
+      return;
+    }
 
     try {
       songResults = await axios.get(
@@ -160,6 +171,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
         {
           params: {
             spotifyToken,
+            sources: songSources,
           },
         }
       );
@@ -177,35 +189,43 @@ export const songSearch = (title: string): ThunkResult<void> => {
 
     console.log({ res: songResults }, songResults.data);
 
-    arrangedResults.spotify =
-      (songResults.data.spotifyResults.error &&
-        songResults.data.spotifyResults) ||
-      remapSongSearchResult(
-        songResults.data.spotifyResults,
-        "next",
-        "previous",
-        "items",
-        "album.images.1.url",
-        "name",
-        "artists.0.name",
-        "album.release_date",
-        "uri"
-      );
+    if (songResults.data.spotifyResults) {
+      arrangedResults.spotify =
+        (songResults.data.spotifyResults.error &&
+          songResults.data.spotifyResults) ||
+        remapSongSearchResult(
+          songResults.data.spotifyResults,
+          "next",
+          "previous",
+          "items",
+          "album.images.1.url",
+          "name",
+          "artists.0.name",
+          "album.release_date",
+          "uri"
+        );
+    } else {
+      arrangedResults.spotify = null;
+    }
 
-    arrangedResults.youtube =
-      (songResults.data.youtubeResults.error &&
-        songResults.data.youtubeResults) ||
-      remapSongSearchResult(
-        songResults.data.youtubeResults,
-        "nextPageToken",
-        "prevPageToken",
-        "items",
-        "snippet.thumbnails.high.url",
-        "snippet.title",
-        "snippet.channelTitle",
-        "snippet.publishedAt",
-        "id.videoId"
-      );
+    if (songResults.data.youtubeResults) {
+      arrangedResults.youtube =
+        (songResults.data.youtubeResults.error &&
+          songResults.data.youtubeResults) ||
+        remapSongSearchResult(
+          songResults.data.youtubeResults,
+          "nextPageToken",
+          "prevPageToken",
+          "items",
+          "snippet.thumbnails.high.url",
+          "snippet.title",
+          "snippet.channelTitle",
+          "snippet.publishedAt",
+          "id.videoId"
+        );
+    } else {
+      arrangedResults.youtube = null;
+    }
 
     console.log({ songResults: songResults });
 
@@ -232,12 +252,19 @@ export const playSong = (
   if (id && details) {
     //Check if Spotify or Youtube song
     return {
-      type: type,
+      type,
       payload: { id, type, details },
     };
   } else {
     return {
-      type: type,
+      type,
     };
   }
+};
+
+export const updateSongSources = (sources: updateSongSourcesType) => {
+  return {
+    type: UPDATE_SONG_SOURCE,
+    payload: sources,
+  };
 };

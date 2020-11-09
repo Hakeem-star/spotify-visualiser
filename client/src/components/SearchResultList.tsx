@@ -15,11 +15,11 @@ export default function SearchResultList({
   return (
     <Flex direction="column">
       <Heading>{source}</Heading>
-      {results.map((item) => {
+      {results.map((item, index) => {
         return (
           <SearchResult
             source={source}
-            key={item.name}
+            key={item.url + index}
             imageUrl={item.imageUrl}
             name={item.name}
             artist={item.artist}

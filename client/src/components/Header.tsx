@@ -34,12 +34,13 @@ export default function Header(): ReactElement {
   const [searchInputValue, setSearchInputValue] = useState("");
   const debounceSearch = useRef(
     debounce((value) => {
-      dispatch(songSearch(value));
+      dispatch(songSearch(value[0]));
     }, 1000)
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(event.target.value);
+    console.log({ value: event.target.value });
     debounceSearch.current(event.target.value);
   };
 

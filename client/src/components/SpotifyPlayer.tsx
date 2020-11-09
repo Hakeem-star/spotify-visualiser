@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useRef } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { SPOTIFY } from "../actions/types";
 import { AppState } from "../reducers";
 import { playSongReducedState } from "../reducers/playSongReducer";
@@ -37,9 +37,20 @@ export const play = ({
   });
 };
 
-function SpotifyPlayer({ playerState }: Props): ReactElement {
+export default function useSpotifyPlayer(): void {
   const player: any = useRef(null);
   const previousVidId = useRef("");
+  const playerState = useSelector((state: AppState) => state.playerState);
+
+  useEffect(() => {
+    console.log("planting");
+    const script = document.createElement("script");
+
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+  }, []);
 
   //Load Spotify
   useEffect(() => {
@@ -90,9 +101,12 @@ function SpotifyPlayer({ playerState }: Props): ReactElement {
       // Connect to the player!
       player.current.connect();
     };
+
+    console.log("SPOTIFY MOUNTED", player.current);
   }, []);
 
   useEffect(() => {
+    console.log({ current: player.current });
     //When the URL or the source changes
     if (playerState.source === SPOTIFY) {
       play({
@@ -132,11 +146,4 @@ function SpotifyPlayer({ playerState }: Props): ReactElement {
     }
     previousVidId.current = playerState.url;
   }, [playerState]);
-
-  return <></>;
 }
-
-const mapStateToProps = (state: AppState) => ({
-  playerState: state.playerState,
-});
-export default connect(mapStateToProps)(SpotifyPlayer);

@@ -7,6 +7,7 @@ export default (app) => {
   app.get("/spotify/refresh_token", function (req, res) {
     // requesting access token from refresh token
     var refresh_token = req.query.refresh_token;
+    console.log({ refresh_token: req.query });
     var authOptions = {
       headers: {
         Authorization:
@@ -26,13 +27,13 @@ export default (app) => {
       )
       .then((axiosRes) => {
         var access_token = axiosRes.data.access_token;
-
+        res.cookie("ACCESS_TOKEN", 1234);
         res.send({
           access_token: access_token,
         });
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   });
 };

@@ -169,8 +169,8 @@ export interface remappedSearchResult extends songSearchError {
 }
 
 export interface songSearchResult {
-  spotify: remappedSearchResult;
-  youtube: remappedSearchResult;
+  spotify: remappedSearchResult | null;
+  youtube: remappedSearchResult | null;
 }
 export interface spotifyAuthState {
   isSignedIn: boolean | null;
@@ -193,5 +193,7 @@ export interface noTokenError {
     message: "The access token expired";
   };
 }
+
+export type updateSongSourcesType = (string | number | undefined)[];
 
 export type ThunkResult<R> = ThunkAction<R, AppState, unknown, AppActions>;

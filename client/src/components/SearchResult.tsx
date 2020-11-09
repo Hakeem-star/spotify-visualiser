@@ -18,7 +18,7 @@ interface Props {
 
 function SearchResult(props: Props): ReactElement {
   const { imageUrl, name, artist, year, url, playSong, source } = props;
-
+  console.log({ source, url });
   return (
     <Flex
       onClick={() => {

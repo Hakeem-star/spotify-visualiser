@@ -6,6 +6,7 @@ import {
 } from "./authReducer";
 import { playSongReducer } from "./playSongReducer";
 import { songSearchReducer } from "./songSearchReducer";
+import { updateSongSourcesReducer } from "./updateSongSourcesReducer";
 
 export const rootReducer = combineReducers({
   auth: appAuthReducer,
@@ -13,6 +14,7 @@ export const rootReducer = combineReducers({
   spotifyAuth: spotifyAuthReducer,
   songSearchResults: songSearchReducer,
   playerState: playSongReducer,
+  songSources: updateSongSourcesReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;

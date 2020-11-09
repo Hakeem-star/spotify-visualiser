@@ -1,28 +1,22 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import { songSearch } from "../actions";
-import { AppActions } from "../actions/types";
-import { ThunkResult } from "../types";
+import { useDispatch } from "react-redux";
+
+import { updateSongSources } from "../actions";
+import { updateSongSourcesType } from "../types";
 import { getCookie } from "../util/cookie";
 
-import {
-  Checkbox,
-  CheckboxGroup,
-  Flex,
-  List,
-  Modal,
-  Text,
-} from "@chakra-ui/core";
+import { Checkbox, CheckboxGroup, Flex, useDisclosure } from "@chakra-ui/core";
 import Header from "./Header";
 import SearchResultContainer from "./SearchResultContainer";
 import YouTubePlayer from "./YouTubePlayer";
 import Player from "./Player";
 import ConnectToSpotify from "./ConnectToSpotify";
-import { PLAYER_NAME } from "../util/appVariables";
-import SpotifyPlayer from "./SpotifyPlayer";
+import useSpotifyPlayer from "./SpotifyPlayer";
 import { Visualiser } from "./Visualiser";
+import axios from "axios";
+import SourceSelector from "./SourceSelector";
+import CreatePlaylist from "./CreatePlaylist";
+
 declare global {
   interface Window {
     onSpotifyWebPlaybackSDKReady: () => void;
@@ -32,7 +26,9 @@ declare global {
 }
 
 export default function Home(): ReactElement {
+  const dispatch = useDispatch();
   const [ytReady, setYtReady] = useState(false);
+  useSpotifyPlayer();
 
   useEffect(() => {
     //insert the Youtube Player API src if not on page
@@ -65,25 +61,57 @@ export default function Home(): ReactElement {
     }
   }, []);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    ////Open Spotify Modal when we land on homepage
+    const getSpotifyUser = async () => {
+      try {
+        //Check if the user has a token in the cookie (indicating a previous sign in)
+        const spotifyAccessToken = getCookie("ACCESS_TOKEN");
+        //If no cookie exists, throw an error. When caught the modal prompting Spotify will show up
+        if (!spotifyAccessToken) {
+          throw "No cookie";
+        }
+        //If a cookie exists, attempt to get a profile
+        await axios.get("https://api.spotify.com/v1/me", {
+          headers: { Authorization: "Bearer " + spotifyAccessToken },
+        });
+        //if unsuccessful, an error will be thrown and a refresh token will be retrieved
+      } catch (error) {
+        //If its a 401 indicating an expired access token, attempt to get a new one
+        if (error?.response?.data.error.status === 401) {
+          const spotifyRefreshToken = getCookie("REFRESH_TOKEN");
+          console.log({ spotifyRefreshToken });
+          const newAccessToken = await axios.get(
+            "http://localhost:3000/spotify/refresh_token",
+            { params: { refresh_token: spotifyRefreshToken } }
+          );
+
+          console.log(newAccessToken);
+          onOpen();
+        }
+        //if it's any other type of error, open the modal
+        console.error(error);
+        onOpen();
+      }
+    };
+    getSpotifyUser();
+  }, [onOpen]);
+
   return (
     <Flex direction="column" h="100vh">
       <Header />
-      <Flex flex="1">
-        <Flex height="100%" w="10%" background="red" position="fixed">
-          <CheckboxGroup mt="50px" defaultValue={["Youtube"]}>
-            <Checkbox value="Spotify">Spotify</Checkbox>
-            <Checkbox value="Youtube">Youtube</Checkbox>
-          </CheckboxGroup>
-        </Flex>
+      <Flex flex="1" overflow="hidden">
+        <SourceSelector />
         {/* //If a search is being made, display search Results component */}
         <SearchResultContainer />
       </Flex>
-      {/* Modal to prompt connection to Spotify */}
-      <ConnectToSpotify />
 
-      <SpotifyPlayer />
+      {/* Modal to prompt connection to Spotify */}
+      <ConnectToSpotify isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       {ytReady ? <YouTubePlayer /> : null}
-      <Visualiser />
+      {/* <Visualiser /> */}
       <Player />
     </Flex>
   );
