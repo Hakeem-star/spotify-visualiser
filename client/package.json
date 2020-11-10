@@ -8,6 +8,7 @@
     "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.6",
+    "@types/uuid": "^8.3.0",
     "@types/youtube": "0.0.39",
     "axios": "^0.20.0",
     "emotion-theming": "^10.0.27",
@@ -23,7 +24,8 @@
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "uuid": "^8.3.1"
   },
   "scripts": {
     "start": "webpack serve --mode development --env development --hot",

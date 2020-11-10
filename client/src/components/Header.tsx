@@ -83,7 +83,7 @@ export default function Header(): ReactElement {
         w="20%"
       >
         <ListItem ml="10%">
-          <Link to="/">Your Playlists</Link>
+          <Link to="/playlists">Your Playlists</Link>
         </ListItem>
         <ListItem ml="10%">
           <ChakLink

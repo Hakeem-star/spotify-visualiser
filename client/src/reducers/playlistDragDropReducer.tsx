@@ -1,12 +1,18 @@
-import { ADDTODRAGNDROP, playlistDragDrop, REORDER } from "../actions/types";
+import {
+  ADDTODRAGNDROP,
+  DISCARDPLAYLIST,
+  playlistDragDrop,
+  playlistItemType,
+  REORDER,
+} from "../actions/types";
 import { remappedSearchResult } from "../types";
 
-const INITIAL_STATE = [] as remappedSearchResult["items"][0][];
+const INITIAL_STATE = [] as playlistItemType[];
 
 export const playlistDragDropReducer = (
   state = INITIAL_STATE,
   action: playlistDragDrop
-): remappedSearchResult["items"][0][] => {
+): playlistItemType[] => {
   const stateCopy = state.slice();
   switch (action.type) {
     case ADDTODRAGNDROP:
@@ -29,8 +35,10 @@ export const playlistDragDropReducer = (
     case REORDER:
       const [removed] = stateCopy.splice(action.payload.startIndex, 1);
       stateCopy.splice(action.payload.endIndex, 0, removed);
-
       return stateCopy;
+
+    case DISCARDPLAYLIST:
+      return INITIAL_STATE;
     default:
       return state;
   }

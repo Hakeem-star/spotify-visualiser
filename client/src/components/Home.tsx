@@ -14,6 +14,10 @@ import axios from "axios";
 import SourceSelector from "./SourceSelector";
 
 import SearchResultWithPlaylistCreator from "./SearchResultWithPlaylistCreator";
+import Playlists from "./PlaylistDetail";
+import { Route, Switch } from "react-router-dom";
+import YourPlaylists from "./YourPlaylists";
+import PlaylistDetail from "./PlaylistDetail";
 
 declare global {
   interface Window {
@@ -46,7 +50,7 @@ export default function Home(): ReactElement {
               clearInterval(clearcheck);
               setYtReady(true);
               console.log(
-                "check1 value changed from " +
+                "check value changed from " +
                   oldvalue +
                   " to " +
                   window.YT.loaded
@@ -102,7 +106,13 @@ export default function Home(): ReactElement {
       <Flex flex="1" overflow="hidden">
         <SourceSelector />
         {/* //If a search is being made, display search Results component */}
-        <SearchResultWithPlaylistCreator />
+        <Switch>
+          <Route path="/playlists/:id" component={PlaylistDetail} />
+          <Route path="/playlists" component={YourPlaylists} />
+          <Route path="/">
+            <SearchResultWithPlaylistCreator />
+          </Route>
+        </Switch>
       </Flex>
 
       {/* Modal to prompt connection to Spotify */}

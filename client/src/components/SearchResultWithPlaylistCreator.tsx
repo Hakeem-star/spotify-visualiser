@@ -1,7 +1,10 @@
 import React, { ReactElement } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
-import { addToDragNDrop, reorderDragNDrop } from "../actions/dragDropActions";
+import {
+  addToDragNDrop,
+  reorderDragNDrop,
+} from "../actions/createPlaylistDragDropActions";
 import { AppState } from "../reducers";
 import CreatePlaylist from "./CreatePlaylist";
 import SearchResultContainer from "./SearchResultContainer";

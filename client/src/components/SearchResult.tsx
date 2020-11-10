@@ -21,54 +21,23 @@ interface Props {
 
 export default function SearchResult(props: Props): ReactElement {
   const dispatch = useDispatch();
-  const { imageUrl, name, artist, year, url, source, index } = props;
+  const { imageUrl, name, artist, year, url, source } = props;
 
   return (
-    <Draggable draggableId={imageUrl} index={index} key={index + imageUrl}>
-      {(provided, snapshot) => (
-        <React.Fragment>
-          <Flex
-            height="200px"
-            w="200px"
-            {...provided.dragHandleProps}
-            {...provided.draggableProps}
-            ref={provided.innerRef}
-            onClick={() => {
-              dispatch(playSong(source.toUpperCase(), url, props));
-              console.log(url);
-            }}
-          >
-            <Image src={imageUrl} alt={name} />
-            <Flex>
-              <Text>{name}</Text>
-              <Text>{artist}</Text>
-              <Text>{year}</Text>
-            </Flex>
-          </Flex>
-          {snapshot.isDragging && (
-            <Flex
-              height="200px"
-              w="200px"
-              css={css`
-                ~ div {
-                  transform: none !important;
-                }
-              `}
-              onClick={() => {
-                dispatch(playSong(source.toUpperCase(), url, props));
-                console.log(url);
-              }}
-            >
-              <Image src={imageUrl} alt={name} />
-              <Flex>
-                <Text>{name}</Text>
-                <Text>{artist}</Text>
-                <Text>{year}</Text>
-              </Flex>
-            </Flex>
-          )}
-        </React.Fragment>
-      )}
-    </Draggable>
+    <Flex
+      height="200px"
+      w="200px"
+      onClick={() => {
+        dispatch(playSong(source.toUpperCase(), url, props));
+        console.log(url);
+      }}
+    >
+      <Image src={imageUrl} alt={name} />
+      <Flex>
+        <Text>{name}</Text>
+        <Text>{artist}</Text>
+        <Text>{year}</Text>
+      </Flex>
+    </Flex>
   );
 }

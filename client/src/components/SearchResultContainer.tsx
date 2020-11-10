@@ -24,6 +24,7 @@ export default function SearchResultContainer({
         //if there is at least 1 item in the response, show that
         results.push(
           <Droppable
+            key="spotify"
             isDropDisabled={true}
             droppableId={"spotifySearchResultContainer"}
           >
@@ -36,7 +37,7 @@ export default function SearchResultContainer({
                 >
                   <SearchResultList
                     key="spotify"
-                    source="Spotify"
+                    source="spotify"
                     results={songSearchResults.spotify.items}
                   />
                 </Flex>
@@ -66,6 +67,7 @@ export default function SearchResultContainer({
         //if there is at least 1 item in the response, show that
         results.push(
           <Droppable
+            key="youtube"
             isDropDisabled={true}
             droppableId={"youTubeSearchResultContainer"}
           >
@@ -78,7 +80,7 @@ export default function SearchResultContainer({
                 >
                   <SearchResultList
                     key={"youtube"}
-                    source="YouTube"
+                    source="youTube"
                     results={songSearchResults.youtube.items}
                   />
                 </Flex>

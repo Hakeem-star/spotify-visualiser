@@ -161,11 +161,6 @@ export interface remappedSearchResult extends songSearchError {
     year: string;
     url: string;
   }[];
-  imageUrl: string;
-  name: string;
-  artist: string;
-  year: string;
-  url: string;
 }
 
 export interface songSearchResult {

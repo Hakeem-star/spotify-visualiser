@@ -1,7 +1,13 @@
 import { Dispatch } from "react";
 import { DraggableLocation } from "react-beautiful-dnd";
 import { ThunkResult } from "../types";
-import { ADDTODRAGNDROP, AppActions, REORDER } from "./types";
+import {
+  ADDTODRAGNDROP,
+  AppActions,
+  DISCARDPLAYLIST,
+  playlistItemType,
+  REORDER,
+} from "./types";
 
 export function reorderDragNDrop(
   startIndex: number,
@@ -20,16 +26,17 @@ export function addToDragNDrop(
     const musicSource = droppableSource.droppableId.includes("spotify")
       ? "spotify"
       : "youtube";
-    //Get song item
+    //Get song items
     const searchResults = getState().songSearchResult[musicSource];
-    console.log(
-      musicSource,
-      droppableSource.droppableId,
-      getState().songSearchResult
-    );
+    // console.log(
+    //   musicSource,
+    //   droppableSource.droppableId,
+    //   getState().songSearchResult
+    // );
     if (searchResults !== null) {
       const sourceClone = Array.from(searchResults.items);
-      const item = sourceClone[droppableSource.index];
+      const item: any = sourceClone[droppableSource.index];
+      item.source = musicSource;
 
       dispatch({
         type: ADDTODRAGNDROP,
@@ -37,6 +44,9 @@ export function addToDragNDrop(
       });
     }
   };
+}
+export function discardPlaylist(): AppActions {
+  return { type: DISCARDPLAYLIST };
 }
 
 // function removeFromDragNDrop(list, startIndex, endIndex) {

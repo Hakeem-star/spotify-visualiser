@@ -262,7 +262,9 @@ export const playSong = (
   }
 };
 
-export const updateSongSources = (sources: updateSongSourcesType) => {
+export const updateSongSources = (
+  sources: updateSongSourcesType
+): AppActions => {
   return {
     type: UPDATE_SONG_SOURCE,
     payload: sources,

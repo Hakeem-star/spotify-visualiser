@@ -1,6 +1,7 @@
-import { Flex, PseudoBox, Heading } from "@chakra-ui/core";
+import { Heading } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
 import { remappedSearchResult } from "../types";
+import DraggableSearchResult from "./DraggableSearchResult";
 import SearchResult from "./SearchResult";
 
 interface Props {
@@ -17,7 +18,7 @@ export default function SearchResultList({
       <Heading>{source}</Heading>
       {results.map((item, index) => {
         return (
-          <SearchResult
+          <DraggableSearchResult
             source={source}
             index={index}
             key={item.url + index}

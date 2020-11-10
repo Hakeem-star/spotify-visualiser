@@ -1,30 +1,7 @@
 import { Flex, Button, Input } from "@chakra-ui/core";
 import { Formik, useField, Form } from "formik";
 import React, { ReactElement } from "react";
-
-const MyTextInput = ({
-  label,
-  ...props
-}: {
-  label: any;
-  name: string;
-  id?: string;
-  type?: string;
-  placeholder?: any;
-}) => {
-  // useField() returns [formik.getFieldProps(), formik.getFieldMeta()]
-  // which we can spread on <input> and also replace ErrorMessage entirely.
-  const [field, meta] = useField(props);
-  return (
-    <>
-      <label htmlFor={props.id || props.name}>{label}</label>
-      <Input className="text-input" {...field} {...props} />
-      {meta.touched && meta.error ? (
-        <div className="error">{meta.error}</div>
-      ) : null}
-    </>
-  );
-};
+import { MyTextInput } from "./ForkitTextInput";
 
 interface Props {
   signInForm?: boolean;
