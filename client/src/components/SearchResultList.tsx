@@ -6,27 +6,23 @@ import SearchResult from "./SearchResult";
 
 interface Props {
   source: string;
-  results: remappedSearchResult["items"];
+  items: remappedSearchResult["items"];
 }
 
 export default function SearchResultList({
-  results,
   source,
+  items,
 }: Props): ReactElement {
   return (
     <div>
       <Heading>{source}</Heading>
-      {results.map((item, index) => {
+      {items.map((item, index) => {
         return (
           <DraggableSearchResult
-            source={source}
+            context={items}
+            {...item}
             index={index}
             key={item.url + index}
-            imageUrl={item.imageUrl}
-            name={item.name}
-            artist={item.artist}
-            year={item.year}
-            url={item.url}
           />
         );
       })}

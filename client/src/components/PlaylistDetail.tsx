@@ -2,6 +2,8 @@ import { Button, Flex } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { playSong } from "../actions";
+import { PLAYLIST } from "../actions/types";
 import { AppState } from "../reducers";
 import SearchResult from "./SearchResult";
 
@@ -14,10 +16,24 @@ export default function PlaylistDetail(): ReactElement {
   return (
     <div key={name}>
       {name}
+
       {items.map((song, index) => {
-        return <SearchResult key={song.url} index={index} {...song} />;
+        return (
+          <SearchResult
+            context={items}
+            key={song.url}
+            index={index}
+            {...song}
+          />
+        );
       })}
-      <Button>Play!</Button>
+      <Button
+        onClick={() => {
+          playSong(items);
+        }}
+      >
+        Play!
+      </Button>
     </div>
   );
 }

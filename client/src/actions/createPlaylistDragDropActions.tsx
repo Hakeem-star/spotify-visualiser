@@ -23,20 +23,15 @@ export function addToDragNDrop(
   droppableDestination: DraggableLocation
 ): ThunkResult<void> {
   return (dispatch: Dispatch<AppActions>, getState) => {
-    const musicSource = droppableSource.droppableId.includes("spotify")
+    const musicOBJSource = droppableSource.droppableId.includes("spotify")
       ? "spotify"
       : "youtube";
     //Get song items
-    const searchResults = getState().songSearchResult[musicSource];
-    // console.log(
-    //   musicSource,
-    //   droppableSource.droppableId,
-    //   getState().songSearchResult
-    // );
+    const searchResults = getState().songSearchResult[musicOBJSource];
+
     if (searchResults !== null) {
       const sourceClone = Array.from(searchResults.items);
-      const item: any = sourceClone[droppableSource.index];
-      item.source = musicSource;
+      const item = sourceClone[droppableSource.index];
 
       dispatch({
         type: ADDTODRAGNDROP,

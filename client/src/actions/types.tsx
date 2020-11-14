@@ -9,6 +9,9 @@ import {
 
 export const SONG_SEARCH = "SONG_SEARCH";
 export const PLAY_SONG = "PLAY_SONG";
+export const NEXT_SONG = "NEXT_SONG";
+export const PREV_SONG = "PREV_SONG";
+export const PLAYLIST = "PLAYLIST";
 export const SIGN_IN = "SIGN_IN";
 export const SIGN_IN_AS_GUEST = "SIGN_IN_AS_GUEST";
 export const SPOTIFY_SIGN_IN = "SPOTIFY_SIGN_IN";
@@ -78,10 +81,12 @@ export interface playSong {
   payload: playSongPayload;
 }
 
-export type songPlatforms =
-  | typeof SPOTIFY
-  | typeof YOUTUBE
+export type playerStates =
   | typeof TOGGLE_PLAY_STATE
+  | typeof PLAY_SONG
+  | typeof PLAYLIST
+  | typeof NEXT_SONG
+  | typeof PREV_SONG
   | null;
 
 export interface reorderDragNDrop {

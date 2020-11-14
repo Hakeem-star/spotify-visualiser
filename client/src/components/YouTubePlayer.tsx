@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useRef, useState } from "react";
-import { connect } from "react-redux";
-import { YOUTUBE } from "../actions/types";
+import { connect, useDispatch } from "react-redux";
+import { nextSong, playSong } from "../actions";
+import { NEXT_SONG, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
 import { playSongReducedState } from "../reducers/playSongReducer";
 
@@ -15,7 +16,8 @@ interface Props {
 function YouTubePlayer({ playerState }: Props): ReactElement {
   const ytPlayer: any = useRef();
   const previousVidId = useRef("");
-
+  const dispatch = useDispatch();
+  console.log({ youyube: playerState });
   useEffect(() => {
     //Setup player
     ytPlayer.current = new window.YT.Player("player", {
@@ -32,6 +34,14 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
       },
     });
     console.log({ YT: ytPlayer.current });
+
+    //Add event listener
+    ytPlayer.current.addEventListener("onStateChange", (event: any) => {
+      if (event.data === 0) {
+        console.log("ENDED");
+        dispatch(nextSong());
+      }
+    });
   }, []);
 
   useEffect(() => {

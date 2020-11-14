@@ -155,6 +155,7 @@ export interface remappedSearchResult extends songSearchError {
   next: string;
   previous: string | null;
   items: {
+    source: string;
     imageUrl: string;
     name: string;
     artist: string;

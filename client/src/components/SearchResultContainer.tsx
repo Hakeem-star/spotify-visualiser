@@ -2,6 +2,7 @@ import { Flex, Text } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import { useSelector } from "react-redux";
+import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
 import SearchResultList from "./SearchResultList";
 
@@ -17,14 +18,14 @@ export default function SearchResultContainer({
     if (songSearchResults.spotify.error) {
       //if there is an error, push error message
       results.push(
-        <Text key="spotify">{songSearchResults.spotify.error?.message}</Text>
+        <Text key={SPOTIFY}>{songSearchResults.spotify.error?.message}</Text>
       );
     } else {
       if (songSearchResults.spotify.items?.length > 0) {
         //if there is at least 1 item in the response, show that
         results.push(
           <Droppable
-            key="spotify"
+            key={SPOTIFY}
             isDropDisabled={true}
             droppableId={"spotifySearchResultContainer"}
           >
@@ -36,9 +37,9 @@ export default function SearchResultContainer({
                   {...provided.droppableProps}
                 >
                   <SearchResultList
-                    key="spotify"
-                    source="spotify"
-                    results={songSearchResults.spotify.items}
+                    key={SPOTIFY}
+                    source={SPOTIFY}
+                    items={songSearchResults.spotify.items}
                   />
                 </Flex>
               ) : (
@@ -60,14 +61,14 @@ export default function SearchResultContainer({
     if (songSearchResults.youtube.error) {
       //if there is an error, push error message
       results.push(
-        <Text key="youtube">{songSearchResults.youtube.error?.message}</Text>
+        <Text key={YOUTUBE}>{songSearchResults.youtube.error?.message}</Text>
       );
     } else {
       if (songSearchResults.youtube.items?.length > 0) {
         //if there is at least 1 item in the response, show that
         results.push(
           <Droppable
-            key="youtube"
+            key={YOUTUBE}
             isDropDisabled={true}
             droppableId={"youTubeSearchResultContainer"}
           >
@@ -79,9 +80,9 @@ export default function SearchResultContainer({
                   {...provided.droppableProps}
                 >
                   <SearchResultList
-                    key={"youtube"}
-                    source="youTube"
-                    results={songSearchResults.youtube.items}
+                    key={YOUTUBE}
+                    source={YOUTUBE}
+                    items={songSearchResults.youtube.items}
                   />
                 </Flex>
               ) : (

@@ -1,10 +1,13 @@
 import React, { ReactElement, useEffect, useRef } from "react";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { Dispatch } from "redux";
+import { nextSong } from "../actions";
 import { SPOTIFY } from "../actions/types";
 import { AppState } from "../reducers";
 import { playSongReducedState } from "../reducers/playSongReducer";
 import { PLAYER_NAME } from "../util/appVariables";
 import { getCookie } from "../util/cookie";
+import { debounce } from "../util/debounce";
 
 interface Props {
   play?: () => void;
@@ -12,6 +15,12 @@ interface Props {
   mute?: () => void;
   setVolume?: () => void;
   playerState: playSongReducedState;
+}
+
+const debouncedNextSongDispatch = debounce(endSongCheck, 1000);
+function endSongCheck([dispatch]: [dispatch: Dispatch<any>]) {
+  console.log("Track ended");
+  dispatch(nextSong());
 }
 
 export const play = ({
@@ -41,6 +50,7 @@ export default function useSpotifyPlayer(): void {
   const player: any = useRef(null);
   const previousVidId = useRef("");
   const playerState = useSelector((state: AppState) => state.playerState);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log("planting");
@@ -78,8 +88,18 @@ export default function useSpotifyPlayer(): void {
       });
 
       // Playback status updates
-      player.current.addListener("player_state_changed", (state: string) => {
-        console.log(state);
+      player.current.addListener("player_state_changed", (state: any) => {
+        if (
+          state.track_window.previous_tracks.find(
+            (x: any) => x.id === state.track_window.current_track.id
+          ) &&
+          state.paused &&
+          !state.position
+        ) {
+          console.log({ spotify: state });
+
+          debouncedNextSongDispatch(dispatch);
+        }
       });
 
       // Ready

@@ -14,7 +14,6 @@ import axios from "axios";
 import SourceSelector from "./SourceSelector";
 
 import SearchResultWithPlaylistCreator from "./SearchResultWithPlaylistCreator";
-import Playlists from "./PlaylistDetail";
 import { Route, Switch } from "react-router-dom";
 import YourPlaylists from "./YourPlaylists";
 import PlaylistDetail from "./PlaylistDetail";

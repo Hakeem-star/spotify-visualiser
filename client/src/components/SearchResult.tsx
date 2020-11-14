@@ -1,35 +1,27 @@
 /** @jsx jsx */
 import { Flex, Image, Text } from "@chakra-ui/core";
 import { css, jsx } from "@emotion/core";
-import React, { ReactElement } from "react";
-import { Draggable } from "react-beautiful-dnd";
-import { connect, useDispatch } from "react-redux";
-import { ThunkDispatch } from "redux-thunk";
+import { ReactElement } from "react";
+import { useDispatch } from "react-redux";
 import { playSong } from "../actions";
-import { AppActions } from "../actions/types";
-import { playSongPayload, ThunkResult } from "../types";
+import { playlistItemType } from "../actions/types";
 
-interface Props {
-  imageUrl: string;
-  name: string;
-  artist: string;
-  year: string;
-  url: string;
-  source: string;
-  index: number;
+interface Props extends playlistItemType {
+  index?: number;
+  context: playlistItemType[];
 }
 
 export default function SearchResult(props: Props): ReactElement {
   const dispatch = useDispatch();
-  const { imageUrl, name, artist, year, url, source } = props;
+  const { imageUrl, name, artist, year, url, index } = props;
 
   return (
     <Flex
       height="200px"
       w="200px"
       onClick={() => {
-        dispatch(playSong(source.toUpperCase(), url, props));
         console.log(url);
+        dispatch(playSong(props.context, index));
       }}
     >
       <Image src={imageUrl} alt={name} />

@@ -11,6 +11,14 @@ import {
   signInAsGuestType,
   FAILED_AUTH_FORM,
   UPDATE_SONG_SOURCE,
+  TOGGLE_PLAY_STATE,
+  playlistItemType,
+  SPOTIFY,
+  YOUTUBE,
+  PLAY_SONG,
+  playerStates,
+  NEXT_SONG,
+  PREV_SONG,
 } from "./types";
 import { Dispatch } from "redux";
 import { AppState } from "../reducers";
@@ -194,6 +202,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
         (songResults.data.spotifyResults.error &&
           songResults.data.spotifyResults) ||
         remapSongSearchResult(
+          SPOTIFY,
           songResults.data.spotifyResults,
           "next",
           "previous",
@@ -213,6 +222,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
         (songResults.data.youtubeResults.error &&
           songResults.data.youtubeResults) ||
         remapSongSearchResult(
+          YOUTUBE,
           songResults.data.youtubeResults,
           "nextPageToken",
           "prevPageToken",
@@ -239,27 +249,42 @@ export const songSearch = (title: string): ThunkResult<void> => {
 };
 
 export const playSong = (
-  type: string,
-  id?: string | null,
-  details?: {
-    imageUrl: string;
-    name: string;
-    artist: string;
-    year: string;
-    url: string;
-  } | null
-): { type: string; payload?: playSongPayload } => {
-  if (id && details) {
-    //Check if Spotify or Youtube song
-    return {
-      type,
-      payload: { id, type, details },
-    };
-  } else {
-    return {
-      type,
-    };
+  context: playlistItemType[],
+  index = 0
+):
+  | {
+      type: playerStates;
+      payload: { context: playlistItemType[]; index: number };
+    }
+  | Record<string, unknown> => {
+  if (context) {
+    if (context[index] !== undefined) {
+      return {
+        type: PLAY_SONG,
+        payload: { context, index },
+      };
+    } else {
+      return { type: PLAY_SONG, payload: { context, index: 0 } };
+    }
   }
+
+  return { type: PLAY_SONG };
+};
+
+export const changePlayerState = (
+  type: typeof TOGGLE_PLAY_STATE
+): {
+  type: typeof TOGGLE_PLAY_STATE;
+} => {
+  return { type };
+};
+
+export const nextSong = () => {
+  return { type: NEXT_SONG };
+};
+
+export const prevSong = () => {
+  return { type: PREV_SONG };
 };
 
 export const updateSongSources = (

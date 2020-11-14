@@ -1,10 +1,10 @@
 export const debounce = (
-  func: (args: any) => void,
+  func: (...args: any) => void,
   delay: number
-): ((val: string) => void) => {
+): ((...args: any[]) => void) => {
   let inDebounce: NodeJS.Timeout;
 
-  return (...args: any) => {
+  return (...args: any[]) => {
     clearTimeout(inDebounce);
     inDebounce = setTimeout(() => {
       func(args);
