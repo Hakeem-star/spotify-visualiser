@@ -62,6 +62,9 @@ export default function Header(): ReactElement {
         style={{ placeItems: "center" }}
         w="10%"
         display="grid"
+        onClick={() => {
+          history.push("/");
+        }}
       >
         <GiFireWave fontSize={70} />
       </Box>
@@ -103,6 +106,7 @@ export default function Header(): ReactElement {
         ml="auto"
         onClick={() => {
           dispatch(signOut());
+          history.push("/");
         }}
       >
         Log out

@@ -11,7 +11,7 @@ import {
 import { spotifyAuthState, appAuthState, authFormErrorState } from "../types";
 
 const INITIAL_STATE = {
-  isSignedIn: null,
+  isSignedIn: false,
   userData: null,
   spotifyToken: null,
 };
@@ -20,6 +20,7 @@ export const spotifyAuthReducer: Reducer<spotifyAuthState> = (
   state = INITIAL_STATE,
   action: AuthActionTypes
 ) => {
+  console.log("SPOOOT", action.type);
   switch (action.type) {
     case SPOTIFY_SIGN_IN:
       return {

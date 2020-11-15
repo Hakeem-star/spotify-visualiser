@@ -1,6 +1,6 @@
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../reducers";
-import { AppActions } from "../actions/types";
+import { AppActions, GUEST } from "../actions/types";
 
 export interface userData {
   country: string;
@@ -169,14 +169,14 @@ export interface songSearchResult {
   youtube: remappedSearchResult | null;
 }
 export interface spotifyAuthState {
-  isSignedIn: boolean | null;
+  isSignedIn: boolean;
   userData: userData | null;
   spotifyToken: string | null;
 }
 
 export interface appAuthState {
   isSignedIn: boolean | null;
-  userData: { displayName: string; email: string } | null;
+  userData: { displayName: string | typeof GUEST; email: string } | null;
 }
 export interface authFormErrorState {
   error: null | string;

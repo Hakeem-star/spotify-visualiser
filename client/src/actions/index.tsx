@@ -19,6 +19,7 @@ import {
   playerStates,
   NEXT_SONG,
   PREV_SONG,
+  GUEST,
 } from "./types";
 import { Dispatch } from "redux";
 import { AppState } from "../reducers";
@@ -115,9 +116,11 @@ export const alreadySignedIn = (
 };
 
 export const signInAsGuest = (): AppActions => {
+  sessionStorage.setItem("guestSignedIn", "1");
+
   return {
     type: SIGN_IN_AS_GUEST,
-    payload: { displayName: "Guest", email: "Guest" },
+    payload: { displayName: GUEST, email: GUEST },
   };
 };
 
@@ -136,22 +139,32 @@ export const signOut = (): ThunkResult<void> => {
 
 export const spotifySignIn = (): ThunkResult<void> => {
   const accessToken = getCookie("ACCESS_TOKEN");
-  return async (dispatch: Dispatch<AppActions>) => {
+  return async (dispatch: Dispatch<AppActions | any>) => {
     if (accessToken) {
       //attempt to fetch user Data (also verifies validity of token om failure)
       try {
-        const userData: userData = await axios.get(
+        const userData: userData | null = await axios.get(
           "https://api.spotify.com/v1/me",
           {
             headers: { Authorization: "Bearer " + accessToken },
           }
         );
+        console.log({ accessToken });
         dispatch({
           type: SPOTIFY_SIGN_IN,
           payload: { userData, spotifyToken: accessToken },
         });
       } catch (error) {
         console.log("Not logged in");
+        //If its a 401 indicating an expired access token, attempt to get a new one
+        if (error?.response?.data.error.status === 401) {
+          const spotifyRefreshToken = getCookie("REFRESH_TOKEN");
+          console.log({ spotifyRefreshToken });
+          await axios.get("http://localhost:3000/spotify/refresh_token", {
+            params: { refresh_token: spotifyRefreshToken },
+          });
+          dispatch(spotifySignIn());
+        }
       }
     }
   };
@@ -290,6 +303,7 @@ export const prevSong = () => {
 export const updateSongSources = (
   sources: updateSongSourcesType
 ): AppActions => {
+  console.log({ sources });
   return {
     type: UPDATE_SONG_SOURCE,
     payload: sources,

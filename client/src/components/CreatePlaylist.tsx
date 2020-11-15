@@ -17,6 +17,7 @@ export default function CreatePlaylist(): ReactElement {
   const playlists = useSelector((state: AppState) => state.playlists);
   const dispatch = useDispatch();
   const [playListCreated, setplayListCreated] = useState(false);
+  const submittedCount = useRef({ new: 0, old: 0 });
 
   useEffect(() => {
     //make sure this is false when component is mounted in case it was enabled somewhere else
@@ -24,8 +25,13 @@ export default function CreatePlaylist(): ReactElement {
   }, []);
 
   useEffect(() => {
-    Object.keys(playlists).length && setplayListCreated(true);
-  }, [playlists]);
+    console.log({ submittedCount: submittedCount.current });
+    if (submittedCount.current.new !== submittedCount.current.old) {
+      Object.keys(playlists).length && setplayListCreated(true);
+      dispatch(discardPlaylist());
+      submittedCount.current.old++;
+    }
+  }, [playlists, submittedCount]);
 
   console.log({ createPlaylist });
   return (
@@ -62,6 +68,7 @@ export default function CreatePlaylist(): ReactElement {
           }}
           onSubmit={(values, { setSubmitting }) => {
             dispatch(savePlaylist(values.name));
+            submittedCount.current.new++;
           }}
         >
           {({ isSubmitting }) => (

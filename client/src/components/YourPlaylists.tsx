@@ -18,7 +18,7 @@ export default function YourPlaylists(): ReactElement {
             onClick={() => {
               history.push(`/playlists/${id}`);
             }}
-            key={name}
+            key={data.name}
           >
             {data.name}
             {/* generate image based on first 4 songs in items */}

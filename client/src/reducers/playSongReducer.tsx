@@ -71,6 +71,7 @@ export const playSongReducer = (
       };
     }
   }
+  //When playing a playlist, the song index is stored in state and used to access the song in the playlist array.
   if (action.type === NEXT_SONG) {
     if (state.index + 1 < state.context.length) {
       return {

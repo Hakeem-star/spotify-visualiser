@@ -1,13 +1,10 @@
 import React, { ReactElement, useEffect } from "react";
 import { ThemeProvider, CSSReset } from "@chakra-ui/core";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { alreadySignedIn, spotifySignIn } from "./actions";
+import { useDispatch, useSelector } from "react-redux";
+import { alreadySignedIn } from "./actions";
 import Home from "./components/Home";
 import { AppState } from "./reducers";
-import { ThunkResult } from "./types";
-import { bindActionCreators } from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import { AppActions } from "./actions/types";
+import { GUEST } from "./actions/types";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { fbAuth } from "./util/firebase_init";
 import AuthOptions from "./components/AuthOptions";
@@ -24,21 +21,14 @@ export default function App(): ReactElement {
       if (user?.email && user.displayName) {
         dispatch(alreadySignedIn(user.email, user.displayName));
         // User is signed in.
-        console.log("signed", user);
-      } else {
+        console.log("Signed", user);
+      } else if (sessionStorage.getItem("guestSignedIn")) {
         // No user is signed in.
-        console.log("NOT SIgned");
+        console.log("Not Signed");
+        //Set session storage so we do not ask them to sign in again over and over again during this session
+        dispatch(alreadySignedIn(GUEST, GUEST));
       }
     });
-
-    // const user = fbAuth.currentUser;
-    // if (user) {
-    //   // User is signed in.
-    //   console.log("signed", user);
-    // } else {
-    //   // No user is signed in.
-    //   console.log("NOT SIgned");
-    // }
   }, []);
 
   return (
@@ -47,8 +37,10 @@ export default function App(): ReactElement {
       <Router>
         {/* if not signed in, take me to the auth screen */}
         {isSignedIn ? (
-          //Route might be too loose. Will nee to use a Switch statement later
-          <Route path="/" component={Home} />
+          //Route might be too loose. Will need to use a Switch statement later
+          <>
+            <Route path="/" component={Home} />
+          </>
         ) : (
           //Auth Routes
           <>
