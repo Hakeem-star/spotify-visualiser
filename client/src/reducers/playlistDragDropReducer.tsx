@@ -1,19 +1,24 @@
 import {
   ADDTODRAGNDROP,
   DISCARDPLAYLIST,
+  editPlaylist,
+  EDITPLAYLIST,
   playlistDragDrop,
   playlistItemType,
   REORDER,
 } from "../actions/types";
-import { remappedSearchResult } from "../types";
 
-const INITIAL_STATE = [] as playlistItemType[];
+const INITIAL_STATE = {
+  name: null,
+  id: undefined,
+  items: [],
+} as playlistItemType;
 
 export const playlistDragDropReducer = (
   state = INITIAL_STATE,
-  action: playlistDragDrop
-): playlistItemType[] => {
-  const stateCopy = state.slice();
+  action: playlistDragDrop | editPlaylist
+): playlistItemType => {
+  const stateCopy = state.items.slice();
   switch (action.type) {
     case ADDTODRAGNDROP:
       //Check for duplicates
@@ -30,15 +35,19 @@ export const playlistDragDropReducer = (
         0,
         action.payload.item
       );
-      return stateCopy;
+      return { ...state, items: stateCopy };
 
     case REORDER:
       const [removed] = stateCopy.splice(action.payload.startIndex, 1);
       stateCopy.splice(action.payload.endIndex, 0, removed);
-      return stateCopy;
+      return { ...state, items: stateCopy };
+
+    case EDITPLAYLIST:
+      return action.payload;
 
     case DISCARDPLAYLIST:
       return INITIAL_STATE;
+
     default:
       return state;
   }

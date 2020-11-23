@@ -19,7 +19,7 @@ import YourPlaylists from "./YourPlaylists";
 import PlaylistDetail from "./PlaylistDetail";
 import { AppState } from "../reducers";
 import { GUEST } from "../actions/types";
-import { savePlaylist } from "../actions/savePlaylist";
+import { savePlaylist } from "../actions/playlistActions";
 import { spotifySignIn } from "../actions";
 
 declare global {

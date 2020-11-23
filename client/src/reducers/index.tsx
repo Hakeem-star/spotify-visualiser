@@ -4,12 +4,12 @@ import {
   appAuthReducer,
   authFormErrorReducer,
 } from "./authReducer";
-import { createPlaylistSidebarReducer } from "./createPlaylistSidebarReducer";
 import { playlistDragDropReducer } from "./playlistDragDropReducer";
 import { playSongReducer } from "./playSongReducer";
-import { savePlaylistReducer } from "./savePlaylistReducer";
+import { savePlaylistReducer } from "./playlistReducer";
 import { songSearchReducer } from "./songSearchReducer";
 import { updateSongSourcesReducer } from "./updateSongSourcesReducer";
+import { createPlaylistSidebarReducer } from "./playlistSidebarReducer";
 
 export const rootReducer = combineReducers({
   auth: appAuthReducer,

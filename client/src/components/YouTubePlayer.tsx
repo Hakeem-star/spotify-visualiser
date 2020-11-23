@@ -17,7 +17,7 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
   const ytPlayer: any = useRef();
   const previousVidId = useRef("");
   const dispatch = useDispatch();
-  console.log({ youyube: playerState });
+  console.log({ youtube: playerState });
   useEffect(() => {
     //Setup player
     ytPlayer.current = new window.YT.Player("player", {

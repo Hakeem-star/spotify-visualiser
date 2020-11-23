@@ -4,6 +4,17 @@ export function getCookie(name: string): string | undefined {
   if (parts.length === 2) return parts.pop()?.split(";").shift();
 }
 
+export function setCookie(
+  cname: string,
+  cvalue: string,
+  expiresSeconds: number
+): void {
+  const d = new Date();
+  d.setTime(d.getTime() + expiresSeconds * 1000);
+  const expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
 export function deleteAllCookies(): void {
   const cookies = document.cookie.split(";");
 

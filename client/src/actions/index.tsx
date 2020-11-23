@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "../util/cookie";
+import { getCookie, setCookie } from "../util/cookie";
 import {
   SONG_SEARCH,
   SIGN_IN,
@@ -12,7 +12,7 @@ import {
   FAILED_AUTH_FORM,
   UPDATE_SONG_SOURCE,
   TOGGLE_PLAY_STATE,
-  playlistItemType,
+  playlistItemSongsType,
   SPOTIFY,
   YOUTUBE,
   PLAY_SONG,
@@ -136,7 +136,7 @@ export const signOut = (): ThunkResult<void> => {
     }
   };
 };
-
+let count = 0;
 export const spotifySignIn = (): ThunkResult<void> => {
   const accessToken = getCookie("ACCESS_TOKEN");
   return async (dispatch: Dispatch<AppActions | any>) => {
@@ -149,7 +149,6 @@ export const spotifySignIn = (): ThunkResult<void> => {
             headers: { Authorization: "Bearer " + accessToken },
           }
         );
-        console.log({ accessToken });
         dispatch({
           type: SPOTIFY_SIGN_IN,
           payload: { userData, spotifyToken: accessToken },
@@ -157,13 +156,29 @@ export const spotifySignIn = (): ThunkResult<void> => {
       } catch (error) {
         console.log("Not logged in");
         //If its a 401 indicating an expired access token, attempt to get a new one
-        if (error?.response?.data.error.status === 401) {
+        if (error?.response?.data.error.status === 401 && !count) {
+          //There is always the possibility of an infinite loop with this so I need to keep a count of the number of occurances
+          count++;
           const spotifyRefreshToken = getCookie("REFRESH_TOKEN");
-          console.log({ spotifyRefreshToken });
-          await axios.get("http://localhost:3000/spotify/refresh_token", {
-            params: { refresh_token: spotifyRefreshToken },
-          });
-          dispatch(spotifySignIn());
+          try {
+            //Get the new access token using the refresh token
+            const accessToken = await axios.get(
+              "http://localhost:3000/spotify/refresh_token",
+              {
+                params: { refresh_token: spotifyRefreshToken },
+              }
+            );
+            //Set the new token as a cookie
+            setCookie(
+              "ACCESS_TOKEN",
+              accessToken.data.access_token,
+              accessToken.data.expires_in
+            );
+            //Try again now that we have new access token
+            dispatch(spotifySignIn());
+          } catch (error) {
+            console.log("Server Error", error);
+          }
         }
       }
     }
@@ -262,12 +277,12 @@ export const songSearch = (title: string): ThunkResult<void> => {
 };
 
 export const playSong = (
-  context: playlistItemType[],
+  context: playlistItemSongsType[],
   index = 0
 ):
   | {
       type: playerStates;
-      payload: { context: playlistItemType[]; index: number };
+      payload: { context: playlistItemSongsType[]; index: number };
     }
   | Record<string, unknown> => {
   if (context) {

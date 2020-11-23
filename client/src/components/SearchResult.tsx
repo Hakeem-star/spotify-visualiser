@@ -4,11 +4,11 @@ import { css, jsx } from "@emotion/core";
 import { ReactElement } from "react";
 import { useDispatch } from "react-redux";
 import { playSong } from "../actions";
-import { playlistItemType } from "../actions/types";
+import { playlistItemSongsType } from "../actions/types";
 
-interface Props extends playlistItemType {
+interface Props extends playlistItemSongsType {
   index?: number;
-  context: playlistItemType[];
+  context: playlistItemSongsType[];
 }
 
 export default function SearchResult(props: Props): ReactElement {

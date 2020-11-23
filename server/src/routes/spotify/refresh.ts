@@ -26,14 +26,15 @@ export default (app) => {
         authOptions
       )
       .then((axiosRes) => {
-        var access_token = axiosRes.data.access_token;
-        res.cookie("ACCESS_TOKEN", 1234);
+        console.log({ axiosRes });
+        // res.cookie("ACCESS_TOKEN", access_token);
         res.send({
-          access_token: access_token,
+          access_token: axiosRes.data.access_token,
+          expires_in: axiosRes.data.expires_in,
         });
       })
       .catch((error) => {
-        // console.log(error);
+        console.log(error);
       });
   });
 };

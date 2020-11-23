@@ -1,13 +1,7 @@
 import { Dispatch } from "react";
 import { DraggableLocation } from "react-beautiful-dnd";
 import { ThunkResult } from "../types";
-import {
-  ADDTODRAGNDROP,
-  AppActions,
-  DISCARDPLAYLIST,
-  playlistItemType,
-  REORDER,
-} from "./types";
+import { ADDTODRAGNDROP, AppActions, DISCARDPLAYLIST, REORDER } from "./types";
 
 export function reorderDragNDrop(
   startIndex: number,

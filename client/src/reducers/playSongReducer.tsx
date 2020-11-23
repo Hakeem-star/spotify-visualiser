@@ -5,7 +5,7 @@ import {
   SPOTIFY,
   YOUTUBE,
   PLAY_SONG,
-  playlistItemType,
+  playlistItemSongsType,
   NEXT_SONG,
   PREV_SONG,
 } from "../actions/types";
@@ -15,7 +15,7 @@ export interface playSongReducedState {
   play: boolean;
   url: string;
   source: string;
-  context: playlistItemType[];
+  context: playlistItemSongsType[];
   index: number;
 }
 
@@ -23,7 +23,7 @@ const INITIAL_STATE = {
   play: false,
   url: "",
   source: "",
-  context: [] as playlistItemType[],
+  context: [] as playlistItemSongsType[],
   index: 0,
 };
 
@@ -31,7 +31,7 @@ export const playSongReducer = (
   state = INITIAL_STATE,
   action: {
     type: playerStates;
-    payload: { context: playlistItemType[]; index: number };
+    payload: { context: playlistItemSongsType[]; index: number };
   }
 ) => {
   // console.log("TOGGLE", action.type);

@@ -15,6 +15,7 @@ export default function Player(): ReactElement {
   return (
     <Flex
       // display="none"
+      width="30%"
       position="fixed"
       bottom="0"
       w="100%"

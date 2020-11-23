@@ -4,16 +4,18 @@ import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { discardPlaylist } from "../actions/createPlaylistDragDropActions";
-import { savePlaylist } from "../actions/savePlaylist";
+import { savePlaylist } from "../actions/playlistActions";
 import { AppState } from "../reducers";
 import { MyTextInput } from "./Auth/ForkitTextInput";
 import CreatedPlaylistMessage from "./CreatedPlaylistMessage";
 
 export default function CreatePlaylist(): ReactElement {
-  const createPlaylist = useSelector((state: AppState) => state.createPlaylist);
   const createPlaylistSidebarOpenState = useSelector(
     (state: AppState) => state.createPlaylistSidebar
   );
+  const createPlaylist = useSelector((state: AppState) => state.createPlaylist);
+  //All playlists
+
   const playlists = useSelector((state: AppState) => state.playlists);
   const dispatch = useDispatch();
   const [playListCreated, setplayListCreated] = useState(false);
@@ -25,15 +27,15 @@ export default function CreatePlaylist(): ReactElement {
   }, []);
 
   useEffect(() => {
-    console.log({ submittedCount: submittedCount.current });
+    //Cleans out the playlist state on each mount
     if (submittedCount.current.new !== submittedCount.current.old) {
+      //If the length of the playlist has changed...but this doesn't account for edited playlists????
       Object.keys(playlists).length && setplayListCreated(true);
       dispatch(discardPlaylist());
       submittedCount.current.old++;
     }
   }, [playlists, submittedCount]);
 
-  console.log({ createPlaylist });
   return (
     <Box
       w={createPlaylistSidebarOpenState ? "20%" : "0"}
@@ -47,7 +49,7 @@ export default function CreatePlaylist(): ReactElement {
         <CreatedPlaylistMessage setplayListCreated={setplayListCreated} />
       ) : (
         <Formik
-          initialValues={{ name: "" }}
+          initialValues={{ name: createPlaylist.name || "" }}
           validate={(values) => {
             const errors: {
               name?: string;
@@ -58,6 +60,7 @@ export default function CreatePlaylist(): ReactElement {
             } else if (values.name.length < 5) {
               errors.name = "Must be at least 5 characters";
             } else if (
+              //Check is Playlist by that name already exists
               Object.entries(playlists).some(
                 ([id, data]) => data.name === values.name
               )
@@ -67,7 +70,12 @@ export default function CreatePlaylist(): ReactElement {
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
-            dispatch(savePlaylist(values.name));
+            console.log({
+              nme: createPlaylist.name,
+              name,
+              id: createPlaylist.id,
+            });
+            dispatch(savePlaylist(name || values.name, createPlaylist.id));
             submittedCount.current.new++;
           }}
         >
@@ -87,7 +95,7 @@ export default function CreatePlaylist(): ReactElement {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {createPlaylist.map(
+                    {createPlaylist.items.map(
                       ({ name, artist, year, url, imageUrl }, index) => {
                         return (
                           <Draggable

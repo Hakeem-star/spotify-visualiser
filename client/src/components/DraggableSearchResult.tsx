@@ -3,7 +3,7 @@ import { Box, Flex } from "@chakra-ui/core";
 import { css, jsx } from "@emotion/core";
 import React, { ReactElement } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { playlistItemType } from "../actions/types";
+import { playlistItemSongsType } from "../actions/types";
 
 import SearchResult from "./SearchResult";
 
@@ -15,7 +15,7 @@ interface Props {
   url: string;
   source: string;
   index: number;
-  context: playlistItemType[];
+  context: playlistItemSongsType[];
 }
 
 export default function DraggableSearchResult(props: Props): ReactElement {

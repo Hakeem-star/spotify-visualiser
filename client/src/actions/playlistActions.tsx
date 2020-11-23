@@ -1,18 +1,26 @@
+import firebase from "firebase";
 import { Dispatch } from "redux";
 import { v4 as uuidv4 } from "uuid";
 import { AppState } from "../reducers";
 import { ThunkResult } from "../types";
 import { fbStore } from "../util/firebase_init";
-import { AppActions, GUEST, PLAYLISTS, SAVEPLAYLIST } from "./types";
+import {
+  AppActions,
+  DELETEPLAYLIST,
+  EDITPLAYLIST,
+  GUEST,
+  PLAYLISTS,
+  SAVEPLAYLIST,
+} from "./types";
 
 export function savePlaylist(
   name?: string,
   playlistID: string = uuidv4()
 ): ThunkResult<void> {
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    console.log({ name });
+    //If there is a name, we are setting the app
     if (name) {
-      const createdPlaylist = getState().createPlaylist;
+      const createdPlaylist = getState().createPlaylist.items;
       const email = getState().auth?.userData?.email;
 
       if (email !== GUEST) {
@@ -22,8 +30,9 @@ export function savePlaylist(
             .collection("users")
             .doc(email)
             .update({
-              [`[${PLAYLISTS}].${playlistID}`]: {
+              [`${PLAYLISTS.toLowerCase()}.${playlistID}`]: {
                 name,
+                id: playlistID,
                 items: createdPlaylist,
               },
             });
@@ -51,11 +60,15 @@ export function savePlaylist(
           window.localStorage.setItem(PLAYLISTS, JSON.stringify(newPlay));
         }
       }
+
       dispatch({
         type: SAVEPLAYLIST,
-        payload: { [playlistID]: { name, items: createdPlaylist } },
+        payload: {
+          [playlistID]: { name, id: playlistID, items: createdPlaylist },
+        },
       });
     } else {
+      //If no name is provided, we are setting the saved playlist from firebase or local storage
       const auth = getState().auth;
       console.log(JSON.stringify(auth));
       if (auth.userData?.displayName === GUEST) {
@@ -76,7 +89,7 @@ export function savePlaylist(
             .collection("users")
             .doc(auth.userData?.email)
             .get();
-          console.log({ result: result.data()?.playlists });
+
           dispatch({
             type: SAVEPLAYLIST,
             payload: result.data()?.playlists,
@@ -84,6 +97,63 @@ export function savePlaylist(
         } catch (error) {
           console.log(error);
         }
+      }
+    }
+  };
+}
+
+export function editPlaylist(playlistID: string): ThunkResult<void> {
+  return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
+    const playlist = getState().playlists[playlistID];
+
+    dispatch({
+      type: EDITPLAYLIST,
+      payload: playlist,
+    });
+  };
+}
+
+export function deletePlaylist(playlistID: string) {
+  return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
+    //Change state and then save playlist
+    const playlists = getState().playlists;
+
+    const email = getState().auth?.userData?.email;
+
+    if (email !== GUEST) {
+      try {
+        //save this playlist to firebase and then add a listener to dispatch when a success is recieved
+        await fbStore
+          .collection("users")
+          .doc(email)
+          .update({
+            [`${PLAYLISTS.toLowerCase()}.${playlistID}`]: firebase.firestore.FieldValue.delete(),
+          });
+      } catch (error) {
+        console.log(error);
+      }
+
+      const playlistsCopy = { ...playlists };
+      delete playlistsCopy[playlistID];
+      console.log({ playlistID, playlistsCopy, playlists });
+
+      dispatch({
+        type: DELETEPLAYLIST,
+        payload: playlistsCopy,
+      });
+    } else {
+      //Store in local storage
+      const storedPlaylists = window.localStorage.getItem(PLAYLISTS);
+      if (storedPlaylists) {
+        const storagePlaylist = JSON.parse(storedPlaylists);
+        delete storagePlaylist[playlistID];
+
+        window.localStorage.setItem(PLAYLISTS, JSON.stringify(storagePlaylist));
+
+        dispatch({
+          type: DELETEPLAYLIST,
+          payload: storagePlaylist,
+        });
       }
     }
   };

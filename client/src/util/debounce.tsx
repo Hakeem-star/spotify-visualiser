@@ -7,7 +7,7 @@ export const debounce = (
   return (...args: any[]) => {
     clearTimeout(inDebounce);
     inDebounce = setTimeout(() => {
-      func(args);
+      func(...args);
     }, delay);
   };
 };

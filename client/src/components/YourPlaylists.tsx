@@ -1,12 +1,20 @@
-import { Flex, Grid } from "@chakra-ui/core";
+import { Button, Flex, Grid } from "@chakra-ui/core";
 import React, { ReactElement } from "react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { setCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
+import { editPlaylist, deletePlaylist } from "../actions/playlistActions";
 import { AppState } from "../reducers";
 
 export default function YourPlaylists(): ReactElement {
   const playlistsState = useSelector((state: AppState) => state.playlists);
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log({ playlistsState });
+  }, [playlistsState]);
   return (
     <Flex border="1px solid red" w="100%" h="100%">
       {Object.entries(playlistsState).map(([id, data]) => {
@@ -14,15 +22,13 @@ export default function YourPlaylists(): ReactElement {
           //To prevent getting 3 images in the preview
           data.items.length > 2 && data.items.length === 3 ? 2 : 4;
         return (
-          <div
-            onClick={() => {
-              history.push(`/playlists/${id}`);
-            }}
-            key={data.name}
-          >
+          <div key={data.name}>
             {data.name}
             {/* generate image based on first 4 songs in items */}
             <Grid
+              onClick={() => {
+                history.push(`/playlists/${id}`);
+              }}
               gridTemplateColumns="auto auto"
               gridTemplateRows="auto auto"
               w="200px"
@@ -34,6 +40,22 @@ export default function YourPlaylists(): ReactElement {
                 );
               })}
             </Grid>
+            <Button
+              onClick={() => {
+                history.push("/");
+                dispatch(setCreatePlaylistSidebar(true));
+                dispatch(editPlaylist(id));
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              onClick={() => {
+                dispatch(deletePlaylist(id));
+              }}
+            >
+              Delete
+            </Button>
           </div>
         );
       })}

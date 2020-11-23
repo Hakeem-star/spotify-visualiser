@@ -28,6 +28,8 @@ export const ADDTODRAGNDROP = "ADDTODRAGNDROP";
 export const SETCREATEPLAYLISTSIDEBAR = "SETCREATEPLAYLISTSIDEBAR";
 export const TOGGLECREATEPLAYLISTSIDEBAR = "TOGGLECREATEPLAYLISTSIDEBAR";
 export const SAVEPLAYLIST = "SAVEPLAYLIST";
+export const EDITPLAYLIST = "EDITPLAYLIST";
+export const DELETEPLAYLIST = "DELETEPLAYLIST";
 export const PLAYLISTS = "PLAYLISTS";
 export const DISCARDPLAYLIST = "DISCARDPLAYLIST";
 
@@ -98,7 +100,7 @@ export interface reorderDragNDrop {
 
 type remappedSearchResultItem = remappedSearchResult["items"][0];
 
-export interface playlistItemType extends remappedSearchResultItem {
+export interface playlistItemSongsType extends remappedSearchResultItem {
   source: string;
 }
 
@@ -106,7 +108,7 @@ export interface addToDragNDrop {
   type: typeof ADDTODRAGNDROP;
   payload: {
     droppableDestination: DraggableLocation;
-    item: playlistItemType;
+    item: playlistItemSongsType;
   };
 }
 
@@ -129,12 +131,35 @@ export interface toggleCreatePlaylistSidebarOpen {
   payload?: any;
 }
 
+export interface playlistItemType {
+  name: string | null;
+  id: string | undefined;
+  items: playlistItemSongsType[];
+}
+
+export interface editPlaylist {
+  type: typeof EDITPLAYLIST;
+  payload: playlistItemType;
+}
+
 export interface savePlaylist {
   type: typeof SAVEPLAYLIST;
   payload: {
     [k: string]: {
       name: string;
-      items: playlistItemType[];
+      id: string;
+      items: playlistItemSongsType[];
+    };
+  };
+}
+
+export interface deletePlaylist {
+  type: typeof DELETEPLAYLIST;
+  payload: {
+    [k: string]: {
+      name: string;
+      id: string;
+      items: playlistItemSongsType[];
     };
   };
 }
@@ -148,4 +173,6 @@ export type AppActions =
   | SongSearchTypes
   | playSong
   | playlistDragDrop
-  | savePlaylist;
+  | savePlaylist
+  | editPlaylist
+  | deletePlaylist;
