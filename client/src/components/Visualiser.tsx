@@ -1,32 +1,17 @@
-import { Const, Geom, Line, Num, Sound } from "pts";
-import React, { useEffect, useState } from "react";
-import { QuickStartCanvas } from "react-pts-canvas";
+import React, { useEffect, useRef, useState } from "react";
+/* eslint-disable */
+// @ts-ignore
+import AudioMotionAnalyzer from "audiomotion-analyzer";
+/* eslint-enable */
 
-const bins = 128;
-declare global {
-  interface Window {
-    isAudioPlaying: () => boolean;
-  }
-}
 export const Visualiser = () => {
-  const [state, setstate]: any = useState(null);
   const [audioSource, setAudioSource]: any = useState(null);
+  const audioMotionRef = useRef<undefined | any>();
 
   useEffect(() => {
-    const audioCtx = new AudioContext();
-    const analyser = audioCtx.createAnalyser();
-
-    const bufferLength = analyser.fftSize;
-    const dataArray = new Float32Array(bufferLength);
-
-    window.isAudioPlaying = () => {
-      analyser.getFloatTimeDomainData(dataArray);
-      for (let i = 0; i < bufferLength; i++) {
-        if (dataArray[i] != 0) return true;
-      }
-      return false;
-    };
     let isSubscribed = true;
+    console.log("PINRT");
+    // const audioCtx = new AudioContext();
 
     async function plugMediaToVisual() {
       const mediaDevices = window.navigator.mediaDevices as any;
@@ -35,65 +20,57 @@ export const Visualiser = () => {
         audio: true,
       });
 
-      console.log({ stream });
       if (stream.getAudioTracks().length > 0) {
-        if (isSubscribed) {
-          const source = audioCtx.createMediaStreamSource(stream);
-          //   source.connect(analyser);
-          setAudioSource(source);
-          console.log(source);
-        }
+        // if (isSubscribed) {
+        // setAudioSource(source);
 
-        // Pts.quickStart("#pt", "#e2e6ef");
+        audioMotionRef.current = new AudioMotionAnalyzer(
+          document.getElementById("visualiser"),
+          { maxDecibels: -25, maxFreq: 22000, minDecibels: -85, minFreq: 20 }
+        );
+
+        audioMotionRef.current.setOptions({
+          mode: 3,
+          showLeds: true,
+          showScaleY: true,
+          barSpace: 0.5,
+          width: 640,
+          height: 270,
+        });
+
+        const audioCtx = audioMotionRef.current.audioCtx;
+
+        const source = audioCtx.createMediaStreamSource(stream);
+        // this._analyzer.connect( this._audioCtx.destination );
+        //IMPORTANT - FOR THIS TO WORK, WE NEED TO REMOVE LINE 91 IN THE audioMotion-analyuzer.js file
+        //else we will create a feedback loop
+        source.connect(audioMotionRef.current.analyzer);
+        // source.connect(audioMotionRef.current.analyzer);
       }
     }
-    plugMediaToVisual();
+    if (audioSource) {
+      plugMediaToVisual();
+    }
     return () => {
       isSubscribed = false;
     };
-  }, []);
+  }, [audioSource]);
 
   return (
-    <div></div>
-    // <QuickStartCanvas
-    //   onAction={(type: any, px: any, py: any, space: any) => {
-    //     if (
-    //       type === "up" &&
-    //       Geom.withinBound(
-    //         [px, py],
-    //         space.center.$subtract(25),
-    //         space.center.$add(25)
-    //       )
-    //     ) {
-    //       if (!state || !state.playing) {
-    //         const so = Sound.from(audioSource, audioSource.context);
-
-    //         setstate(so.analyze(bins).start());
-
-    //         if (!so) console.error(so);
-    //       }
-    //     }
-    //   }}
-    //   onAnimate={(time: any, ftime: any, space: any, form: any) => {
-    //     if (state && state.playable) {
-    //       // map time domain data to lines drawing two half circles
-    //       const tdata = state
-    //         .timeDomainTo([Const.two_pi, 1])
-    //         .map((t: any, i: any) => {
-    //           const ln = Line.fromAngle(
-    //             [i > bins / 2 ? space.size.x : 0, space.center.y],
-    //             t.x - Const.half_pi,
-    //             space.size.y / 0.9
-    //           );
-    //           return [ln.p1, ln.interpolate(t.y)];
-    //         });
-
-    //       for (let i = 0, len = tdata.length; i < len; i++) {
-    //         const c = Math.floor(Num.cycle(i / tdata.length) * 200);
-    //         form.stroke(`rgba( ${255 - c}, 20, ${c}, .7 )`, 1).line(tdata[i]);
-    //       }
-    //     }
-    //   }}
-    // />
+    <div
+      onClick={() => {
+        console.log("AAA");
+        setAudioSource(true);
+      }}
+      id="visualiser"
+      style={{
+        background: "red",
+        position: "absolute",
+        top: 0,
+        right: 0,
+        width: "500px",
+        height: "800px",
+      }}
+    ></div>
   );
 };

@@ -141,7 +141,7 @@ export default function Home(): ReactElement {
       {/* Modal to prompt connection to Spotify */}
       <ConnectToSpotify isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       {ytReady ? <YouTubePlayer /> : null}
-      {/* <Visualiser /> */}
+      <Visualiser />
       <Player />
     </Flex>
   );

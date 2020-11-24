@@ -7,7 +7,6 @@ import { IoIosSkipBackward } from "react-icons/io";
 import { Flex } from "@chakra-ui/core";
 import { BsPlay, BsPause } from "react-icons/bs";
 import { TOGGLE_PLAY_STATE } from "../actions/types";
-import { playSongReducedState } from "../reducers/playSongReducer";
 
 export default function Player(): ReactElement {
   const dispatch = useDispatch();
@@ -18,7 +17,6 @@ export default function Player(): ReactElement {
       width="30%"
       position="fixed"
       bottom="0"
-      w="100%"
       alignSelf="center"
       mt="auto"
       height="10vh"
