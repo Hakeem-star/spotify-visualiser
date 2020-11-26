@@ -15,18 +15,10 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiFireWave } from "react-icons/gi";
 import { Link, useHistory } from "react-router-dom";
-import { ThunkResult } from "../types";
-import { bindActionCreators } from "redux";
 import { signOut, songSearch } from "../actions";
-import { ThunkDispatch } from "redux-thunk";
-import { AppActions } from "../actions/types";
 import { debounce } from "../util/debounce";
 import { AppState } from "../reducers";
 import { setCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
-interface HeaderProps {
-  songSearch: (val: string) => ThunkResult<void>;
-}
-// const debounceSearch = debounce();
 
 export default function Header(): ReactElement {
   const history = useHistory();
@@ -37,7 +29,7 @@ export default function Header(): ReactElement {
   const [searchInputValue, setSearchInputValue] = useState("");
   const debounceSearch = useRef(
     debounce((value) => {
-      dispatch(songSearch(value[0]));
+      dispatch(songSearch(value));
     }, 1000)
   );
 

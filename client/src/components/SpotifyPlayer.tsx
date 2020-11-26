@@ -53,7 +53,6 @@ export default function useSpotifyPlayer(): void {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("planting");
     const script = document.createElement("script");
 
     script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -121,12 +120,9 @@ export default function useSpotifyPlayer(): void {
       // Connect to the player!
       player.current.connect();
     };
-
-    console.log("SPOTIFY MOUNTED", player.current);
   }, []);
 
   useEffect(() => {
-    console.log({ current: player.current });
     //When the URL or the source changes
     if (playerState.source === SPOTIFY) {
       play({
@@ -142,7 +138,7 @@ export default function useSpotifyPlayer(): void {
         console.log(error);
       }
     }
-  }, [playerState.url, playerState.source]);
+  }, [playerState?.url, playerState?.source]);
 
   useEffect(() => {
     if (playerState.source === SPOTIFY) {

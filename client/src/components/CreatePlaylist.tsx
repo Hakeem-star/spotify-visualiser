@@ -75,7 +75,12 @@ export default function CreatePlaylist(): ReactElement {
               name,
               id: createPlaylist.id,
             });
-            dispatch(savePlaylist(name || values.name, createPlaylist.id));
+            dispatch(
+              savePlaylist(
+                createPlaylist.name || values.name,
+                createPlaylist.id
+              )
+            );
             submittedCount.current.new++;
           }}
         >

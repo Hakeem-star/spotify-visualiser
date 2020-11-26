@@ -1,7 +1,7 @@
 import axios from "axios";
 import youtube from "../youtube";
 
-import * as youtubeJSONResponse from "./youtubeResponse.json";
+// import * as youtubeJSONResponse from "./youtubeResponse.json";
 
 export default async (app) => {
   app.get("/search/", async (req, res) => {
@@ -37,6 +37,7 @@ export default async (app) => {
     let youtubeResponse: any;
     if (sources.includes("YOUTUBE")) {
       //Youtube call
+      console.log({ QQQ: req.query.q });
       try {
         youtubeResponse = await youtube.get("/search", {
           params: { q: req.query.q },

@@ -318,7 +318,6 @@ export const prevSong = () => {
 export const updateSongSources = (
   sources: updateSongSourcesType
 ): AppActions => {
-  console.log({ sources });
   return {
     type: UPDATE_SONG_SOURCE,
     payload: sources,

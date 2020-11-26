@@ -70,12 +70,10 @@ export function savePlaylist(
     } else {
       //If no name is provided, we are setting the saved playlist from firebase or local storage
       const auth = getState().auth;
-      console.log(JSON.stringify(auth));
       if (auth.userData?.displayName === GUEST) {
         const localPLaylists = window.localStorage.getItem(PLAYLISTS);
         if (localPLaylists) {
           const parsedPlaylists = JSON.parse(localPLaylists);
-          console.log({ parsedPlaylists });
           dispatch({
             type: SAVEPLAYLIST,
             payload: parsedPlaylists,

@@ -10,7 +10,6 @@ export const Visualiser = () => {
 
   useEffect(() => {
     let isSubscribed = true;
-    console.log("PINRT");
     // const audioCtx = new AudioContext();
 
     async function plugMediaToVisual() {
@@ -45,6 +44,10 @@ export const Visualiser = () => {
         //IMPORTANT - FOR THIS TO WORK, WE NEED TO REMOVE LINE 91 IN THE audioMotion-analyuzer.js file
         //else we will create a feedback loop
         source.connect(audioMotionRef.current.analyzer);
+        audioMotionRef.current.analyzer.disconnect(
+          audioMotionRef.current.audioCtx.destination
+        );
+
         // source.connect(audioMotionRef.current.analyzer);
       }
     }

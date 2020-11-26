@@ -15,7 +15,7 @@ import { PLAYER_NAME } from "../util/appVariables";
 
 import { FaSpotify } from "react-icons/fa";
 
-export default function ConnectToSpotify({
+export default function ConnectToSpotifyModal({
   isOpen,
   onOpen,
   onClose,

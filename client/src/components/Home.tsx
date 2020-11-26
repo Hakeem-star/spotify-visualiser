@@ -7,10 +7,9 @@ import { Flex, useDisclosure } from "@chakra-ui/core";
 import Header from "./Header";
 import YouTubePlayer from "./YouTubePlayer";
 import Player from "./Player";
-import ConnectToSpotify from "./ConnectToSpotify";
+import ConnectToSpotifyModal from "./ConnectToSpotifyModal";
 import useSpotifyPlayer from "./SpotifyPlayer";
 import { Visualiser } from "./Visualiser";
-import axios from "axios";
 import SourceSelector from "./SourceSelector";
 
 import SearchResultWithPlaylistCreator from "./SearchResultWithPlaylistCreator";
@@ -18,7 +17,6 @@ import { Route, Switch } from "react-router-dom";
 import YourPlaylists from "./YourPlaylists";
 import PlaylistDetail from "./PlaylistDetail";
 import { AppState } from "../reducers";
-import { GUEST } from "../actions/types";
 import { savePlaylist } from "../actions/playlistActions";
 import { spotifySignIn } from "../actions";
 
@@ -114,7 +112,6 @@ export default function Home(): ReactElement {
   }, []);
 
   useEffect(() => {
-    console.log({ spotifyAuth });
     if (!spotifyAuth.isSignedIn) {
       onOpen();
       // dispatch(spotifySignIn());
@@ -127,7 +124,9 @@ export default function Home(): ReactElement {
     <Flex direction="column" h="100vh">
       <Header />
       <Flex flex="1" overflow="hidden">
-        <SourceSelector />
+        <SourceSelector
+          connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
+        />
         {/* //If a search is being made, display search Results component */}
         <Switch>
           <Route path="/playlists/:id/" component={PlaylistDetail} />
@@ -139,7 +138,11 @@ export default function Home(): ReactElement {
       </Flex>
 
       {/* Modal to prompt connection to Spotify */}
-      <ConnectToSpotify isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+      <ConnectToSpotifyModal
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+      />
       {ytReady ? <YouTubePlayer /> : null}
       <Visualiser />
       <Player />

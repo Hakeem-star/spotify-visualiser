@@ -5,8 +5,12 @@ import { updateSongSources } from "../actions";
 import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
 import { updateSongSourcesType } from "../types";
-
-export default function SourceSelector({}): ReactElement {
+interface Props {
+  connectToSpotifyModalToggle: { open: () => void; close: () => void };
+}
+export default function SourceSelector({
+  connectToSpotifyModalToggle,
+}: Props): ReactElement {
   const dispatch = useDispatch();
   const spotifyAuth = useSelector((state: AppState) => state.spotifyAuth);
   // const [checkboxState
@@ -26,10 +30,17 @@ export default function SourceSelector({}): ReactElement {
       });
     }
   }, [spotifyAuth.isSignedIn]);
+
   return (
     <Flex height="100%" w="10%" background="red">
       <CheckboxGroup
         onChange={(values: updateSongSourcesType) => {
+          console.log(values.includes(SPOTIFY), !spotifyAuth);
+          if (values.includes(SPOTIFY) && !spotifyAuth.isSignedIn) {
+            //show sign in modal
+            connectToSpotifyModalToggle.open();
+            return;
+          }
           console.log({ values });
           setCheckboxStates(values);
           dispatch(updateSongSources(values));
