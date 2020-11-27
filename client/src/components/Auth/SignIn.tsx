@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect } from "react";
-import { Button, Flex, useDisclosure } from "@chakra-ui/core";
+import { Button, Flex, useDisclosure } from "@chakra-ui/react";
 import AuthForm from "./AuthForm";
 import { useDispatch, useSelector } from "react-redux";
 import { signIn } from "../../actions";

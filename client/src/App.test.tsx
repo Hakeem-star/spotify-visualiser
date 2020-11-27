@@ -10,7 +10,7 @@ const middlewares = [thunk];
 import "@testing-library/jest-dom";
 
 import App from "./App";
-import { ThemeProvider } from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/react";
 describe("Auth options", () => {
   const store = {
     auth: {
@@ -47,13 +47,13 @@ describe("Auth options", () => {
 
   test("Shows the sign in options if not signed in", () => {
     render(
-      <ThemeProvider>
+      <ChakraProvider>
         <Provider store={mockStore}>
           <Router>
             <App />
           </Router>
         </Provider>
-      </ThemeProvider>
+      </ChakraProvider>
     );
 
     const signIn = screen.getByText("Sign in");
@@ -68,13 +68,13 @@ describe("Auth options", () => {
   test("Takes you to the home page if already signed in", () => {
     store.auth.isSignedIn = true;
     render(
-      <ThemeProvider>
+      <ChakraProvider>
         <Provider store={mockStore}>
           <Router>
             <App />
           </Router>
         </Provider>
-      </ThemeProvider>
+      </ChakraProvider>
     );
     const signIn = screen.queryByText("Sign in");
     const guest = screen.getByText("Guest");

@@ -4,7 +4,7 @@ import {
   ModalCloseButton,
   ModalBody,
   Text,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import React, { ReactElement } from "react";
 import { Link } from "react-router-dom";
 

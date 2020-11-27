@@ -1,4 +1,4 @@
-import { Input } from "@chakra-ui/core";
+import { Input } from "@chakra-ui/react";
 import { useField } from "formik";
 import React, { ReactElement } from "react";
 

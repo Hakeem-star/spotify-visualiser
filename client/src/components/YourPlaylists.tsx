@@ -1,4 +1,4 @@
-import { Button, Flex, Grid } from "@chakra-ui/core";
+import { Button, Flex, Grid } from "@chakra-ui/react";
 import React, { ReactElement } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";

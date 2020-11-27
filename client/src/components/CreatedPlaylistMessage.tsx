@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from "@chakra-ui/core";
+import { Button, Flex, Text } from "@chakra-ui/react";
 import React, { ReactElement } from "react";
 import { useDispatch } from "react-redux";
 import { discardPlaylist } from "../actions/createPlaylistDragDropActions";

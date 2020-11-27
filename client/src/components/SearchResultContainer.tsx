@@ -1,6 +1,11 @@
-import { Flex, Text } from "@chakra-ui/core";
+/** @jsx jsx @jsxFrag */
+/* @jsxFrag React.Fragment */
+
+import { Flex, Text } from "@chakra-ui/react";
+import { jsx, css } from "@emotion/react";
 import React, { ReactElement } from "react";
 import { Droppable } from "react-beautiful-dnd";
+import { IoMdAdd } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
@@ -99,7 +104,7 @@ export default function SearchResultContainer({
   }
 
   return (
-    <Flex direction="row" w="100%" h="100%" overflow="scroll">
+    <Flex direction="row" w="100%" h="100%" overflow="hidden">
       {results}
     </Flex>
   );

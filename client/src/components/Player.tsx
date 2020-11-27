@@ -4,7 +4,7 @@ import { AppState } from "../reducers";
 import { changePlayerState, nextSong, prevSong } from "../actions";
 
 import { IoIosSkipBackward } from "react-icons/io";
-import { Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/react";
 import { BsPlay, BsPause } from "react-icons/bs";
 import { TOGGLE_PLAY_STATE } from "../actions/types";
 

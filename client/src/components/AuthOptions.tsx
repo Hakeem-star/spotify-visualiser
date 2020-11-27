@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/react";
 import axios from "axios";
 import React, { ReactElement } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";

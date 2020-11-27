@@ -9,7 +9,7 @@ import {
   Text,
   Link as CLink,
   useDisclosure,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import React, { ReactElement, useEffect } from "react";
 import { PLAYER_NAME } from "../util/appVariables";
 

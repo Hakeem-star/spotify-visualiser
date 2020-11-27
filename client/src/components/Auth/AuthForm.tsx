@@ -1,4 +1,4 @@
-import { Flex, Button, Input } from "@chakra-ui/core";
+import { Flex, Button, Input } from "@chakra-ui/react";
 import { Formik, useField, Form } from "formik";
 import React, { ReactElement } from "react";
 import { MyTextInput } from "./ForkitTextInput";

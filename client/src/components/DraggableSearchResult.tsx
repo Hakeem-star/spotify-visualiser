@@ -1,6 +1,5 @@
-/** @jsx jsx */
-import { Box, Flex } from "@chakra-ui/core";
-import { css, jsx } from "@emotion/core";
+import { Box, Flex } from "@chakra-ui/react";
+import { css } from "@emotion/react";
 import React, { ReactElement } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { playlistItemSongsType } from "../actions/types";
@@ -26,8 +25,6 @@ export default function DraggableSearchResult(props: Props): ReactElement {
       {(provided, snapshot) => (
         <React.Fragment>
           <Box
-            height="200px"
-            w="200px"
             {...provided.dragHandleProps}
             {...provided.draggableProps}
             ref={provided.innerRef}
@@ -38,11 +35,11 @@ export default function DraggableSearchResult(props: Props): ReactElement {
             <Box>
               <SearchResult
                 {...props}
-                css={css`
-                  ~ div {
-                    transform: none !important;
-                  }
-                `}
+                // css={css`
+                //   ~ div {
+                //     transform: none !important;
+                //   }
+                // `}
               />
             </Box>
           )}

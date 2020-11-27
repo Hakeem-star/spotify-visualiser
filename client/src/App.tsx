@@ -1,5 +1,6 @@
 import React, { ReactElement, useEffect } from "react";
-import { ThemeProvider, CSSReset } from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/react";
+
 import { useDispatch, useSelector } from "react-redux";
 import { alreadySignedIn } from "./actions";
 import Home from "./components/Home";
@@ -32,8 +33,7 @@ export default function App(): ReactElement {
   }, []);
 
   return (
-    <ThemeProvider>
-      <CSSReset />
+    <ChakraProvider resetCSS>
       <Router>
         {/* if not signed in, take me to the auth screen */}
         {isSignedIn ? (
@@ -50,6 +50,6 @@ export default function App(): ReactElement {
           </>
         )}
       </Router>
-    </ThemeProvider>
+    </ChakraProvider>
   );
 }

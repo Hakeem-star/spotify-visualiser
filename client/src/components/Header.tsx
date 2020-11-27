@@ -1,3 +1,4 @@
+/** @jsx jsx */
 import {
   Box,
   Button,
@@ -9,7 +10,19 @@ import {
   ListItem,
   Text,
   Link as ChakLink,
-} from "@chakra-ui/core";
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
+  MenuItem,
+  InputRightAddon,
+} from "@chakra-ui/react";
 import React, { ReactElement, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -19,8 +32,17 @@ import { signOut, songSearch } from "../actions";
 import { debounce } from "../util/debounce";
 import { AppState } from "../reducers";
 import { setCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
+import { FaUserNinja } from "react-icons/fa";
+import { jsx, css } from "@emotion/react";
+import SourceSelector from "./SourceSelector";
 
-export default function Header(): ReactElement {
+interface Props {
+  connectToSpotifyModalToggle: { open: () => void; close: () => void };
+}
+
+export default function Header({
+  connectToSpotifyModalToggle,
+}: Props): ReactElement {
   const history = useHistory();
   const dispatch = useDispatch();
   const displayName = useSelector(
@@ -33,24 +55,25 @@ export default function Header(): ReactElement {
     }, 1000)
   );
 
+  const songSearchInputRef = useRef(null);
+  const [popOverOpenState, setpopOverOpenState] = useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(event.target.value);
     console.log({ value: event.target.value });
     debounceSearch.current(event.target.value);
   };
-
   return (
     <Flex
       position="sticky"
       top="0"
-      background="grey"
+      background="#46484e"
       justifyContent="left"
       w="100%"
       h="7%"
       align="center"
+      borderBottom="3px solid #A31709"
     >
       <Box
-        background="blue"
         style={{ placeItems: "center" }}
         w="10%"
         display="grid"
@@ -60,49 +83,84 @@ export default function Header(): ReactElement {
       >
         <GiFireWave fontSize={70} />
       </Box>
-      <Box pl="10" background="grey">
-        <InputGroup>
-          <Input type="text" onChange={handleChange} value={searchInputValue} />
-          <InputRightElement>
-            <AiOutlineSearch />
-          </InputRightElement>
-        </InputGroup>
-      </Box>
+      <InputGroup onFocus={() => setpopOverOpenState(true)} width="330px">
+        <Input type="text" onChange={handleChange} value={searchInputValue} />
+        <InputRightAddon>
+          <AiOutlineSearch />
+        </InputRightAddon>
+      </InputGroup>
+      <SourceSelector
+        connectToSpotifyModalToggle={connectToSpotifyModalToggle}
+      />
 
-      <List
-        h="100%"
-        ml="6%"
-        display="flex"
-        flexDirection="row"
+      <Flex
+        flex="1"
+        height="100%"
+        justifyContent="space-between"
         alignItems="center"
-        w="20%"
       >
-        <ListItem ml="10%">
-          <Link to="/playlists">Your Playlists</Link>
-        </ListItem>
-        <ListItem ml="10%">
-          <ChakLink
-            as="button"
-            onClick={() => {
-              //go to home and show the playlist creator sidebar
-              history.push("/");
-              dispatch(setCreatePlaylistSidebar(true));
-            }}
+        <List
+          h="100%"
+          ml="50%"
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+          w="20%"
+          color="white"
+        >
+          <ListItem
+            css={css`
+              height: calc(100% + 3px);
+              display: grid;
+              align-self: flex-start;
+              place-items: center;
+              transition: border 0.3s ease;
+              &:hover {
+                border-bottom: 3px solid blue;
+              }
+            `}
           >
-            Create new Playlist
-          </ChakLink>
-        </ListItem>
-      </List>
-      <Box>{displayName}</Box>
-      <Button
-        ml="auto"
-        onClick={() => {
-          dispatch(signOut());
-          history.push("/");
-        }}
-      >
-        Log out
-      </Button>
+            <Link to="/playlists">Your Playlists</Link>
+          </ListItem>
+          <ListItem
+            css={css`
+              height: calc(100% + 3px);
+              display: grid;
+              align-self: flex-start;
+              place-items: center;
+              transition: border 0.3s ease;
+              &:hover {
+                border-bottom: 3px solid blue;
+              }
+            `}
+          >
+            Visualiser
+          </ListItem>
+        </List>
+        <Box></Box>
+
+        <Menu>
+          <MenuButton mr="100px" as={Button}>
+            {displayName}
+            <FaUserNinja
+              css={css`
+                margin-left: 10px;
+              `}
+            />
+          </MenuButton>
+          <MenuList>
+            <MenuItem
+              onClick={() => {
+                dispatch(signOut());
+                history.push("/");
+              }}
+            >
+              Log out
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
     </Flex>
   );
 }

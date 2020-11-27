@@ -1,9 +1,7 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getCookie } from "../util/cookie";
-
-import { Flex, useDisclosure } from "@chakra-ui/core";
+import { Flex, useDisclosure } from "@chakra-ui/react";
 import Header from "./Header";
 import YouTubePlayer from "./YouTubePlayer";
 import Player from "./Player";
@@ -122,11 +120,11 @@ export default function Home(): ReactElement {
 
   return (
     <Flex direction="column" h="100vh">
-      <Header />
+      <Header connectToSpotifyModalToggle={{ open: onOpen, close: onClose }} />
       <Flex flex="1" overflow="hidden">
-        <SourceSelector
+        {/* <SourceSelector
           connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
-        />
+        /> */}
         {/* //If a search is being made, display search Results component */}
         <Switch>
           <Route path="/playlists/:id/" component={PlaylistDetail} />
@@ -144,7 +142,7 @@ export default function Home(): ReactElement {
         onClose={onClose}
       />
       {ytReady ? <YouTubePlayer /> : null}
-      <Visualiser />
+      {/* <Visualiser /> */}
       <Player />
     </Flex>
   );

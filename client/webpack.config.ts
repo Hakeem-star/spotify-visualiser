@@ -17,6 +17,7 @@ const config: webpack.Configuration = {
               "@babel/preset-env",
               "@babel/preset-react",
               "@babel/preset-typescript",
+              "@emotion/babel-preset-css-prop",
             ],
             plugins: [
               [

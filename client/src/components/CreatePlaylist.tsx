@@ -1,13 +1,18 @@
-import { Box, Button, Flex, Input } from "@chakra-ui/core";
+/** @jsx jsx */
+
+import { Box, Button, Flex, Input } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
+import { IoMdAdd } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { discardPlaylist } from "../actions/createPlaylistDragDropActions";
 import { savePlaylist } from "../actions/playlistActions";
 import { AppState } from "../reducers";
 import { MyTextInput } from "./Auth/ForkitTextInput";
 import CreatedPlaylistMessage from "./CreatedPlaylistMessage";
+import { RiFullscreenLine } from "react-icons/ri";
+import { jsx, css } from "@emotion/react";
 
 export default function CreatePlaylist(): ReactElement {
   const createPlaylistSidebarOpenState = useSelector(
@@ -37,8 +42,10 @@ export default function CreatePlaylist(): ReactElement {
   }, [playlists, submittedCount]);
 
   return (
+    // Drag item here to create playlist
     <Box
-      w={createPlaylistSidebarOpenState ? "20%" : "0"}
+      p="20px 20px 0"
+      w={"20%"}
       h="100%"
       // transform="scaleX()"
       transition="width 1s"

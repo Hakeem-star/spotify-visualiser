@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/core";
+import { Button } from "@chakra-ui/react";
 import React, { ReactElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";

@@ -1,4 +1,4 @@
-import { Heading } from "@chakra-ui/core";
+import { Flex, Heading } from "@chakra-ui/react";
 import React, { ReactElement } from "react";
 import { remappedSearchResult } from "../types";
 import DraggableSearchResult from "./DraggableSearchResult";
@@ -14,8 +14,10 @@ export default function SearchResultList({
   items,
 }: Props): ReactElement {
   return (
-    <div>
-      <Heading>{source}</Heading>
+    <Flex overflow="auto" flexDirection="column" ml="30px" mt="30px">
+      <Heading position="sticky" mb="30px">
+        {source}
+      </Heading>
       {items.map((item, index) => {
         return (
           <DraggableSearchResult
@@ -26,6 +28,6 @@ export default function SearchResultList({
           />
         );
       })}
-    </div>
+    </Flex>
   );
 }

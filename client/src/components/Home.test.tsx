@@ -10,7 +10,7 @@ const middlewares = [thunk];
 import "@testing-library/jest-dom";
 
 import Home from "./Home";
-import { ThemeProvider, CSSReset } from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/react";
 
 // import { handlers } from "../mocks/handlers";
 
@@ -56,13 +56,13 @@ test("It shows you as a guest when you sign in", () => {
   });
 
   render(
-    <ThemeProvider>
+    <ChakraProvider>
       <Provider store={mockStore}>
         <Router>
           <Home />
         </Router>
       </Provider>
-    </ThemeProvider>
+    </ChakraProvider>
   );
 
   const guest = screen.getByText("Guest");
