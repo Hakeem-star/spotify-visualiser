@@ -24,13 +24,14 @@ export default function DraggableSearchResult(props: Props): ReactElement {
     <Draggable draggableId={imageUrl} index={index} key={index + imageUrl}>
       {(provided, snapshot) => (
         <React.Fragment>
-          <Box
+          <Flex
+            alignContent="center"
             {...provided.dragHandleProps}
             {...provided.draggableProps}
             ref={provided.innerRef}
           >
             <SearchResult {...props} />
-          </Box>
+          </Flex>
           {snapshot.isDragging && (
             <Box>
               <SearchResult

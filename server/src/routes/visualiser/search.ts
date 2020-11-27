@@ -53,6 +53,9 @@ export default async (app) => {
 
     // console.log(spotifyResults, youtubeResults);
     // res.send({ spotifyResults, youtubeResults });
-    res.send({ youtubeResults: youtubeJSONResponse });
+    res.send({
+      youtubeResults: youtubeJSONResponse,
+      // spotifyResults: youtubeJSONResponse,
+    });
   });
 };

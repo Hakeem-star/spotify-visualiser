@@ -17,9 +17,12 @@ export default function SearchResult(props: Props): ReactElement {
 
   return (
     <Flex
-      border="1px solid #0004A3"
       height="95px"
-      mb="20px"
+      background="#0004A3"
+      color="white"
+      w="100%"
+      borderRadius="10px"
+      overflow="hidden"
       onClick={() => {
         console.log(url);
         dispatch(playSong(props.context, index));
@@ -31,9 +34,13 @@ export default function SearchResult(props: Props): ReactElement {
         fontSize="0.8em"
         flexDirection="column"
         p="5px"
+        w="50%"
+        flex="1"
       >
         <Flex alignItems="center" h="50%">
-          <Text>{name}</Text>
+          <Text overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
+            {name}
+          </Text>
         </Flex>
         <Flex flexDirection="column" h="50%">
           <Text>{artist}</Text>

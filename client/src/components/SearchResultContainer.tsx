@@ -81,6 +81,7 @@ export default function SearchResultContainer({
               songSearchResults.youtube !== null ? (
                 <Flex
                   direction="row"
+                  maxW="400px"
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
