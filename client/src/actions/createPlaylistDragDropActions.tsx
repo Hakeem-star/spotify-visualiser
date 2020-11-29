@@ -1,7 +1,13 @@
 import { Dispatch } from "react";
 import { DraggableLocation } from "react-beautiful-dnd";
 import { ThunkResult } from "../types";
-import { ADDTODRAGNDROP, AppActions, DISCARDPLAYLIST, REORDER } from "./types";
+import {
+  ADDTODRAGNDROP,
+  AppActions,
+  DISCARDPLAYLIST,
+  REMOVEFROMDRAGNDROP,
+  REORDER,
+} from "./types";
 
 export function reorderDragNDrop(
   startIndex: number,
@@ -38,10 +44,9 @@ export function discardPlaylist(): AppActions {
   return { type: DISCARDPLAYLIST };
 }
 
-// function removeFromDragNDrop(list, startIndex, endIndex) {
-//   return (dispatch, getState) => {
-//     const searchResults = getState().searchResult;
-
-//     dispatch({ type: "REORDER", payload: { searchResults } });
-//   };
-// }
+export function removeFromDragNDrop(index: number): AppActions {
+  return {
+    type: REMOVEFROMDRAGNDROP,
+    payload: index,
+  };
+}

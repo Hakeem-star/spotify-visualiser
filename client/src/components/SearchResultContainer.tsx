@@ -1,15 +1,46 @@
 /** @jsx jsx @jsxFrag */
 /* @jsxFrag React.Fragment */
 
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, SimpleGrid, Text, Divider } from "@chakra-ui/react";
 import { jsx, css } from "@emotion/react";
 import React, { ReactElement } from "react";
 import { Droppable } from "react-beautiful-dnd";
-import { IoMdAdd } from "react-icons/io";
-import { useSelector } from "react-redux";
 import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
+import { insertIntoArray } from "../util/insertIntoArray";
 import SearchResultList from "./SearchResultList";
+
+const scrollbarStyle = css`
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+`;
+
+const VerticalResultsDivider = () => (
+  <Divider
+    orientation="vertical"
+    height="93%"
+    alignSelf="center"
+    borderColor="#417AF0"
+    m="0 3px"
+  />
+);
 
 export default function SearchResultContainer({
   songSearchResults,
@@ -38,6 +69,7 @@ export default function SearchResultContainer({
               songSearchResults.spotify !== null ? (
                 <Flex
                   direction="row"
+                  overflow="auto"
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
@@ -81,9 +113,11 @@ export default function SearchResultContainer({
               songSearchResults.youtube !== null ? (
                 <Flex
                   direction="row"
-                  maxW="400px"
+                  overflow="auto"
+                  minW="400px"
                   ref={provided.innerRef}
                   {...provided.droppableProps}
+                  css={scrollbarStyle}
                 >
                   <SearchResultList
                     key={YOUTUBE}
@@ -100,13 +134,21 @@ export default function SearchResultContainer({
         //else nothing
       } else results.push(null);
     }
+    results.push(<VerticalResultsDivider />);
   } else {
     results.push(null);
   }
 
   return (
-    <Flex direction="row" w="100%" h="100%" overflow="hidden">
+    <SimpleGrid
+      autoFlow="column"
+      autoColumns="minmax(auto,20%);"
+      direction="row"
+      w="100%"
+      h="100%"
+      overflow="hidden"
+    >
       {results}
-    </Flex>
+    </SimpleGrid>
   );
 }

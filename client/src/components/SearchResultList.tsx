@@ -1,20 +1,27 @@
 import { Divider, Flex, Heading } from "@chakra-ui/react";
+import { css } from "@emotion/react";
 import React, { ReactElement } from "react";
 import { remappedSearchResult } from "../types";
+import { insertIntoArray } from "../util/insertIntoArray";
 import DraggableSearchResult from "./DraggableSearchResult";
 import SearchResult from "./SearchResult";
 
-const insertIntoArray = (arr: any[], value: any) => {
-  return arr.reduce((result, element, index, array) => {
-    result.push(element);
+const scrollbarStyle = css`
+  ::-webkit-scrollbar {
+    width: 10px;
+    opacity: 0;
+  }
 
-    if (index < array.length - 1) {
-      result.push(value);
+  &:hover {
+    ::-webkit-scrollbar-thumb {
+      background: #888;
     }
-
-    return result;
-  }, []);
-};
+  }
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #8880;
+  }
+`;
 
 interface Props {
   source: string;
@@ -27,18 +34,28 @@ export default function SearchResultList({
 }: Props): ReactElement {
   return (
     <Flex
+      className="SearchResultList"
       w="100%"
       overflow="auto"
       flexDirection="column"
       ml="30px"
       mt="30px"
-      // border="1px solid red"
-      p="10px"
+      p=" 0 10px 10px"
       borderRadius="10px"
-      // background="#000461"
+      css={scrollbarStyle}
     >
-      <Heading position="sticky">{source}</Heading>
-      <Divider mt="10px" mb="20px" />
+      <Heading
+        zIndex="1"
+        background="white"
+        position="sticky"
+        top="0"
+        mb="20px"
+        pb="10px"
+      >
+        {source}
+
+        {/* <Divider mt="10px" mb="20px" /> */}
+      </Heading>
       {insertIntoArray(
         items.map((item, index) => {
           return (
@@ -46,7 +63,7 @@ export default function SearchResultList({
               context={items}
               {...item}
               index={index}
-              key={item.url + index}
+              key={item.url + item.name}
             />
           );
         }),

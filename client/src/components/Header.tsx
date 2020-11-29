@@ -96,18 +96,18 @@ export default function Header({
       <Flex
         flex="1"
         height="100%"
-        justifyContent="space-between"
+        justifyContent="flex-end"
         alignItems="center"
       >
         <List
           h="100%"
-          ml="50%"
           display="flex"
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
-          w="20%"
+          w="30%"
           color="white"
+          marginRight="160px"
         >
           <ListItem
             css={css`
@@ -141,13 +141,15 @@ export default function Header({
         <Box></Box>
 
         <Menu>
-          <MenuButton mr="100px" as={Button}>
-            {displayName}
-            <FaUserNinja
-              css={css`
-                margin-left: 10px;
-              `}
-            />
+          <MenuButton size="sm" mr="20px" as={Button}>
+            <Flex>
+              {displayName}
+              <FaUserNinja
+                css={css`
+                  margin-left: 10px;
+                `}
+              />
+            </Flex>
           </MenuButton>
           <MenuList>
             <MenuItem

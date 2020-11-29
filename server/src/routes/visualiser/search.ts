@@ -22,7 +22,7 @@ export default async (app) => {
     //       params: {
     //         q: req.query.q,
     //         type: "track",
-    //         limit: 5,
+    //         limit: 30,
     //       },
     //       headers: {
     //         Authorization: `Bearer ${spotifyToken}`,

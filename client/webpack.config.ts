@@ -44,6 +44,7 @@ const config: webpack.Configuration = {
     compress: true,
     port: 4000,
     historyApiFallback: true,
+    hot:true
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({

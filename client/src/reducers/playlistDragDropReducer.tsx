@@ -5,6 +5,7 @@ import {
   EDITPLAYLIST,
   playlistDragDrop,
   playlistItemType,
+  REMOVEFROMDRAGNDROP,
   REORDER,
 } from "../actions/types";
 
@@ -23,7 +24,7 @@ export const playlistDragDropReducer = (
     case ADDTODRAGNDROP:
       //Check for duplicates
       if (
-        stateCopy.some((val) => {
+        state.items.some((val) => {
           return val.url === action.payload.item.url;
         })
       ) {
@@ -38,9 +39,16 @@ export const playlistDragDropReducer = (
       return { ...state, items: stateCopy };
 
     case REORDER:
+      //Assign first in array to "remove" variable
       const [removed] = stateCopy.splice(action.payload.startIndex, 1);
       stateCopy.splice(action.payload.endIndex, 0, removed);
       return { ...state, items: stateCopy };
+
+    case REMOVEFROMDRAGNDROP:
+      return {
+        ...state,
+        items: state.items.filter((val, index) => index !== action.payload),
+      };
 
     case EDITPLAYLIST:
       return action.payload;

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Box, Button, Flex, Input } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
@@ -11,8 +11,11 @@ import { savePlaylist } from "../actions/playlistActions";
 import { AppState } from "../reducers";
 import { MyTextInput } from "./Auth/ForkitTextInput";
 import CreatedPlaylistMessage from "./CreatedPlaylistMessage";
-import { RiFullscreenLine } from "react-icons/ri";
+import { RiFullscreenLine, RiPlayListAddLine } from "react-icons/ri";
 import { jsx, css } from "@emotion/react";
+import SearchResult from "./SearchResult";
+import DraggableCreatePlaylistItem from "./DraggableCreatePlaylistItem";
+import { insertIntoArray } from "../util/insertIntoArray";
 
 export default function CreatePlaylist(): ReactElement {
   const createPlaylistSidebarOpenState = useSelector(
@@ -43,14 +46,18 @@ export default function CreatePlaylist(): ReactElement {
 
   return (
     // Drag item here to create playlist
-    <Box
-      p="20px 20px 0"
+    <Flex
+      flexDirection="column"
+      borderLeft="1px solid black"
+      p="20px 20px"
       w={"20%"}
       h="100%"
       // transform="scaleX()"
       transition="width 1s"
     >
-      Create Playlist
+      <Text fontSize="1.5rem" mb="20px">
+        Create Playlist
+      </Text>
       {/* Add more validation */}
       {playListCreated ? (
         <CreatedPlaylistMessage setplayListCreated={setplayListCreated} />
@@ -92,62 +99,87 @@ export default function CreatePlaylist(): ReactElement {
           }}
         >
           {({ isSubmitting }) => (
-            <Form style={{ width: "100%", height: "100%" }}>
+            <Form
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <MyTextInput
                 placeholder="New Playlist"
-                label="name"
+                label="Playlist Name"
                 name="name"
                 type="text"
               />
               <Droppable droppableId={"createPlaylist"}>
                 {(provided) => (
-                  <Box
-                    h="80%"
+                  <Flex
+                    mt="30px"
+                    // h="80%"
+                    height="350px"
                     w="100%"
+                    direction="column"
+                    overflow="auto"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {createPlaylist.items.map(
-                      ({ name, artist, year, url, imageUrl }, index) => {
+                    {insertIntoArray(
+                      createPlaylist.items.map((item, index) => {
+                        const { name, artist, year, url, imageUrl } = item;
                         return (
-                          <Draggable
-                            draggableId={"playlist" + url}
+                          <DraggableCreatePlaylistItem
+                            context={createPlaylist.items}
+                            {...item}
                             index={index}
-                            key={index + imageUrl}
-                          >
-                            {(provided) => (
-                              <div
-                                key={url}
-                                {...provided.dragHandleProps}
-                                {...provided.draggableProps}
-                                ref={provided.innerRef}
-                              >
-                                <p>{name}</p>
-                                <p>{artist}</p>
-                                <p>{year}</p>
-                              </div>
-                            )}
-                          </Draggable>
+                            key={url + name}
+                          />
                         );
-                      }
+                      }),
+
+                      <Divider borderColor="#417AF0" m="3px 0" />
                     )}
-                  </Box>
+                    <Box
+                      flex={1}
+                      flexBasis="95px"
+                      flexShrink={0}
+                      mt="auto"
+                      pt="20px"
+                      width="100%"
+                      className="DropBox"
+                    >
+                      <Flex
+                        direction="column"
+                        alignItems="center"
+                        justify="center"
+                        border="2px dashed red"
+                        p="10px 0"
+                      >
+                        <RiPlayListAddLine fontSize="2rem" />
+                        <Text>Drop here to add</Text>
+                      </Flex>
+                    </Box>
+                  </Flex>
                 )}
               </Droppable>
               {/* confirm creation and provide option to create another */}
-              <Button type="submit" isDisabled={isSubmitting}>
-                Save Playlist
-              </Button>
-              <Button
-                variantColor="red"
-                onClick={() => dispatch(discardPlaylist())}
-              >
-                Discard Playlist
-              </Button>
+              <Flex direction="row" mt="auto" justify="space-between">
+                <Button size="xs" type="submit" isDisabled={isSubmitting}>
+                  Save Playlist
+                </Button>
+                <Button
+                  size="xs"
+                  variantColor="red"
+                  onClick={() => dispatch(discardPlaylist())}
+                >
+                  Discard Playlist
+                </Button>
+              </Flex>
             </Form>
           )}
         </Formik>
       )}
-    </Box>
+    </Flex>
   );
 }

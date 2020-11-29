@@ -25,6 +25,7 @@ export const FAILED_AUTH_FORM = "FAILED_AUTH_FORM";
 export const UPDATE_SONG_SOURCE = "UPDATE_SONG_SOURCE";
 export const REORDER = "REORDER";
 export const ADDTODRAGNDROP = "ADDTODRAGNDROP";
+export const REMOVEFROMDRAGNDROP = "REMOVEFROMDRAGNDROP";
 export const SETCREATEPLAYLISTSIDEBAR = "SETCREATEPLAYLISTSIDEBAR";
 export const TOGGLECREATEPLAYLISTSIDEBAR = "TOGGLECREATEPLAYLISTSIDEBAR";
 export const SAVEPLAYLIST = "SAVEPLAYLIST";
@@ -116,10 +117,16 @@ export interface discardPlaylist {
   type: typeof DISCARDPLAYLIST;
 }
 
+export interface removeFromDragAndDrop {
+  type: typeof REMOVEFROMDRAGNDROP;
+  payload: number;
+}
+
 export type playlistDragDrop =
   | reorderDragNDrop
   | addToDragNDrop
-  | discardPlaylist;
+  | discardPlaylist
+  | removeFromDragAndDrop;
 
 export interface setCreatePlaylistSidebar {
   type: typeof SETCREATEPLAYLISTSIDEBAR;

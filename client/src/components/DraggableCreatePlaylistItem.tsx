@@ -18,14 +18,16 @@ interface Props {
   context: playlistItemSongsType[];
 }
 
-export default function DraggableSearchResult(props: Props): ReactElement {
+export default function DraggableCreatePlaylistItem(
+  props: Props
+): ReactElement {
   const { imageUrl, index, name } = props;
 
   return (
     <Draggable
-      draggableId={imageUrl + index}
+      draggableId={"playlist" + imageUrl + name}
       index={index}
-      key={name + imageUrl}
+      key={imageUrl + name}
     >
       {(provided, snapshot) => {
         return (
@@ -35,23 +37,13 @@ export default function DraggableSearchResult(props: Props): ReactElement {
               {...provided.dragHandleProps}
               {...provided.draggableProps}
               ref={provided.innerRef}
-            >
-              <SearchResult {...props} />
-            </Flex>
-            {/* The duplicated component below is rendered so we don't get a stutter when we try to load the image */}
-            <Box
-              className="HIDDEN"
               css={css`
-                display: ${snapshot.isDragging ? "block" : "none"};
-                pointer-events: "none";
-
-                & ~ div {
-                  transform: ${snapshot.isDragging && "none !important"};
-                }
+                ${snapshot.isDropAnimating &&
+                "transition-duration: 0.001s !important;"}
               `}
             >
               <SearchResult {...props} />
-            </Box>
+            </Flex>
           </React.Fragment>
         );
       }}
