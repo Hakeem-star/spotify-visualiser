@@ -139,7 +139,7 @@ export interface toggleCreatePlaylistSidebarOpen {
 }
 
 export interface playlistItemType {
-  name: string | null;
+  name: string;
   id: string | undefined;
   items: playlistItemSongsType[];
 }

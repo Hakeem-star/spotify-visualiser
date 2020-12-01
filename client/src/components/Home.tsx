@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from "react";
+import React, { ReactElement, useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Flex, useDisclosure } from "@chakra-ui/react";
@@ -118,10 +118,28 @@ export default function Home(): ReactElement {
     }
   }, [spotifyAuth.isSignedIn]);
 
+  //Visualiser state
+  const [visualiserOn, setVisualiserOn] = useState(false);
+  //Canvas parent ref
+  const canvasContainerRef = useRef();
+
   return (
     <Flex direction="column" h="100vh">
-      <Header connectToSpotifyModalToggle={{ open: onOpen, close: onClose }} />
-      <Flex flex="1" overflow="hidden">
+      <Header
+        setVisualiserOn={setVisualiserOn}
+        connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
+      />
+      <Flex
+        flex="1"
+        position="relative"
+        overflow="hidden"
+        ref={canvasContainerRef as any}
+      >
+        {/* {console.log({ CAN: canvasContainerRef.current })} */}
+        <Visualiser
+          visualiserOn={visualiserOn}
+          container={canvasContainerRef as any}
+        />
         {/* <SourceSelector
           connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
         /> */}
@@ -142,7 +160,6 @@ export default function Home(): ReactElement {
         onClose={onClose}
       />
       {ytReady ? <YouTubePlayer /> : null}
-      {/* <Visualiser /> */}
       <Player />
     </Flex>
   );

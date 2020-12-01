@@ -18,6 +18,7 @@ import DraggableCreatePlaylistItem from "./DraggableCreatePlaylistItem";
 import { insertIntoArray } from "../util/insertIntoArray";
 
 export default function CreatePlaylist(): ReactElement {
+  //This might not be needed but I may be able to refactor
   const createPlaylistSidebarOpenState = useSelector(
     (state: AppState) => state.createPlaylistSidebar
   );
@@ -74,6 +75,8 @@ export default function CreatePlaylist(): ReactElement {
             } else if (values.name.length < 5) {
               errors.name = "Must be at least 5 characters";
             } else if (
+              //It's not tha same name as the playlist it's editing
+              createPlaylist.name !== values.name &&
               //Check is Playlist by that name already exists
               Object.entries(playlists).some(
                 ([id, data]) => data.name === values.name
@@ -91,7 +94,7 @@ export default function CreatePlaylist(): ReactElement {
             });
             dispatch(
               savePlaylist(
-                createPlaylist.name || values.name,
+                values.name || createPlaylist.name,
                 createPlaylist.id
               )
             );
@@ -105,6 +108,7 @@ export default function CreatePlaylist(): ReactElement {
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
+                overflow: "hidden",
               }}
             >
               <MyTextInput
@@ -117,8 +121,7 @@ export default function CreatePlaylist(): ReactElement {
                 {(provided) => (
                   <Flex
                     mt="30px"
-                    // h="80%"
-                    height="350px"
+                    flex={1}
                     w="100%"
                     direction="column"
                     overflow="auto"
@@ -164,12 +167,12 @@ export default function CreatePlaylist(): ReactElement {
                 )}
               </Droppable>
               {/* confirm creation and provide option to create another */}
-              <Flex direction="row" mt="auto" justify="space-between">
-                <Button size="xs" type="submit" isDisabled={isSubmitting}>
+              <Flex direction="row" m="30px 0 auto" justify="space-between">
+                <Button size="sm" type="submit" isDisabled={isSubmitting}>
                   Save Playlist
                 </Button>
                 <Button
-                  size="xs"
+                  size="sm"
                   variantColor="red"
                   onClick={() => dispatch(discardPlaylist())}
                 >

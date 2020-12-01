@@ -10,7 +10,7 @@ import {
 } from "../actions/types";
 
 const INITIAL_STATE = {
-  name: null,
+  name: "",
   id: undefined,
   items: [],
 } as playlistItemType;

@@ -23,7 +23,13 @@ import {
   MenuItem,
   InputRightAddon,
 } from "@chakra-ui/react";
-import React, { ReactElement, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiFireWave } from "react-icons/gi";
@@ -38,10 +44,12 @@ import SourceSelector from "./SourceSelector";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
+  setVisualiserOn: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Header({
   connectToSpotifyModalToggle,
+  setVisualiserOn,
 }: Props): ReactElement {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -134,6 +142,9 @@ export default function Header({
                 border-bottom: 3px solid blue;
               }
             `}
+            onClick={() => {
+              setVisualiserOn((val) => !val);
+            }}
           >
             Visualiser
           </ListItem>
