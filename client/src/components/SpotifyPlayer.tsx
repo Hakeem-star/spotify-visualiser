@@ -18,7 +18,8 @@ interface Props {
 }
 
 const debouncedNextSongDispatch = debounce(endSongCheck, 1000);
-function endSongCheck([dispatch]: [dispatch: Dispatch<any>]) {
+
+function endSongCheck(dispatch: Dispatch<any>) {
   console.log("Track ended");
   dispatch(nextSong());
 }

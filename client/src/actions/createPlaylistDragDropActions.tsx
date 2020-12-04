@@ -7,6 +7,8 @@ import {
   DISCARDPLAYLIST,
   REMOVEFROMDRAGNDROP,
   REORDER,
+  SPOTIFY,
+  YOUTUBE,
 } from "./types";
 
 export function reorderDragNDrop(
@@ -23,9 +25,9 @@ export function addToDragNDrop(
   droppableDestination: DraggableLocation
 ): ThunkResult<void> {
   return (dispatch: Dispatch<AppActions>, getState) => {
-    const musicOBJSource = droppableSource.droppableId.includes("spotify")
-      ? "spotify"
-      : "youtube";
+    const musicOBJSource = droppableSource.droppableId.includes(SPOTIFY)
+      ? SPOTIFY
+      : YOUTUBE;
     //Get song items
     const searchResults = getState().songSearchResult[musicOBJSource];
 

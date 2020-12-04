@@ -17,7 +17,6 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
   const ytPlayer: any = useRef();
   const previousVidId = useRef("");
   const dispatch = useDispatch();
-  console.log({ youtube: playerState });
   useEffect(() => {
     //Setup player
     ytPlayer.current = new window.YT.Player("player", {
@@ -33,7 +32,6 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
         },
       },
     });
-    console.log({ YT: ytPlayer.current });
 
     //Add event listener
     ytPlayer.current.addEventListener("onStateChange", (event: any) => {

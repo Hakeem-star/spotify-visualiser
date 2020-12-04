@@ -20,6 +20,7 @@ import {
   NEXT_SONG,
   PREV_SONG,
   GUEST,
+  SPOTIFY_SIGN_IN_FAILED,
 } from "./types";
 import { Dispatch } from "redux";
 import { AppState } from "../reducers";
@@ -27,9 +28,6 @@ import {
   userData,
   ThunkResult,
   songSearchResult,
-  playSongPayload,
-  spotifyResult,
-  remappedSearchResult,
   updateSongSourcesType,
 } from "../types";
 import { remapSongSearchResult } from "../util/remapSongSearchResult";
@@ -178,6 +176,9 @@ export const spotifySignIn = (): ThunkResult<void> => {
             dispatch(spotifySignIn());
           } catch (error) {
             console.log("Server Error", error);
+            dispatch({
+              type: SPOTIFY_SIGN_IN_FAILED,
+            });
           }
         }
       }
@@ -196,7 +197,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
     if (!title) {
       dispatch({
         type: SONG_SEARCH,
-        payload: { spotify: null, youtube: null },
+        payload: { [SPOTIFY]: null, [YOUTUBE]: null },
       });
       return;
     }
@@ -226,7 +227,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
     console.log({ res: songResults }, songResults.data);
 
     if (songResults.data.spotifyResults) {
-      arrangedResults.spotify =
+      arrangedResults[SPOTIFY] =
         (songResults.data.spotifyResults.error &&
           songResults.data.spotifyResults) ||
         remapSongSearchResult(
@@ -235,37 +236,51 @@ export const songSearch = (title: string): ThunkResult<void> => {
           "next",
           "previous",
           "items",
-          "album.images.1.url",
+          "album.images",
           "name",
           "artists.0.name",
           "album.release_date",
-          "uri"
+          "uri",
+          "duration"
         );
     } else {
-      arrangedResults.spotify = null;
+      arrangedResults[SPOTIFY] = null;
     }
 
     if (songResults.data.youtubeResults) {
-      arrangedResults.youtube =
-        (songResults.data.youtubeResults.error &&
-          songResults.data.youtubeResults) ||
-        remapSongSearchResult(
+      if (songResults.data.youtubeResults.error) {
+        arrangedResults[YOUTUBE] = songResults.data.youtubeResults;
+      } else {
+        //change the format of the images in the response
+        songResults.data.youtubeResults.items.forEach((item: any) => {
+          const imageSizes = Object.values(item.snippet.thumbnails).sort(
+            (a: any, b: any) => {
+              return b.width - a.width;
+            }
+          );
+          // console.log({ imageSizes });
+          item.snippet.thumbnails = { ...imageSizes };
+        });
+        console.log(songResults.data.youtubeResults);
+        arrangedResults[YOUTUBE] = remapSongSearchResult(
           YOUTUBE,
           songResults.data.youtubeResults,
           "nextPageToken",
           "prevPageToken",
           "items",
-          "snippet.thumbnails.high.url",
+          "snippet.thumbnails",
           "snippet.title",
           "snippet.channelTitle",
           "snippet.publishedAt",
-          "id.videoId"
+          "id.videoId",
+          "duration"
         );
+      }
     } else {
-      arrangedResults.youtube = null;
+      arrangedResults[YOUTUBE] = null;
     }
 
-    console.log({ songResults: songResults });
+    console.log({ arrangedResults });
 
     //Next page tokens
 

@@ -16,6 +16,8 @@ export const SIGN_IN = "SIGN_IN";
 export const GUEST = "GUEST";
 export const SIGN_IN_AS_GUEST = "SIGN_IN_AS_GUEST";
 export const SPOTIFY_SIGN_IN = "SPOTIFY_SIGN_IN";
+export const SPOTIFY_SIGN_IN_FAILED = "SPOTIFY_SIGN_IN_FAILED";
+
 export const SIGN_OUT = "SIGN_OUT";
 export const SIGN_UP = "SIGN_UP";
 export const SPOTIFY = "SPOTIFY";
@@ -37,6 +39,10 @@ export const DISCARDPLAYLIST = "DISCARDPLAYLIST";
 export interface spotifySignInAction {
   type: typeof SPOTIFY_SIGN_IN;
   payload: { userData: userData | null; spotifyToken: string | null };
+}
+
+export interface spotifySignInFailedAction {
+  type: typeof SPOTIFY_SIGN_IN_FAILED;
 }
 
 export interface signInAsGuestType {
@@ -65,6 +71,7 @@ export interface failedAuthForm {
 export type AuthActionTypes =
   | signOutAction
   | spotifySignInAction
+  | spotifySignInFailedAction
   | signInAction
   | signUpAction
   | signInAsGuestType

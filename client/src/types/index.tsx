@@ -151,25 +151,33 @@ export type playSongPayload = {
 } | null;
 
 export interface remappedSearchResult extends songSearchError {
-  arrayOfResults: Record<string, any>;
+  // arrayOfResults: Record<string, any>;
   next: string;
   previous: string | null;
   items: {
     source: string;
-    imageUrl: string;
+    imageUrl: Record<
+      number,
+      {
+        height: number;
+        url: string;
+        width: number;
+      }
+    >;
     name: string;
     artist: string;
     year: string;
     url: string;
+    duration: string;
   }[];
 }
 
 export interface songSearchResult {
-  spotify: remappedSearchResult | null;
-  youtube: remappedSearchResult | null;
+  SPOTIFY: remappedSearchResult | null;
+  YOUTUBE: remappedSearchResult | null;
 }
 export interface spotifyAuthState {
-  isSignedIn: boolean;
+  isSignedIn: boolean | null;
   userData: userData | null;
   spotifyToken: string | null;
 }
@@ -190,6 +198,6 @@ export interface noTokenError {
   };
 }
 
-export type updateSongSourcesType = (string | number | undefined)[];
+export type updateSongSourcesType = string[];
 
 export type ThunkResult<R> = ThunkAction<R, AppState, unknown, AppActions>;

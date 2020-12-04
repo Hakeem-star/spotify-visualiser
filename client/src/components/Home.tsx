@@ -8,7 +8,6 @@ import Player from "./Player";
 import ConnectToSpotifyModal from "./ConnectToSpotifyModal";
 import useSpotifyPlayer from "./SpotifyPlayer";
 import { Visualiser } from "./Visualiser";
-import SourceSelector from "./SourceSelector";
 
 import SearchResultWithPlaylistCreator from "./SearchResultWithPlaylistCreator";
 import { Route, Switch } from "react-router-dom";
@@ -43,7 +42,6 @@ export default function Home(): ReactElement {
       if (firstScriptTag !== null) {
         firstScriptTag.appendChild(tag);
         tag.onload = () => {
-          console.log("DONE", window.YT);
           const clearcheck = setInterval(repeatcheck, 500, 0);
           function repeatcheck(oldvalue: number) {
             if (window.YT.loaded !== oldvalue) {
@@ -110,7 +108,8 @@ export default function Home(): ReactElement {
   }, []);
 
   useEffect(() => {
-    if (!spotifyAuth.isSignedIn) {
+    if (spotifyAuth.isSignedIn === false) {
+      console.log({ isSignedIn: spotifyAuth.isSignedIn });
       onOpen();
       // dispatch(spotifySignIn());
     } else {

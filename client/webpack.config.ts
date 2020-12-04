@@ -30,6 +30,19 @@ const config: webpack.Configuration = {
           },
         },
       },
+
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg|gif)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: "file-loader",
+          },
+        ],
+      },
     ],
   },
   resolve: {
@@ -44,7 +57,7 @@ const config: webpack.Configuration = {
     compress: true,
     port: 4000,
     historyApiFallback: true,
-    hot:true
+    hot: true,
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({

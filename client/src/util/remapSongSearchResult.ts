@@ -1,6 +1,5 @@
 import { getPropertyValue } from "./getPropertyValue";
 import { remappedSearchResult } from "../types";
-import { SPOTIFY } from "../actions/types";
 //Transforms the result from the Api to an object my components can easily use
 export const remapSongSearchResult = (
   source: string,
@@ -12,16 +11,13 @@ export const remapSongSearchResult = (
   name: string,
   artist: string,
   year: string,
-  url: string
-): {
-  next: string;
-  previous: string;
-  items?: remappedSearchResult[] | undefined;
-} => {
-  const obj: { next: string; previous: string; items?: [] } = {
+  url: string,
+  duration: string
+): remappedSearchResult => {
+  const obj = {
     next: next ? getPropertyValue(arrayOfResults, next) : "",
     previous: previous ? getPropertyValue(arrayOfResults, previous) : "",
-  };
+  } as remappedSearchResult;
   obj.items = arrayOfResults[items].map((item: Record<string, any>) => {
     return {
       source,
@@ -30,6 +26,7 @@ export const remapSongSearchResult = (
       artist: getPropertyValue(item, artist),
       year: getPropertyValue(item, year),
       url: getPropertyValue(item, url),
+      duration: getPropertyValue(item, duration),
     };
   });
   return obj;

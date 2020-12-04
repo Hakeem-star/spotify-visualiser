@@ -1,7 +1,5 @@
 import {
   Flex,
-  CheckboxGroup,
-  Checkbox,
   Button,
   Menu,
   MenuButton,
@@ -15,7 +13,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateSongSources } from "../actions";
 import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
-import { updateSongSourcesType } from "../types";
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
 }
@@ -24,19 +21,17 @@ export default function SourceSelector({
 }: Props): ReactElement {
   const dispatch = useDispatch();
   const spotifyAuth = useSelector((state: AppState) => state.spotifyAuth);
-  // const [checkboxState
-  const [checkboxStates, setCheckboxStates] = useState<string[]>([YOUTUBE]);
+  const songSources = useSelector((state: AppState) => state.songSources);
+
+  console.log({ isSignedIn: spotifyAuth.isSignedIn }, songSources);
 
   useEffect(() => {
     //Check the box when we confirm signin for Spotify
     if (spotifyAuth.isSignedIn) {
-      setCheckboxStates((state) => {
-        if (!state.includes(SPOTIFY)) {
-          const newState = [SPOTIFY, YOUTUBE];
-          dispatch(updateSongSources(newState));
-          return newState;
-        } else return state;
-      });
+      if (!songSources.includes(SPOTIFY)) {
+        const newState = [SPOTIFY, YOUTUBE];
+        dispatch(updateSongSources(newState));
+      }
     }
   }, [spotifyAuth.isSignedIn]);
 
@@ -46,16 +41,15 @@ export default function SourceSelector({
         <MenuButton as={Button}>Sources</MenuButton>
         <MenuList minWidth="240px">
           <MenuOptionGroup
-            defaultValue={checkboxStates}
+            defaultValue={songSources}
+            value={songSources}
             onChange={(values: any) => {
-              console.log(values.includes(SPOTIFY), !spotifyAuth);
+              console.log("LOGGIN", values.includes(SPOTIFY), !spotifyAuth);
               if (values.includes(SPOTIFY) && !spotifyAuth.isSignedIn) {
                 //show sign in modal
                 connectToSpotifyModalToggle.open();
                 return;
               }
-              console.log({ values });
-              setCheckboxStates(values);
               dispatch(updateSongSources(values));
             }}
             type="checkbox"
@@ -65,33 +59,6 @@ export default function SourceSelector({
           </MenuOptionGroup>
         </MenuList>
       </Menu>
-
-      {/* <CheckboxGroup
-        css={css`
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-around;
-          width: 100%;
-        `}
-        spacing="0px"
-        onChange={(values: updateSongSourcesType) => {
-          console.log(values.includes(SPOTIFY), !spotifyAuth);
-          if (values.includes(SPOTIFY) && !spotifyAuth.isSignedIn) {
-            //show sign in modal
-            connectToSpotifyModalToggle.open();
-            return;
-          }
-          console.log({ values });
-          setCheckboxStates(values);
-          dispatch(updateSongSources(values));
-        }}
-        value={checkboxStates}
-        defaultValue={[YOUTUBE]}
-      >
-        <Checkbox value={SPOTIFY}>Spotify</Checkbox>
-        <Checkbox value={YOUTUBE}>Youtube</Checkbox>
-      </CheckboxGroup> */}
     </Flex>
   );
 }

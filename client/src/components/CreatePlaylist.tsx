@@ -171,11 +171,7 @@ export default function CreatePlaylist(): ReactElement {
                 <Button size="sm" type="submit" isDisabled={isSubmitting}>
                   Save Playlist
                 </Button>
-                <Button
-                  size="sm"
-                  variantColor="red"
-                  onClick={() => dispatch(discardPlaylist())}
-                >
+                <Button size="sm" onClick={() => dispatch(discardPlaylist())}>
                   Discard Playlist
                 </Button>
               </Flex>

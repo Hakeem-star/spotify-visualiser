@@ -80,6 +80,7 @@ export default function Header({
       h="7%"
       align="center"
       borderBottom="3px solid #A31709"
+      zIndex="100"
     >
       <Box
         style={{ placeItems: "center" }}

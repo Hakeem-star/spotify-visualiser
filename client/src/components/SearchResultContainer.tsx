@@ -8,6 +8,7 @@ import { Droppable } from "react-beautiful-dnd";
 import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
 import { insertIntoArray } from "../util/insertIntoArray";
+import { SearchListMaker } from "./SearchListMaker";
 import SearchResultList from "./SearchResultList";
 
 const scrollbarStyle = css`
@@ -32,123 +33,16 @@ const scrollbarStyle = css`
   }
 `;
 
-const VerticalResultsDivider = () => (
-  <Divider
-    orientation="vertical"
-    height="93%"
-    alignSelf="center"
-    borderColor="#417AF0"
-    m="0 3px"
-  />
-);
-
 export default function SearchResultContainer({
   songSearchResults,
 }: {
   songSearchResults: AppState["songSearchResult"];
 }): ReactElement {
-  //Build results based on values from songSearchResults
-  const results: (ReactElement | null)[] = [];
-
-  if (songSearchResults.spotify !== null) {
-    if (songSearchResults.spotify.error) {
-      //if there is an error, push error message
-      results.push(
-        <Text key={SPOTIFY}>{songSearchResults.spotify.error?.message}</Text>
-      );
-    } else {
-      if (songSearchResults.spotify.items?.length > 0) {
-        //if there is at least 1 item in the response, show that
-        results.push(
-          <Droppable
-            key={SPOTIFY}
-            isDropDisabled={true}
-            droppableId={"spotifySearchResultContainer"}
-          >
-            {(provided) =>
-              songSearchResults.spotify !== null ? (
-                <Flex
-                  direction="row"
-                  overflow="auto"
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  <SearchResultList
-                    key={SPOTIFY}
-                    source={SPOTIFY}
-                    items={songSearchResults.spotify.items}
-                  />
-                </Flex>
-              ) : (
-                <></>
-              )
-            }
-          </Droppable>
-        );
-      } else {
-        //else nothing
-        results.push(null);
-      }
-    }
-  } else {
-    results.push(null);
-  }
-
-  if (songSearchResults.youtube) {
-    if (songSearchResults.youtube.error) {
-      //if there is an error, push error message
-      results.push(
-        <Text key={YOUTUBE}>{songSearchResults.youtube.error?.message}</Text>
-      );
-    } else {
-      if (songSearchResults.youtube.items?.length > 0) {
-        //if there is at least 1 item in the response, show that
-        results.push(
-          <Droppable
-            key={YOUTUBE}
-            isDropDisabled={true}
-            droppableId={"youTubeSearchResultContainer"}
-          >
-            {(provided) =>
-              songSearchResults.youtube !== null ? (
-                <Flex
-                  direction="row"
-                  overflow="auto"
-                  minW="400px"
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  css={scrollbarStyle}
-                >
-                  <SearchResultList
-                    key={YOUTUBE}
-                    source={YOUTUBE}
-                    items={songSearchResults.youtube.items}
-                  />
-                </Flex>
-              ) : (
-                <></>
-              )
-            }
-          </Droppable>
-        );
-        //else nothing
-      } else results.push(null);
-    }
-    results.push(<VerticalResultsDivider />);
-  } else {
-    results.push(null);
-  }
-
   return (
-    <SimpleGrid
-      autoFlow="column"
-      autoColumns="minmax(auto,20%);"
-      direction="row"
-      w="100%"
-      h="100%"
-      overflow="hidden"
-    >
-      {results}
-    </SimpleGrid>
+    <Flex p="0 30px" w="100%" h="100%" overflow="hidden">
+      {/* {results} */}
+      <SearchListMaker results={songSearchResults[SPOTIFY]} id={SPOTIFY} />
+      <SearchListMaker results={songSearchResults[YOUTUBE]} id={YOUTUBE} />
+    </Flex>
   );
 }

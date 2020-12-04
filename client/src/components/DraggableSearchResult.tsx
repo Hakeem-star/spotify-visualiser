@@ -7,25 +7,19 @@ import { playlistItemSongsType } from "../actions/types";
 
 import SearchResult from "./SearchResult";
 
-interface Props {
-  imageUrl: string;
-  name: string;
-  artist: string;
-  year: string;
-  url: string;
-  source: string;
+interface Props extends playlistItemSongsType {
   index: number;
   context: playlistItemSongsType[];
 }
 
 export default function DraggableSearchResult(props: Props): ReactElement {
   const { imageUrl, index, name } = props;
-
+  console.log({ imageUrl });
   return (
     <Draggable
-      draggableId={imageUrl + index}
+      draggableId={imageUrl[0].url + name}
       index={index}
-      key={name + imageUrl}
+      key={name + imageUrl[0].url}
     >
       {(provided, snapshot) => {
         return (

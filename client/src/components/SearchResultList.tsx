@@ -4,7 +4,6 @@ import React, { ReactElement } from "react";
 import { remappedSearchResult } from "../types";
 import { insertIntoArray } from "../util/insertIntoArray";
 import DraggableSearchResult from "./DraggableSearchResult";
-import SearchResult from "./SearchResult";
 
 const scrollbarStyle = css`
   ::-webkit-scrollbar {
@@ -36,39 +35,39 @@ export default function SearchResultList({
     <Flex
       className="SearchResultList"
       w="100%"
-      overflow="auto"
+      overflow="hidden"
       flexDirection="column"
-      ml="30px"
       mt="30px"
       p=" 0 10px 10px"
       borderRadius="10px"
       css={scrollbarStyle}
     >
-      <Heading
-        zIndex="1"
-        background="white"
-        position="sticky"
-        top="0"
-        mb="20px"
-        pb="10px"
-      >
+      <Heading background="white" mb="20px" pb="10px">
         {source}
 
         {/* <Divider mt="10px" mb="20px" /> */}
       </Heading>
-      {insertIntoArray(
-        items.map((item, index) => {
-          return (
-            <DraggableSearchResult
-              context={items}
-              {...item}
-              index={index}
-              key={item.url + item.name}
-            />
-          );
-        }),
-        <Divider borderColor="#417AF0" m="3px 0" />
-      )}
+      <Flex
+        w="100%"
+        overflow="overlay"
+        flexDirection="column"
+        css={scrollbarStyle}
+      >
+        {/* Issue is these don't create a key for the children */}
+        {insertIntoArray(
+          items.map((item, index) => {
+            return (
+              <DraggableSearchResult
+                context={items}
+                {...item}
+                index={index}
+                key={item.url + item.name}
+              />
+            );
+          }),
+          <Divider borderColor="#417AF0" m="3px 0" />
+        )}
+      </Flex>
     </Flex>
   );
 }

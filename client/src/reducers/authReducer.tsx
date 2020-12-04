@@ -7,11 +7,12 @@ import {
   SIGN_OUT,
   SIGN_UP,
   SPOTIFY_SIGN_IN,
+  SPOTIFY_SIGN_IN_FAILED,
 } from "../actions/types";
 import { spotifyAuthState, appAuthState, authFormErrorState } from "../types";
 
 const INITIAL_STATE = {
-  isSignedIn: false,
+  isSignedIn: null,
   userData: null,
   spotifyToken: null,
 };
@@ -20,7 +21,6 @@ export const spotifyAuthReducer: Reducer<spotifyAuthState> = (
   state = INITIAL_STATE,
   action: AuthActionTypes
 ) => {
-  console.log("SPOOOT", action.type);
   switch (action.type) {
     case SPOTIFY_SIGN_IN:
       return {
@@ -29,7 +29,12 @@ export const spotifyAuthReducer: Reducer<spotifyAuthState> = (
         userData: action.payload.userData,
         spotifyToken: action.payload.spotifyToken,
       };
-
+    //Change isSignedIn to false to signify that a login attempt was made
+    case SPOTIFY_SIGN_IN_FAILED:
+      return {
+        ...state,
+        isSignedIn: false,
+      };
     default:
       return state;
   }

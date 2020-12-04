@@ -4,8 +4,8 @@ import { SongSearchTypes, SONG_SEARCH } from "../actions/types";
 import { songSearchResult } from "../types";
 
 const INITIAL_STATE = {
-  spotify: {},
-  youtube: {},
+  SPOTIFY: {},
+  YOUTUBE: {},
 } as songSearchResult;
 
 export const songSearchReducer = (

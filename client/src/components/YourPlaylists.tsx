@@ -64,6 +64,7 @@ export default function YourPlaylists(): ReactElement {
                 border="1px solid #dfdfdf"
               >
                 {data.items.slice(0, previewCount).map((val, index) => {
+                  console.log({ images: val.imageUrl });
                   return (
                     <Image
                       zIndex="-1"
@@ -71,8 +72,8 @@ export default function YourPlaylists(): ReactElement {
                       width="100%"
                       height="100%"
                       objectFit="cover"
-                      key={val.imageUrl}
-                      src={val.imageUrl}
+                      key={val.imageUrl[0].url}
+                      src={val.imageUrl[0].url}
                       alt={val.name}
                     />
                   );
