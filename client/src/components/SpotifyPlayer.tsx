@@ -56,6 +56,10 @@ export default function useSpotifyPlayer(): void {
   const player: any = useRef(null);
   const previousVidId = useRef("");
   const playerState = useSelector((state: AppState) => state.playerState);
+  const externalPlayerSongMeta = useSelector(
+    (state: AppState) => state.externalPlayerSongMeta
+  );
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -110,7 +114,12 @@ export default function useSpotifyPlayer(): void {
           player.current.getCurrentState().then((state: any) => {
             console.log({ state });
             const { duration, position } = state;
-            dispatch(setCurrentSongDetails({ duration, position }));
+            dispatch(
+              setCurrentSongDetails({
+                duration: duration / 1000,
+                position: position / 1000,
+              })
+            );
           });
         }
       });
@@ -176,4 +185,13 @@ export default function useSpotifyPlayer(): void {
     }
     previousVidId.current = playerState.url;
   }, [playerState]);
+
+  useEffect(() => {
+    //Seeking
+    console.log(externalPlayerSongMeta.seekPosition, playerState.source);
+    if (playerState.source === SPOTIFY) {
+      console.log({ seekPosition: externalPlayerSongMeta.seekPosition });
+      player.current.seek(externalPlayerSongMeta.seekPosition * 1000);
+    }
+  }, [externalPlayerSongMeta.seekPosition]);
 }

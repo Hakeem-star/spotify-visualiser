@@ -18,7 +18,7 @@
     "axios": "^0.20.0",
     "firebase": "^8.0.0",
     "formik": "^2.2.1",
-    "framer-motion": "^2.9.4",
+    "framer-motion": "^2.9.5",
     "msw": "^0.22.3",
     "pts": "^0.9.5",
     "react": "^16.14.0",

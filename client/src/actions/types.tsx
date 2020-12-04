@@ -35,7 +35,9 @@ export const EDITPLAYLIST = "EDITPLAYLIST";
 export const DELETEPLAYLIST = "DELETEPLAYLIST";
 export const PLAYLISTS = "PLAYLISTS";
 export const DISCARDPLAYLIST = "DISCARDPLAYLIST";
+
 export const SETCURRENTSONGDETAILS = "SETCURRENTSONGDETAILS";
+export const SEEKPOSITION = "SEEKPOSITION";
 
 export interface spotifySignInAction {
   type: typeof SPOTIFY_SIGN_IN;
@@ -183,13 +185,29 @@ export type createPlaylistSidebarOpen =
   | setCreatePlaylistSidebar
   | toggleCreatePlaylistSidebarOpen;
 
+export interface metaSongDetailsPayload {
+  duration: number;
+  position: number;
+}
+
+export type metaSeekPayload = {
+  seekPosition: number;
+};
+
+export interface metaPayloads extends metaSongDetailsPayload, metaSeekPayload {}
+
 export interface setCurrentSongDetailsType {
   type: typeof SETCURRENTSONGDETAILS;
-  payload: {
-    duration: number;
-    position: number;
-  };
+  payload: metaSongDetailsPayload;
 }
+
+export interface seekPositionType {
+  type: typeof SEEKPOSITION;
+  payload: metaSeekPayload;
+}
+
+export type metaTypes = setCurrentSongDetailsType | seekPositionType;
+
 export type AppActions =
   | AuthActionTypes
   | SongSearchTypes
@@ -198,4 +216,4 @@ export type AppActions =
   | savePlaylist
   | editPlaylist
   | deletePlaylist
-  | setCurrentSongDetailsType;
+  | metaTypes;

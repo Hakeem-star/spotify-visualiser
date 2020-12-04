@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useRef, useState } from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { nextSong, playSong } from "../actions";
 import { setCurrentSongDetails } from "../actions/externalPlayerActions";
 import { NEXT_SONG, YOUTUBE } from "../actions/types";
@@ -11,13 +11,17 @@ interface Props {
   pause?: () => void;
   mute?: () => void;
   setVolume?: () => void;
-  playerState: playSongReducedState;
 }
 
-function YouTubePlayer({ playerState }: Props): ReactElement {
+export default function YouTubePlayer(): ReactElement {
   const ytPlayer: any = useRef();
   const previousVidId = useRef("");
   const dispatch = useDispatch();
+  const playerState = useSelector((state: AppState) => state.playerState);
+  const externalPlayerSongMeta = useSelector(
+    (state: AppState) => state.externalPlayerSongMeta
+  );
+
   useEffect(() => {
     //Setup player
     ytPlayer.current = new window.YT.Player("player", {
@@ -38,11 +42,12 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
     ytPlayer.current.addEventListener("onStateChange", (event: any) => {
       console.log({ event });
 
-      if ([1, 2, 3].some((val) => val == event.data)) {
+      if ([1].some((val) => val == event.data)) {
         //If playing, paused or buffering, get the current time and duration
+        //Duration and position are in seconds, not ms
         const duration = ytPlayer.current.getDuration();
         const position = ytPlayer.current.getCurrentTime();
-
+        console.log({ duration, position });
         dispatch(setCurrentSongDetails({ duration, position }));
       }
       if (event.data === 0) {
@@ -89,6 +94,14 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
     previousVidId.current = playerState.url;
   }, [playerState]);
 
+  useEffect(() => {
+    //Seeking
+    if (playerState.source === YOUTUBE) {
+      console.log({ seekPosition: externalPlayerSongMeta.seekPosition });
+      ytPlayer.current.seekTo(externalPlayerSongMeta.seekPosition, true);
+    }
+  }, [externalPlayerSongMeta.seekPosition]);
+
   return (
     // Hide the youtube video
     <div style={{ display: "none" }}>
@@ -96,8 +109,3 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
     </div>
   );
 }
-
-const mapStateToProps = (state: AppState) => ({
-  playerState: state.playerState,
-});
-export default connect(mapStateToProps)(YouTubePlayer);

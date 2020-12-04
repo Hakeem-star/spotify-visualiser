@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AppState } from "../reducers";
 import { changePlayerState, nextSong, prevSong } from "../actions";
@@ -17,6 +17,17 @@ import {
 import { BsPlay, BsPause } from "react-icons/bs";
 import { TOGGLE_PLAY_STATE } from "../actions/types";
 import { css } from "@emotion/react";
+import { animate, motion, useMotionValue } from "framer-motion";
+import { seekSongPosition } from "../actions/externalPlayerActions";
+
+const calculatePosition = (duration: number, position: number) => {
+  //Handles a 0/0 incident
+  if (!duration && !position) {
+    return 0;
+  }
+  //Get percentage position in duration
+  return (position / duration) * 100;
+};
 
 export default function Player(): ReactElement {
   const dispatch = useDispatch();
@@ -26,15 +37,87 @@ export default function Player(): ReactElement {
   );
 
   const { context, index } = playerState;
-  console.log({ context: playerState });
+  const { duration, position } = songMeta;
+
+  const [sliderPosition, setSliderPosition] = useState(
+    calculatePosition(duration, position)
+  );
+
+  const sliderXPosition = useMotionValue(sliderPosition);
+
+  // console.log({ context: { duration, position, sliderPosition } });
+  const controls = useRef<{ stop: () => void }>();
+  const [movingSlider, setMovingSlider] = useState(false);
+
+  const previousPlayerStateUrl = useRef();
+
+  // useEffect(() => {
+  //   setSliderPosition((state) => {
+  //     return state;
+  //   });
+  // }, [movingSlider]);
+
+  useEffect(() => {
+    //Set the start time to 0 when a new song is played
+    //If url changed, stop the animation and set it to 0, we then wait for duration & position to update in the next useEffect, to start the animation
+    controls.current?.stop();
+    sliderXPosition.set(0);
+  }, [playerState.url, sliderXPosition]);
 
   useEffect(() => {
     //If a new track is playing, get the position of the track and match it to the slider position
-  }, [songMeta]);
+    //Play song from postion & duration
+
+    if (duration) {
+      controls.current = animate(sliderXPosition, 100, {
+        type: "tween",
+        duration: duration - position,
+        ease: "linear",
+        onUpdate: (val) => {
+          console.log({
+            val,
+            duration,
+            position,
+          });
+          setSliderPosition(val);
+        },
+      });
+
+      return () => {
+        //stop animating slider when a change is detected
+        controls.current?.stop();
+      };
+    }
+  }, [duration, position, sliderXPosition]);
 
   return (
     <Flex direction="column">
-      <Slider defaultValue={30}>
+      <Slider
+        w="95%"
+        m="0 auto"
+        focusThumbOnChange={false}
+        value={sliderPosition}
+        onChange={(val) => {
+          setSliderPosition(val);
+        }}
+        onChangeStart={() => {
+          controls.current?.stop();
+          setMovingSlider(true);
+        }}
+        onChangeEnd={(val) => {
+          //Seeking. Need to update position on relevant external players.
+          //Making this change should force a change in the player state, which should update the songMeta state with the duration and position
+
+          if (movingSlider) {
+            dispatch(seekSongPosition((val / 100) * duration));
+            //Might need to wait for signal from player to say we can start animating slider
+
+            sliderXPosition.set(val);
+            setSliderPosition(val);
+            setMovingSlider(false);
+          }
+        }}
+      >
         <SliderTrack bg="red.100">
           <SliderFilledTrack bg="tomato" />
         </SliderTrack>
@@ -84,6 +167,7 @@ export default function Player(): ReactElement {
             <BsPause
               onClick={() => {
                 dispatch(changePlayerState(TOGGLE_PLAY_STATE));
+                controls.current?.stop();
               }}
               fontSize="6rem"
             />
@@ -91,6 +175,7 @@ export default function Player(): ReactElement {
             <BsPlay
               onClick={() => {
                 dispatch(changePlayerState(TOGGLE_PLAY_STATE));
+                //Pressing play changes the player states which forces the playhead to start animating again
               }}
               fontSize="6rem"
             />
