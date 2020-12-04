@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { nextSong, playSong } from "../actions";
+import { setCurrentSongDetails } from "../actions/externalPlayerActions";
 import { NEXT_SONG, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
 import { playSongReducedState } from "../reducers/playSongReducer";
@@ -35,6 +36,15 @@ function YouTubePlayer({ playerState }: Props): ReactElement {
 
     //Add event listener
     ytPlayer.current.addEventListener("onStateChange", (event: any) => {
+      console.log({ event });
+
+      if ([1, 2, 3].some((val) => val == event.data)) {
+        //If playing, paused or buffering, get the current time and duration
+        const duration = ytPlayer.current.getDuration();
+        const position = ytPlayer.current.getCurrentTime();
+
+        dispatch(setCurrentSongDetails({ duration, position }));
+      }
       if (event.data === 0) {
         console.log("ENDED");
         dispatch(nextSong());

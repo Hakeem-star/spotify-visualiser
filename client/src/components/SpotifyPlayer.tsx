@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useRef } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { nextSong } from "../actions";
+import { setCurrentSongDetails } from "../actions/externalPlayerActions";
 import { SPOTIFY } from "../actions/types";
 import { AppState } from "../reducers";
 import { playSongReducedState } from "../reducers/playSongReducer";
@@ -36,14 +37,18 @@ export const play = ({
   };
 }): void => {
   getOAuthToken((access_token) => {
-    fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-      method: "PUT",
-      body: JSON.stringify({ uris: [spotify_uri] }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    try {
+      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ uris: [spotify_uri] }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
   });
 };
 
@@ -89,6 +94,9 @@ export default function useSpotifyPlayer(): void {
 
       // Playback status updates
       player.current.addListener("player_state_changed", (state: any) => {
+        console.log({ spotify: state });
+
+        //Go to next track when finished
         if (
           state.track_window.previous_tracks.find(
             (x: any) => x.id === state.track_window.current_track.id
@@ -96,9 +104,14 @@ export default function useSpotifyPlayer(): void {
           state.paused &&
           !state.position
         ) {
-          console.log({ spotify: state });
-
           debouncedNextSongDispatch(dispatch);
+        } else if (!state.paused) {
+          //If not paused, get the position of the player head and add it to state
+          player.current.getCurrentState().then((state: any) => {
+            console.log({ state });
+            const { duration, position } = state;
+            dispatch(setCurrentSongDetails({ duration, position }));
+          });
         }
       });
 
@@ -145,9 +158,9 @@ export default function useSpotifyPlayer(): void {
     if (playerState.source === SPOTIFY) {
       console.log("URL", previousVidId.current, playerState?.url);
       if (previousVidId.current === playerState?.url) {
+        //If we have a spotify url and we have clicked on the same song, pause the song
+        //Play and stop Spotify song
         if (playerState.play) {
-          //If we have a spotify url and we have clicked on the same song, pause the song
-          //Play and stop Spotify song
           player.current.resume();
         } else {
           player.current.pause();

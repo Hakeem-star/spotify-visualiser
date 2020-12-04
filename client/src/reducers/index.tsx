@@ -10,6 +10,7 @@ import { savePlaylistReducer } from "./playlistReducer";
 import { songSearchReducer } from "./songSearchReducer";
 import { updateSongSourcesReducer } from "./updateSongSourcesReducer";
 import { createPlaylistSidebarReducer } from "./playlistSidebarReducer";
+import { setCurrentSongDetailsReducer } from "./setCurrentSongDetailsReducer";
 
 export const rootReducer = combineReducers({
   auth: appAuthReducer,
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
   spotifyAuth: spotifyAuthReducer,
   songSearchResult: songSearchReducer,
   playerState: playSongReducer,
+  externalPlayerSongMeta: setCurrentSongDetailsReducer,
   songSources: updateSongSourcesReducer,
   createPlaylist: playlistDragDropReducer,
   createPlaylistSidebar: createPlaylistSidebarReducer,

@@ -35,6 +35,7 @@ export const EDITPLAYLIST = "EDITPLAYLIST";
 export const DELETEPLAYLIST = "DELETEPLAYLIST";
 export const PLAYLISTS = "PLAYLISTS";
 export const DISCARDPLAYLIST = "DISCARDPLAYLIST";
+export const SETCURRENTSONGDETAILS = "SETCURRENTSONGDETAILS";
 
 export interface spotifySignInAction {
   type: typeof SPOTIFY_SIGN_IN;
@@ -182,6 +183,13 @@ export type createPlaylistSidebarOpen =
   | setCreatePlaylistSidebar
   | toggleCreatePlaylistSidebarOpen;
 
+export interface setCurrentSongDetailsType {
+  type: typeof SETCURRENTSONGDETAILS;
+  payload: {
+    duration: number;
+    position: number;
+  };
+}
 export type AppActions =
   | AuthActionTypes
   | SongSearchTypes
@@ -189,4 +197,5 @@ export type AppActions =
   | playlistDragDrop
   | savePlaylist
   | editPlaylist
-  | deletePlaylist;
+  | deletePlaylist
+  | setCurrentSongDetailsType;
