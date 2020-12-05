@@ -22,17 +22,20 @@ import {
   MenuOptionGroup,
   MenuItem,
   InputRightAddon,
+  Switch,
 } from "@chakra-ui/react";
 import React, {
   Dispatch,
   ReactElement,
   SetStateAction,
+  useEffect,
   useRef,
   useState,
 } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiFireWave } from "react-icons/gi";
+import { RiFullscreenLine } from "react-icons/ri";
 import { Link, useHistory } from "react-router-dom";
 import { signOut, songSearch } from "../actions";
 import { debounce } from "../util/debounce";
@@ -44,12 +47,16 @@ import SourceSelector from "./SourceSelector";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
-  setVisualiserOn: Dispatch<SetStateAction<boolean>>;
+  setToggleVisualiserOn: Dispatch<SetStateAction<boolean>>;
+  toggleVisualiserOn: boolean;
+  setVisualiserPrompt: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Header({
   connectToSpotifyModalToggle,
-  setVisualiserOn,
+  setToggleVisualiserOn: setVisualiserOn,
+  toggleVisualiserOn,
+  setVisualiserPrompt,
 }: Props): ReactElement {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -63,13 +70,19 @@ export default function Header({
     }, 1000)
   );
 
-  const songSearchInputRef = useRef(null);
   const [popOverOpenState, setpopOverOpenState] = useState(false);
+  const [visualiserSwitch, setVisualiserSwitch] = useState(false);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(event.target.value);
     console.log({ value: event.target.value });
     debounceSearch.current(event.target.value);
   };
+
+  useEffect(() => {
+    setVisualiserSwitch(toggleVisualiserOn);
+  }, [toggleVisualiserOn]);
+
   return (
     <Flex
       position="sticky"
@@ -132,25 +145,45 @@ export default function Header({
           >
             <Link to="/playlists">Your Playlists</Link>
           </ListItem>
+          <Box></Box>
           <ListItem
             css={css`
               height: calc(100% + 3px);
-              display: grid;
+              display: flex;
               align-self: flex-start;
-              place-items: center;
               transition: border 0.3s ease;
+              align-items: center;
+
               &:hover {
                 border-bottom: 3px solid blue;
               }
             `}
-            onClick={() => {
-              setVisualiserOn((val) => !val);
-            }}
           >
-            Visualiser
+            <Text mr="10px">Visualiser</Text>
+            <Switch
+              isChecked={visualiserSwitch}
+              css={css`
+                > span {
+                  background: #a31709;
+                }
+              `}
+              size="md"
+              onChange={(event) => {
+                //May need to change this to controlled
+                console.log({ event: event.target.checked });
+                setVisualiserPrompt(event.target.checked);
+              }}
+              id="Visualiser"
+            />
+          </ListItem>
+          <ListItem w="60px" h="100%">
+            {toggleVisualiserOn && (
+              <Box>
+                <RiFullscreenLine />
+              </Box>
+            )}
           </ListItem>
         </List>
-        <Box></Box>
 
         <Menu>
           <MenuButton size="sm" mr="20px" as={Button}>

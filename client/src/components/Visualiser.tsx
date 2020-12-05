@@ -1,9 +1,9 @@
 import React, {
-  forwardRef,
+  Dispatch,
   ReactElement,
+  SetStateAction,
   useEffect,
   useRef,
-  useState,
 } from "react";
 /* eslint-disable */
 // @ts-ignore
@@ -11,81 +11,93 @@ import AudioMotionAnalyzer from "audiomotion-analyzer";
 /* eslint-enable */
 
 interface Props {
-  visualiserOn: boolean;
+  toggleVisualiserOn: boolean;
+  visualiserPrompt: boolean;
+  setToggleVisualiserOn: Dispatch<SetStateAction<boolean>>;
+  setVisualiserPrompt: Dispatch<SetStateAction<boolean>>;
   container: {
     current: HTMLDivElement;
   };
 }
 
 export const Visualiser = ({
-  visualiserOn,
+  toggleVisualiserOn: visualiserOn,
+  setToggleVisualiserOn,
+  setVisualiserPrompt,
+  visualiserPrompt,
   container,
 }: Props): ReactElement => {
   const audioMotionRef = useRef<undefined | any>();
+  const sourceRef = useRef<any>();
 
   useEffect(() => {
-    let isSubscribed = true;
-    // const audioCtx = new AudioContext();
-
     async function plugMediaToVisual() {
-      const mediaDevices = window.navigator.mediaDevices as any;
-      const stream = await mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true,
-      });
-
-      if (stream.getAudioTracks().length > 0) {
-        // if (isSubscribed) {
-        // setAudioSource(source);
-
-        audioMotionRef.current = new AudioMotionAnalyzer(
-          document.getElementById("visualiser"),
-          { maxDecibels: -25, maxFreq: 22000, minDecibels: -85, minFreq: 20 }
-        );
-        const parent = container.current;
-        const parentWidth = parent.offsetWidth;
-        const parentHeight = parent.offsetHeight;
-
-        audioMotionRef.current.setOptions({
-          mode: 3,
-          showLeds: true,
-          showScaleY: true,
-          barSpace: 0.5,
-          width: parentWidth,
-          height: parentHeight,
+      try {
+        const mediaDevices = window.navigator.mediaDevices as any;
+        const stream = await mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true,
         });
 
-        const audioCtx = audioMotionRef.current.audioCtx;
+        if (stream.getAudioTracks().length > 0) {
+          audioMotionRef.current = new AudioMotionAnalyzer(
+            document.getElementById("visualiser"),
+            { maxDecibels: -25, maxFreq: 22000, minDecibels: -85, minFreq: 20 }
+          );
+          const parent = container.current;
+          const parentWidth = parent.offsetWidth;
+          const parentHeight = parent.offsetHeight;
 
-        const source = audioCtx.createMediaStreamSource(stream);
-        // this._analyzer.connect( this._audioCtx.destination );
-        //IMPORTANT - FOR THIS TO WORK, WE NEED TO REMOVE LINE 91 IN THE audioMotion-analyuzer.js file
-        //else we will create a feedback loop
-        source.connect(audioMotionRef.current.analyzer);
-        audioMotionRef.current.analyzer.disconnect(
-          audioMotionRef.current.audioCtx.destination
-        );
+          audioMotionRef.current.setOptions({
+            mode: 3,
+            showLeds: true,
+            showScaleY: true,
+            barSpace: 0.5,
+            width: parentWidth,
+            height: parentHeight,
+          });
 
-        // source.connect(audioMotionRef.current.analyzer);
+          const audioCtx = audioMotionRef.current.audioCtx;
+
+          sourceRef.current = audioCtx.createMediaStreamSource(stream);
+
+          sourceRef.current.connect(audioMotionRef.current.analyzer);
+
+          audioMotionRef.current.analyzer.disconnect(
+            audioMotionRef.current.audioCtx.destination
+          );
+          setToggleVisualiserOn(true);
+        }
+
+        stream.getAudioTracks()[0].onended = () => {
+          setToggleVisualiserOn(false);
+          setVisualiserPrompt(false);
+        };
+      } catch (err) {
+        console.log("error" + err);
+        setVisualiserPrompt(false);
       }
     }
-    if (visualiserOn) {
+    console.log({ audioMotionRef: audioMotionRef.current });
+    if (visualiserPrompt) {
       console.log({ container });
       plugMediaToVisual();
     } else {
       //Need to find a way to turn it off, rather than creating another instance
-    }
 
-    return () => {
-      isSubscribed = false;
-    };
-  }, [visualiserOn]);
+      audioMotionRef?.current?.analyzer?.disconnect();
+    }
+  }, [visualiserPrompt, container]);
+
+  useEffect(() => {
+    //Toggle fullscreen
+    // audioMotionRef.current.toggleFullscreen();
+  }, []);
 
   return (
     <div
       id="visualiser"
       style={{
-        // background: "red",
         position: "absolute",
         top: 0,
         left: 0,
