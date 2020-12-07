@@ -1,0 +1,83 @@
+{
+  "65d44a85-b4ad-43d5-abca-9b4b3ce8115d": {
+    "name": "Stephanies Playlist",
+    "id": "65d44a85-b4ad-43d5-abca-9b4b3ce8115d",
+    "items": [
+      {
+        "source": "SPOTIFY",
+        "imageUrl": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b2732aa20611c7fb964a74ab01a6",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e022aa20611c7fb964a74ab01a6",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d000048512aa20611c7fb964a74ab01a6",
+            "width": 64
+          }
+        ],
+        "name": "Oops!...I Did It Again",
+        "artist": "Britney Spears",
+        "year": "2000-05-16",
+        "url": "spotify:track:6naxalmIoLFWR0siv8dnQQ",
+        "duration": "03:31"
+      },
+      {
+        "source": "YOUTUBE",
+        "imageUrl": {
+          "0": {
+            "url": "https://i.ytimg.com/vi/p2Rch6WvPJE/hqdefault.jpg",
+            "width": 480,
+            "height": 360
+          },
+          "1": {
+            "url": "https://i.ytimg.com/vi/p2Rch6WvPJE/mqdefault.jpg",
+            "width": 320,
+            "height": 180
+          },
+          "2": {
+            "url": "https://i.ytimg.com/vi/p2Rch6WvPJE/default.jpg",
+            "width": 120,
+            "height": 90
+          }
+        },
+        "name": "Toni Braxton - Un-Break My Heart (Official Music Video)",
+        "artist": "ToniBraxtonVEVO",
+        "year": "2009-10-25T08:39:01Z",
+        "url": "p2Rch6WvPJE",
+        "duration": "04:33"
+      },
+      {
+        "source": "SPOTIFY",
+        "imageUrl": [
+          {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273b400952b2e3555dd605a497e",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02b400952b2e3555dd605a497e",
+            "width": 300
+          },
+          {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851b400952b2e3555dd605a497e",
+            "width": 64
+          }
+        ],
+        "name": "Unbreak My Heart",
+        "artist": "Weezer",
+        "year": "2010-01-01",
+        "url": "spotify:track:7eunkM3TVbhBSuWirm0JSv",
+        "duration": "04:11"
+      }
+    ]
+  }
+}

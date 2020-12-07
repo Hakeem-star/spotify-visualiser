@@ -3,17 +3,13 @@ import {
   Box,
   Button,
   Flex,
+  Grid,
   Input,
   InputGroup,
-  InputRightElement,
   List,
   ListItem,
   Text,
   Link as ChakLink,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
   Menu,
   MenuButton,
   MenuDivider,
@@ -50,12 +46,14 @@ interface Props {
   setToggleVisualiserOn: Dispatch<SetStateAction<boolean>>;
   toggleVisualiserOn: boolean;
   setVisualiserPrompt: Dispatch<SetStateAction<boolean>>;
+  setVisualiserFullscreen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Header({
   connectToSpotifyModalToggle,
-  setToggleVisualiserOn: setVisualiserOn,
+  setToggleVisualiserOn,
   toggleVisualiserOn,
+  setVisualiserFullscreen,
   setVisualiserPrompt,
 }: Props): ReactElement {
   const history = useHistory();
@@ -70,7 +68,7 @@ export default function Header({
     }, 1000)
   );
 
-  const [popOverOpenState, setpopOverOpenState] = useState(false);
+  const [popOverOpenState, setPopOverOpenState] = useState(false);
   const [visualiserSwitch, setVisualiserSwitch] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +103,7 @@ export default function Header({
       >
         <GiFireWave fontSize={70} />
       </Box>
-      <InputGroup onFocus={() => setpopOverOpenState(true)} width="330px">
+      <InputGroup onFocus={() => setPopOverOpenState(true)} width="330px">
         <Input type="text" onChange={handleChange} value={searchInputValue} />
         <InputRightAddon>
           <AiOutlineSearch />
@@ -178,9 +176,17 @@ export default function Header({
           </ListItem>
           <ListItem w="60px" h="100%">
             {toggleVisualiserOn && (
-              <Box>
+              <Grid
+                placeItems="center"
+                height="100%"
+                fontSize="1.5rem"
+                cursor="pointer"
+                onClick={() => {
+                  setVisualiserFullscreen(true);
+                }}
+              >
                 <RiFullscreenLine />
-              </Box>
+              </Grid>
             )}
           </ListItem>
         </List>

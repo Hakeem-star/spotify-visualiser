@@ -19,10 +19,12 @@ import { insertIntoArray } from "../util/insertIntoArray";
 
 export default function CreatePlaylist(): ReactElement {
   //This might not be needed but I may be able to refactor
-  const createPlaylistSidebarOpenState = useSelector(
-    (state: AppState) => state.createPlaylistSidebar
+  // const createPlaylistSidebarOpenState = useSelector(
+  //   (state: AppState) => state.createPlaylistSidebar
+  // );
+  const createPlaylistState = useSelector(
+    (state: AppState) => state.createPlaylist
   );
-  const createPlaylist = useSelector((state: AppState) => state.createPlaylist);
   //All playlists
 
   const playlists = useSelector((state: AppState) => state.playlists);
@@ -31,7 +33,7 @@ export default function CreatePlaylist(): ReactElement {
   const submittedCount = useRef({ new: 0, old: 0 });
 
   useEffect(() => {
-    //make sure this is false when component is mounted in case it was enabled somewhere else
+    //Makes sure this is false when component is mounted in case it was enabled somewhere else
     setplayListCreated(false);
   }, []);
 
@@ -51,7 +53,7 @@ export default function CreatePlaylist(): ReactElement {
       flexDirection="column"
       borderLeft="1px solid black"
       p="20px 20px"
-      w={"20%"}
+      w="20%"
       h="100%"
       // transform="scaleX()"
       transition="width 1s"
@@ -64,7 +66,7 @@ export default function CreatePlaylist(): ReactElement {
         <CreatedPlaylistMessage setplayListCreated={setplayListCreated} />
       ) : (
         <Formik
-          initialValues={{ name: createPlaylist.name || "" }}
+          initialValues={{ name: createPlaylistState.name || "" }}
           validate={(values) => {
             const errors: {
               name?: string;
@@ -76,7 +78,7 @@ export default function CreatePlaylist(): ReactElement {
               errors.name = "Must be at least 5 characters";
             } else if (
               //It's not tha same name as the playlist it's editing
-              createPlaylist.name !== values.name &&
+              createPlaylistState.name !== values.name &&
               //Check is Playlist by that name already exists
               Object.entries(playlists).some(
                 ([id, data]) => data.name === values.name
@@ -88,14 +90,15 @@ export default function CreatePlaylist(): ReactElement {
           }}
           onSubmit={(values, { setSubmitting }) => {
             console.log({
-              nme: createPlaylist.name,
+              nme: createPlaylistState.name,
               name,
-              id: createPlaylist.id,
+              id: createPlaylistState.id,
             });
             dispatch(
               savePlaylist(
-                values.name || createPlaylist.name,
-                createPlaylist.id
+                //To rename, attempt to use the values in the form
+                values.name || createPlaylistState.name,
+                createPlaylistState.id
               )
             );
             submittedCount.current.new++;
@@ -129,11 +132,11 @@ export default function CreatePlaylist(): ReactElement {
                     {...provided.droppableProps}
                   >
                     {insertIntoArray(
-                      createPlaylist.items.map((item, index) => {
+                      createPlaylistState.items.map((item, index) => {
                         const { name, artist, year, url, imageUrl } = item;
                         return (
                           <DraggableCreatePlaylistItem
-                            context={createPlaylist.items}
+                            context={createPlaylistState.items}
                             {...item}
                             index={index}
                             key={url + name}

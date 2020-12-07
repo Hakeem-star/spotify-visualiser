@@ -156,6 +156,8 @@ export default function Home(): ReactElement {
   const [toggleVisualiserOn, setToggleVisualiserOn] = useState(false);
   const [visualiserPrompt, setVisualiserPrompt] = useState(false);
 
+  const [visualiserFullscreen, setVisualiserFullscreen] = useState(false);
+
   //Canvas parent ref
   const canvasContainerRef = useRef();
 
@@ -184,6 +186,7 @@ export default function Home(): ReactElement {
         animate={controls}
       >
         <Header
+          setVisualiserFullscreen={setVisualiserFullscreen}
           setVisualiserPrompt={setVisualiserPrompt}
           toggleVisualiserOn={toggleVisualiserOn}
           setToggleVisualiserOn={setToggleVisualiserOn}
@@ -216,6 +219,8 @@ export default function Home(): ReactElement {
       </motion.div>
 
       <Visualiser
+        setVisualiserFullscreen={setVisualiserFullscreen}
+        visualiserFullscreen={visualiserFullscreen}
         setVisualiserPrompt={setVisualiserPrompt}
         visualiserPrompt={visualiserPrompt}
         toggleVisualiserOn={toggleVisualiserOn}

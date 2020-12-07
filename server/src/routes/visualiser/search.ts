@@ -86,6 +86,8 @@ export default async (app) => {
 
     //   // console.log(spotifyResults, youtubeResults);
     //   res.send({ spotifyResults, youtubeResults });
+    
+    //MOCKS
     res.send(mockResponse);
     // res.send({
     //   youtubeResults: youtubeJSONResponse,

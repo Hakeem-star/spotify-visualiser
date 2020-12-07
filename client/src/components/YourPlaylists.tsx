@@ -68,7 +68,6 @@ export default function YourPlaylists(): ReactElement {
                   return (
                     <Image
                       zIndex="-1"
-                      // max-width="100%"
                       width="100%"
                       height="100%"
                       objectFit="cover"

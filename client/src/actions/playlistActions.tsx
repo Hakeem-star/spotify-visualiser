@@ -18,7 +18,7 @@ export function savePlaylist(
   playlistID: string = uuidv4()
 ): ThunkResult<void> {
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
-    //If there is a name, we are setting the app
+    //If there is a name, we are setting the playlists based on an action in the app
     if (name) {
       const createdPlaylist = getState().createPlaylist.items;
       const email = getState().auth?.userData?.email;
@@ -52,12 +52,13 @@ export function savePlaylist(
           );
         } else {
           const storagePlaylist = JSON.parse(storedPlaylists);
-          const newPlay = {
+          const newPlaylist = {
             ...storagePlaylist,
-            [playlistID]: { name, items: createdPlaylist },
+
+            [playlistID]: { name, items: createdPlaylist, id: playlistID },
           };
 
-          window.localStorage.setItem(PLAYLISTS, JSON.stringify(newPlay));
+          window.localStorage.setItem(PLAYLISTS, JSON.stringify(newPlaylist));
         }
       }
 
@@ -68,7 +69,7 @@ export function savePlaylist(
         },
       });
     } else {
-      //If no name is provided, we are setting the saved playlist from firebase or local storage
+      //If no name is provided, we are setting the saved playlist from firebase or local storage on app initialisation/update
       const auth = getState().auth;
       if (auth.userData?.displayName === GUEST) {
         const localPLaylists = window.localStorage.getItem(PLAYLISTS);

@@ -13,17 +13,21 @@ import AudioMotionAnalyzer from "audiomotion-analyzer";
 interface Props {
   toggleVisualiserOn: boolean;
   visualiserPrompt: boolean;
+  visualiserFullscreen: boolean;
   setToggleVisualiserOn: Dispatch<SetStateAction<boolean>>;
   setVisualiserPrompt: Dispatch<SetStateAction<boolean>>;
+  setVisualiserFullscreen: Dispatch<SetStateAction<boolean>>;
   container: {
     current: HTMLDivElement;
   };
 }
 
 export const Visualiser = ({
-  toggleVisualiserOn: visualiserOn,
+  toggleVisualiserOn,
+  visualiserFullscreen,
   setToggleVisualiserOn,
   setVisualiserPrompt,
+  setVisualiserFullscreen,
   visualiserPrompt,
   container,
 }: Props): ReactElement => {
@@ -84,15 +88,16 @@ export const Visualiser = ({
       plugMediaToVisual();
     } else {
       //Need to find a way to turn it off, rather than creating another instance
-
       audioMotionRef?.current?.analyzer?.disconnect();
+      console.log({ current: audioMotionRef.current });
     }
   }, [visualiserPrompt, container]);
 
   useEffect(() => {
     //Toggle fullscreen
-    // audioMotionRef.current.toggleFullscreen();
-  }, []);
+    visualiserFullscreen && audioMotionRef.current.toggleFullscreen();
+    setVisualiserFullscreen(false);
+  }, [visualiserFullscreen]);
 
   return (
     <div
@@ -104,6 +109,7 @@ export const Visualiser = ({
         zIndex: -1,
         width: "100%",
         height: "100%",
+        display: visualiserPrompt ? "block" : "none",
       }}
     ></div>
   );

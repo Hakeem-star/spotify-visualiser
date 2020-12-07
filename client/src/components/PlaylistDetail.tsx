@@ -8,8 +8,8 @@ import SearchResult from "./SearchResult";
 import Slider from "react-slick";
 import useDragDetection from "../util/useDragDetection";
 import { css } from "@emotion/react";
-// import "slick-carousel/slick/slick.css";
-// import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const mainSlidersettings = {
   focusOnSelect: true,
@@ -57,7 +57,7 @@ export default function PlaylistDetail(): ReactElement {
       <Grid
         key={name}
         className="playlist-detail__container"
-        templateRows="19% minmax(20%, 450px) 0.6fr 0.6fr"
+        templateRows="0.75fr 50% 1fr"
         templateColumns="1fr 15fr 1fr"
         w="100%"
         h="100%"
@@ -69,7 +69,7 @@ export default function PlaylistDetail(): ReactElement {
           justifySelf="center;"
           alignSelf="center;"
           width="50%"
-          marginTop="50px"
+          m="auto 0"
           style={{ alignSelf: "start" }}
         >
           <Heading textAlign="left" flex={1}>
@@ -91,7 +91,6 @@ export default function PlaylistDetail(): ReactElement {
           gridColumn="2/3"
           gridRow="2/2"
           justifySelf="center"
-          mb="7rem"
         >
           <Image
             onClick={() => {
@@ -127,9 +126,11 @@ export default function PlaylistDetail(): ReactElement {
           overflow="hidden"
           gridColumn="2/3;"
           gridRow="3/3;"
+          className="SLIDEEE"
+          alignSelf="center"
         >
           {/* Thumbnail slider */}
-          <div style={{ overflow: "hidden", width: "100%" }}>
+          <div style={{ overflow: "hidden", width: "100%", height: "100%" }}>
             <Slider {...thumbSlidersettings}>
               {items.map((song, index) => (
                 <div
