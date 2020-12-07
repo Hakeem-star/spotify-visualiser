@@ -40,6 +40,7 @@ import { setCreatePlaylistSidebar } from "../actions/createPlaylistSidebarAction
 import { FaUserNinja } from "react-icons/fa";
 import { jsx, css } from "@emotion/react";
 import SourceSelector from "./SourceSelector";
+import { GUEST } from "../actions/types";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
@@ -59,7 +60,7 @@ export default function Header({
   const history = useHistory();
   const dispatch = useDispatch();
   const displayName = useSelector(
-    (state: AppState) => state.auth.userData?.displayName
+    (state: AppState) => state.auth.userData?.displayName || GUEST
   );
   const [searchInputValue, setSearchInputValue] = useState("");
   const debounceSearch = useRef(
@@ -205,7 +206,7 @@ export default function Header({
           <MenuList>
             <MenuItem
               onClick={() => {
-                dispatch(signOut());
+                dispatch(signOut(displayName));
                 history.push("/");
               }}
             >

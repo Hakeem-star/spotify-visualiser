@@ -112,7 +112,7 @@ export function editPlaylist(playlistID: string): ThunkResult<void> {
   };
 }
 
-export function deletePlaylist(playlistID: string) {
+export function deletePlaylist(playlistID: string): ThunkResult<void> {
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
     //Change state and then save playlist
     const playlists = getState().playlists;

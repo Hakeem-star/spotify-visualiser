@@ -122,8 +122,14 @@ export const signInAsGuest = (): AppActions => {
   };
 };
 
-export const signOut = (): ThunkResult<void> => {
+export const signOut = (displayName: string): ThunkResult<void> => {
   return async (dispatch: Dispatch<AppActions>) => {
+    if (displayName === GUEST) {
+      sessionStorage.setItem("guestSignedIn", "0");
+      dispatch({
+        type: SIGN_OUT,
+      });
+    }
     try {
       await fbAuth.signOut();
       dispatch({
@@ -134,6 +140,7 @@ export const signOut = (): ThunkResult<void> => {
     }
   };
 };
+
 let count = 0;
 export const spotifySignIn = (): ThunkResult<void> => {
   const accessToken = getCookie("ACCESS_TOKEN");

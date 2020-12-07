@@ -105,7 +105,7 @@ export default function YouTubePlayer(): ReactElement {
   return (
     // Hide the youtube video
     <div style={{ display: "none" }}>
-      <div id="player">Test</div>
+      <div id="player"></div>
     </div>
   );
 }

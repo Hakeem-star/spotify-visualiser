@@ -24,10 +24,18 @@ export default function App(): ReactElement {
         // User is signed in.
         console.log("Signed", user);
       } else if (sessionStorage.getItem("guestSignedIn")) {
+        const guestSignInStatus = Number(
+          sessionStorage.getItem("guestSignedIn")
+        );
+
+        console.log({
+          sessionStorage: sessionStorage.getItem("guestSignedIn"),
+        });
+
         // No user is signed in.
         console.log("Not Signed");
         //Set session storage so we do not ask them to sign in again over and over again during this session
-        dispatch(alreadySignedIn(GUEST, GUEST));
+        guestSignInStatus && dispatch(alreadySignedIn(GUEST, GUEST));
       }
     });
   }, []);

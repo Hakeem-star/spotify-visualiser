@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "@types/jest"],
+    "types": ["node", "@types/jest","cypress"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
@@ -15,5 +15,5 @@
     "jsx": "react"
   },
 
-  "include": ["src"]
+  "include": ["src","cypress"]
 }
