@@ -97,6 +97,8 @@ export default function Header({
       <Box
         style={{ placeItems: "center" }}
         w="10%"
+        h="100%"
+        overflow="hidden"
         display="grid"
         onClick={() => {
           history.push("/");
@@ -105,7 +107,13 @@ export default function Header({
         <GiFireWave fontSize={70} />
       </Box>
       <InputGroup onFocus={() => setPopOverOpenState(true)} width="330px">
-        <Input type="text" onChange={handleChange} value={searchInputValue} />
+        <Input
+          placeholder="Search for a song"
+          name="Search for a song"
+          type="text"
+          onChange={handleChange}
+          value={searchInputValue}
+        />
         <InputRightAddon>
           <AiOutlineSearch />
         </InputRightAddon>
@@ -126,11 +134,12 @@ export default function Header({
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
-          w="30%"
           color="white"
           marginRight="160px"
         >
           <ListItem
+            minW="15rem"
+            mr="3rem"
             css={css`
               height: calc(100% + 3px);
               display: grid;

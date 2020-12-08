@@ -29,6 +29,7 @@ export default function DraggableSearchResult(props: Props): ReactElement {
               {...provided.dragHandleProps}
               {...provided.draggableProps}
               ref={provided.innerRef}
+              className="DraggableSearchResult"
             >
               <SearchResult {...props} />
             </Flex>

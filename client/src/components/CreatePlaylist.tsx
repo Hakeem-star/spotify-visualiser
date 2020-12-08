@@ -1,6 +1,13 @@
 /** @jsx jsx */
 
-import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
@@ -47,6 +54,8 @@ export default function CreatePlaylist(): ReactElement {
     }
   }, [playlists, submittedCount]);
 
+  const buttonVariant = useBreakpointValue({ base: "xs", lg: "md", xl: "xs" });
+
   return (
     // Drag item here to create playlist
     <Flex
@@ -73,7 +82,7 @@ export default function CreatePlaylist(): ReactElement {
             } = {};
 
             if (!values.name) {
-              errors.name = "Required";
+              errors.name = "A name is required";
             } else if (values.name.length < 5) {
               errors.name = "Must be at least 5 characters";
             } else if (
@@ -85,6 +94,8 @@ export default function CreatePlaylist(): ReactElement {
               )
             ) {
               errors.name = "Playlist by that name already exists";
+            } else if (!createPlaylistState.items.length) {
+              errors.name = "Please add at least 1 song";
             }
             return errors;
           }}
@@ -94,6 +105,8 @@ export default function CreatePlaylist(): ReactElement {
               name,
               id: createPlaylistState.id,
             });
+            console.log({ createPlaylistState: createPlaylistState.items });
+
             dispatch(
               savePlaylist(
                 //To rename, attempt to use the values in the form
@@ -143,7 +156,6 @@ export default function CreatePlaylist(): ReactElement {
                           />
                         );
                       }),
-
                       <Divider borderColor="#417AF0" m="3px 0" />
                     )}
                     <Box
@@ -170,11 +182,23 @@ export default function CreatePlaylist(): ReactElement {
                 )}
               </Droppable>
               {/* confirm creation and provide option to create another */}
-              <Flex direction="row" m="30px 0 auto" justify="space-between">
-                <Button size="sm" type="submit" isDisabled={isSubmitting}>
+              <Flex
+                direction="row"
+                m="30px 0 auto"
+                justify="space-between"
+                flexWrap="wrap"
+              >
+                <Button
+                  size={buttonVariant}
+                  type="submit"
+                  isDisabled={isSubmitting}
+                >
                   Save Playlist
                 </Button>
-                <Button size="sm" onClick={() => dispatch(discardPlaylist())}>
+                <Button
+                  size={buttonVariant}
+                  onClick={() => dispatch(discardPlaylist())}
+                >
                   Discard Playlist
                 </Button>
               </Flex>

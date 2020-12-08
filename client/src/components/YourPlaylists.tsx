@@ -17,8 +17,8 @@ export default function YourPlaylists(): ReactElement {
   }, [playlistsState]);
   return (
     <SimpleGrid
-      autoColumns="minmax(200px,15%)"
-      autoRows="minmax(300px,30%)"
+      autoColumns="minmax(300px,15vw)"
+      autoRows="minmax(300px,30vh)"
       justifyItems="center"
       alignItems="center"
       autoFlow="column"
@@ -29,7 +29,7 @@ export default function YourPlaylists(): ReactElement {
       {Object.entries(playlistsState).map(([id, data]) => {
         const previewCount =
           //To prevent getting 3 images in the preview
-          data.items.length > 2 && data.items.length === 3 ? 2 : 4;
+          data.items.length > 4 ? 4 : 3;
         return (
           <Grid
             className="playlist__border"
@@ -42,6 +42,7 @@ export default function YourPlaylists(): ReactElement {
             <Grid
               cursor="pointer"
               className="playlist__items-container"
+              padding="10px"
               placeItems="center"
               width="80%"
               height="90%"
@@ -103,6 +104,7 @@ export default function YourPlaylists(): ReactElement {
                 </Button>
               </Flex>
             </Grid>
+            {previewCount}
           </Grid>
         );
       })}

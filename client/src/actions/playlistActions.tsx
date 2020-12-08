@@ -116,9 +116,7 @@ export function deletePlaylist(playlistID: string): ThunkResult<void> {
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
     //Change state and then save playlist
     const playlists = getState().playlists;
-
     const email = getState().auth?.userData?.email;
-
     if (email !== GUEST) {
       try {
         //save this playlist to firebase and then add a listener to dispatch when a success is recieved
@@ -134,7 +132,6 @@ export function deletePlaylist(playlistID: string): ThunkResult<void> {
 
       const playlistsCopy = { ...playlists };
       delete playlistsCopy[playlistID];
-      console.log({ playlistID, playlistsCopy, playlists });
 
       dispatch({
         type: DELETEPLAYLIST,
@@ -143,6 +140,7 @@ export function deletePlaylist(playlistID: string): ThunkResult<void> {
     } else {
       //Store in local storage
       const storedPlaylists = window.localStorage.getItem(PLAYLISTS);
+
       if (storedPlaylists) {
         const storagePlaylist = JSON.parse(storedPlaylists);
         delete storagePlaylist[playlistID];

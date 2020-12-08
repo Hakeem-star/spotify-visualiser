@@ -182,7 +182,12 @@ export default function Home(): ReactElement {
     <Flex direction="column" h="100vh" ref={canvasContainerRef as any}>
       {/* Fade out everything after inactive for 5 seconds when visualiser is on */}
       <motion.div
-        style={{ display: "flex", flexDirection: "column", height: "100%" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          overflow: "hidden",
+        }}
         animate={controls}
       >
         <Header

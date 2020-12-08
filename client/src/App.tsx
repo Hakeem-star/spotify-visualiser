@@ -1,5 +1,5 @@
-import React, { ReactElement, useEffect } from "react";
-import { ChakraProvider } from "@chakra-ui/react";
+import React, { ReactElement, useEffect, useState } from "react";
+import { ChakraProvider, Flex, Text } from "@chakra-ui/react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { alreadySignedIn } from "./actions";
@@ -15,10 +15,12 @@ import SignUp from "./components/Auth/SignUp";
 export default function App(): ReactElement {
   const dispatch = useDispatch();
   const isSignedIn = useSelector((state: AppState) => state.auth.isSignedIn);
+  const [checkedSignIn, setCheckedSignIn] = useState(false);
 
   useEffect(() => {
     //get and set cookies to store
     fbAuth.onAuthStateChanged(function (user) {
+      //Check if User on FireBase
       if (user?.email && user.displayName) {
         dispatch(alreadySignedIn(user.email, user.displayName));
         // User is signed in.
@@ -37,10 +39,18 @@ export default function App(): ReactElement {
         //Set session storage so we do not ask them to sign in again over and over again during this session
         guestSignInStatus && dispatch(alreadySignedIn(GUEST, GUEST));
       }
+      setCheckedSignIn(true);
     });
   }, []);
 
-  return (
+  return !checkedSignIn ? (
+    // Loading screen
+    <ChakraProvider resetCSS>
+      <Flex justify="center " w="100vw" h="100vh" alignItems="center">
+        <Text>Loading...</Text>
+      </Flex>
+    </ChakraProvider>
+  ) : (
     <ChakraProvider resetCSS>
       <Router>
         {/* if not signed in, take me to the auth screen */}
