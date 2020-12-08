@@ -1,4 +1,11 @@
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AppState } from "../reducers";
 import { changePlayerState, nextSong, prevSong } from "../actions";
@@ -8,10 +15,12 @@ import {
   Box,
   Flex,
   Grid,
+  List,
   Slider,
   SliderFilledTrack,
   SliderThumb,
   SliderTrack,
+  Switch,
   Text,
 } from "@chakra-ui/react";
 import { BsPlay, BsPause } from "react-icons/bs";
@@ -19,6 +28,7 @@ import { TOGGLE_PLAY_STATE } from "../actions/types";
 import { css } from "@emotion/react";
 import { animate, motion, useMotionValue } from "framer-motion";
 import { seekSongPosition } from "../actions/externalPlayerActions";
+import { RiFullscreenLine } from "react-icons/ri";
 
 const calculatePosition = (duration: number, position: number) => {
   //Handles a 0/0 incident
@@ -29,7 +39,18 @@ const calculatePosition = (duration: number, position: number) => {
   return (position / duration) * 100;
 };
 
-export default function Player(): ReactElement {
+interface Props {
+  setVisualiserFullscreen: Dispatch<SetStateAction<boolean>>;
+  setVisualiserPrompt: Dispatch<SetStateAction<boolean>>;
+  setToggleVisualiserOn: Dispatch<SetStateAction<boolean>>;
+  toggleVisualiserOn: boolean;
+}
+export default function Player({
+  setVisualiserFullscreen,
+  setVisualiserPrompt,
+  setToggleVisualiserOn,
+  toggleVisualiserOn,
+}: Props): ReactElement {
   const dispatch = useDispatch();
   const playerState = useSelector((state: AppState) => state.playerState);
   const songMeta = useSelector(
@@ -49,13 +70,7 @@ export default function Player(): ReactElement {
   const controls = useRef<{ stop: () => void }>();
   const [movingSlider, setMovingSlider] = useState(false);
 
-  const previousPlayerStateUrl = useRef();
-
-  // useEffect(() => {
-  //   setSliderPosition((state) => {
-  //     return state;
-  //   });
-  // }, [movingSlider]);
+  const [visualiserSwitch, setVisualiserSwitch] = useState(false);
 
   useEffect(() => {
     //Set the start time to 0 when a new song is played
@@ -74,11 +89,6 @@ export default function Player(): ReactElement {
         duration: duration - position,
         ease: "linear",
         onUpdate: (val) => {
-          console.log({
-            val,
-            duration,
-            position,
-          });
           setSliderPosition(val);
         },
       });
@@ -90,6 +100,11 @@ export default function Player(): ReactElement {
     }
   }, [duration, position, sliderXPosition]);
 
+  useEffect(() => {
+    //This confirms that the visualiser is actually enabled/disabled
+    setVisualiserSwitch(toggleVisualiserOn);
+  }, [toggleVisualiserOn]);
+
   return (
     <Flex direction="column">
       <Slider
@@ -98,22 +113,25 @@ export default function Player(): ReactElement {
         focusThumbOnChange={false}
         value={sliderPosition}
         onChange={(val) => {
-          setSliderPosition(val);
+          // If no duration is set, don't move the slider
+          duration && setSliderPosition(val);
         }}
         onChangeStart={() => {
+          //Stop current animation
           controls.current?.stop();
           setMovingSlider(true);
         }}
         onChangeEnd={(val) => {
           //Seeking. Need to update position on relevant external players.
           //Making this change should force a change in the player state, which should update the songMeta state with the duration and position
-
+          console.log({ duration, movingSlider });
           if (movingSlider) {
             dispatch(seekSongPosition((val / 100) * duration));
             //Might need to wait for signal from player to say we can start animating slider
 
             sliderXPosition.set(val);
-            setSliderPosition(val);
+            //Not sure this is needed as onchange already does this
+            // setSliderPosition(val);
             setMovingSlider(false);
           }
         }}
@@ -126,12 +144,7 @@ export default function Player(): ReactElement {
         </SliderThumb>
       </Slider>
 
-      <Grid
-        templateColumns="1fr 1.3fr 1fr"
-        p="0 30px"
-        alignItems="center"
-        css={css``}
-      >
+      <Grid templateColumns="1fr 1.3fr 1fr" p="0 30px" alignItems="center">
         {/* Current track info */}
 
         <Flex justifyContent="flex-end">
@@ -148,7 +161,10 @@ export default function Player(): ReactElement {
             </>
           ) : null}
         </Flex>
+
         <Flex
+          className="player-actions"
+          overflow="hidden"
           style={{ justifySelf: "center" }}
           width="30%"
           alignSelf="center"
@@ -158,13 +174,15 @@ export default function Player(): ReactElement {
           alignItems="center"
         >
           <IoIosSkipBackward
+            cursor="pointer"
             onClick={() => {
               dispatch(prevSong());
             }}
             fontSize="6rem"
           />
-          {playerState.play ? (
+          {playerState.play && playerState.url ? (
             <BsPause
+              cursor="pointer"
               onClick={() => {
                 dispatch(changePlayerState(TOGGLE_PLAY_STATE));
                 controls.current?.stop();
@@ -173,6 +191,7 @@ export default function Player(): ReactElement {
             />
           ) : (
             <BsPlay
+              cursor="pointer"
               onClick={() => {
                 dispatch(changePlayerState(TOGGLE_PLAY_STATE));
                 //Pressing play changes the player states which forces the playhead to start animating again
@@ -181,6 +200,7 @@ export default function Player(): ReactElement {
             />
           )}
           <IoIosSkipBackward
+            cursor="pointer"
             onClick={() => {
               dispatch(nextSong());
             }}
@@ -188,20 +208,59 @@ export default function Player(): ReactElement {
             fontSize="6rem"
           />
         </Flex>
+
         {/* Next track info */}
-        <Flex w="100%">
-          {context[index + 1] ? (
-            <>
-              <Text height="100%" mr="10%">
-                Next:
-              </Text>
-              <Flex direction="column">
-                <Text>{context[index + 1]?.name || null}</Text>
-                <Text>{context[index + 1]?.artist || null}</Text>
-                <Text>{context[index + 1]?.duration || null}</Text>
-              </Flex>
-            </>
-          ) : null}
+        <Flex width="30%">
+          <Box
+            className="visualiser"
+            width="100%"
+            css={css`
+              height: calc(100% + 3px);
+              display: flex;
+              align-self: flex-start;
+              transition: border 0.3s ease;
+              align-items: center;
+              align-self: center;
+              cursor: pointer;
+            `}
+            onClick={() => {
+              //This is set to false in the visualiser component
+              setVisualiserPrompt(true);
+            }}
+          >
+            <Text mr="auto">Visualiser</Text>
+            <Switch
+              ml="10px"
+              isChecked={visualiserSwitch}
+              css={css`
+                > span {
+                  background: #a31709;
+                }
+              `}
+              size="md"
+              id="Visualiser"
+            />
+          </Box>
+          <Box
+            w={visualiserSwitch ? "60px" : "0px"}
+            h="100%"
+            ml="1rem"
+            className="fullscreen"
+          >
+            {toggleVisualiserOn && (
+              <Grid
+                placeItems="center"
+                height="100%"
+                fontSize="1.5rem"
+                cursor="pointer"
+                onClick={() => {
+                  setVisualiserFullscreen(true);
+                }}
+              >
+                <RiFullscreenLine />
+              </Grid>
+            )}
+          </Box>
         </Flex>
       </Grid>
     </Flex>

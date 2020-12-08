@@ -54,7 +54,7 @@ export default function SearchResult(props: Props): ReactElement {
         flex="1"
         background="linear-gradient(180deg, rgb(84 84 84 / 0%) 0%, rgb(0 0 0) 0%, rgb(33 33 33 / 40%) 100%)"
         zIndex={1}
-        style={{ mixBlendMode: "luminosity" }}
+        // style={{ mixBlendMode: "luminosity" }}
       >
         <Flex alignItems="center" h="50%">
           <Text

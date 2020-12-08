@@ -2,6 +2,7 @@
   "name": "spotify-visualiser",
   "version": "0.0.1",
   "dependencies": {
+    "@chakra-ui/icons": "^1.0.1",
     "@chakra-ui/react": "^1.0.1",
     "@emotion/babel-preset-css-prop": "^11.0.0",
     "@emotion/react": "^11.1.1",

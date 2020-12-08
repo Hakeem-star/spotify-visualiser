@@ -19,6 +19,8 @@ import {
   MenuItem,
   InputRightAddon,
   Switch,
+  useBreakpointValue,
+  MenuGroup,
 } from "@chakra-ui/react";
 import React, {
   Dispatch,
@@ -40,22 +42,18 @@ import { setCreatePlaylistSidebar } from "../actions/createPlaylistSidebarAction
 import { FaUserNinja } from "react-icons/fa";
 import { jsx, css } from "@emotion/react";
 import SourceSelector from "./SourceSelector";
+import SourceSelectorOptions from "./SourceSelectorOptions";
+
+import { HamburgerIcon } from "@chakra-ui/icons";
+
 import { GUEST } from "../actions/types";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
-  setToggleVisualiserOn: Dispatch<SetStateAction<boolean>>;
-  toggleVisualiserOn: boolean;
-  setVisualiserPrompt: Dispatch<SetStateAction<boolean>>;
-  setVisualiserFullscreen: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Header({
   connectToSpotifyModalToggle,
-  setToggleVisualiserOn,
-  toggleVisualiserOn,
-  setVisualiserFullscreen,
-  setVisualiserPrompt,
 }: Props): ReactElement {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -70,18 +68,13 @@ export default function Header({
   );
 
   const [popOverOpenState, setPopOverOpenState] = useState(false);
-  const [visualiserSwitch, setVisualiserSwitch] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(event.target.value);
-    console.log({ value: event.target.value });
     debounceSearch.current(event.target.value);
   };
 
-  useEffect(() => {
-    setVisualiserSwitch(toggleVisualiserOn);
-  }, [toggleVisualiserOn]);
-
+  const mobileScreenSize = useBreakpointValue({ base: true, md: false });
   return (
     <Flex
       position="sticky"
@@ -93,10 +86,12 @@ export default function Header({
       align="center"
       borderBottom="3px solid #A31709"
       zIndex="100"
+      padding="0.4rem 0"
     >
       <Box
+        className="logo"
         style={{ placeItems: "center" }}
-        w="10%"
+        minW="10%"
         h="100%"
         overflow="hidden"
         display="grid"
@@ -106,124 +101,106 @@ export default function Header({
       >
         <GiFireWave fontSize={70} />
       </Box>
-      <InputGroup onFocus={() => setPopOverOpenState(true)} width="330px">
+      <InputGroup
+        className="search-input"
+        onFocus={() => setPopOverOpenState(true)}
+        width="330px"
+        height="100%"
+      >
         <Input
           placeholder="Search for a song"
           name="Search for a song"
           type="text"
           onChange={handleChange}
           value={searchInputValue}
+          height="100%"
         />
-        <InputRightAddon>
+        <InputRightAddon height="100%">
           <AiOutlineSearch />
         </InputRightAddon>
       </InputGroup>
-      <SourceSelector
-        connectToSpotifyModalToggle={connectToSpotifyModalToggle}
-      />
-
-      <Flex
-        flex="1"
-        height="100%"
-        justifyContent="flex-end"
-        alignItems="center"
-      >
-        <List
-          h="100%"
-          display="flex"
-          flexDirection="row"
-          alignItems="center"
-          justifyContent="space-between"
-          color="white"
-          marginRight="160px"
-        >
-          <ListItem
-            minW="15rem"
-            mr="3rem"
-            css={css`
-              height: calc(100% + 3px);
-              display: grid;
-              align-self: flex-start;
-              place-items: center;
-              transition: border 0.3s ease;
-              &:hover {
-                border-bottom: 3px solid blue;
-              }
-            `}
+      {!mobileScreenSize ? (
+        <React.Fragment>
+          <SourceSelector
+            connectToSpotifyModalToggle={connectToSpotifyModalToggle}
+          />
+          <Flex
+            flex="1"
+            height="100%"
+            justifyContent="flex-end"
+            alignItems="center"
+            mr="4rem"
           >
-            <Link to="/playlists">Your Playlists</Link>
-          </ListItem>
-          <Box></Box>
-          <ListItem
-            css={css`
-              height: calc(100% + 3px);
-              display: flex;
-              align-self: flex-start;
-              transition: border 0.3s ease;
-              align-items: center;
-
-              &:hover {
-                border-bottom: 3px solid blue;
-              }
-            `}
-          >
-            <Text mr="10px">Visualiser</Text>
-            <Switch
-              isChecked={visualiserSwitch}
+            <Box
+              mr="3rem"
               css={css`
-                > span {
-                  background: #a31709;
-                }
+                height: calc(100% + 3px);
+                display: grid;
+                align-self: flex-start;
+                place-items: center;
+                transition: border 0.3s ease;
+                white-space: nowrap;
               `}
-              size="md"
-              onChange={(event) => {
-                //May need to change this to controlled
-                console.log({ event: event.target.checked });
-                setVisualiserPrompt(event.target.checked);
-              }}
-              id="Visualiser"
-            />
-          </ListItem>
-          <ListItem w="60px" h="100%">
-            {toggleVisualiserOn && (
-              <Grid
-                placeItems="center"
-                height="100%"
-                fontSize="1.5rem"
-                cursor="pointer"
-                onClick={() => {
-                  setVisualiserFullscreen(true);
-                }}
-              >
-                <RiFullscreenLine />
-              </Grid>
-            )}
-          </ListItem>
-        </List>
-
-        <Menu>
-          <MenuButton size="sm" mr="20px" as={Button}>
-            <Flex>
-              {displayName}
-              <FaUserNinja
-                css={css`
-                  margin-left: 10px;
-                `}
-              />
-            </Flex>
-          </MenuButton>
-          <MenuList>
-            <MenuItem
-              onClick={() => {
-                dispatch(signOut(displayName));
-                history.push("/");
-              }}
             >
-              Log out
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </Flex>
+              <Link to="/playlists">Your Playlists</Link>
+            </Box>
+
+            <Menu>
+              <MenuButton size="sm" mr="20px" as={Button}>
+                <Flex>
+                  {displayName}
+                  <FaUserNinja
+                    css={css`
+                      margin-left: 10px;
+                    `}
+                  />
+                </Flex>
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={() => {
+                    dispatch(signOut(displayName));
+                    history.push("/");
+                  }}
+                >
+                  Log out
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        </React.Fragment>
+      ) : (
+        <Flex
+          flex="1"
+          height="100%"
+          justifyContent="flex-end"
+          alignItems="center"
+          mr="4rem"
+        >
+          <Menu>
+            <MenuButton size="sm" mr="20px" as={Button}>
+              <HamburgerIcon w={8} h={8} />
+            </MenuButton>
+            <MenuList>
+              <MenuGroup title="Sources">
+                <SourceSelectorOptions
+                  connectToSpotifyModalToggle={connectToSpotifyModalToggle}
+                />
+              </MenuGroup>
+              <MenuGroup title="Account">
+                <MenuItem
+                  onClick={() => {
+                    dispatch(signOut(displayName));
+                    history.push("/");
+                  }}
+                >
+                  Log out
+                </MenuItem>
+              </MenuGroup>
+            </MenuList>
+          </Menu>
+        </Flex>
+      )}
     </Flex>
   );
 }

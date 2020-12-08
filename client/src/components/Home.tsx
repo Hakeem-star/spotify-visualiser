@@ -191,10 +191,6 @@ export default function Home(): ReactElement {
         animate={controls}
       >
         <Header
-          setVisualiserFullscreen={setVisualiserFullscreen}
-          setVisualiserPrompt={setVisualiserPrompt}
-          toggleVisualiserOn={toggleVisualiserOn}
-          setToggleVisualiserOn={setToggleVisualiserOn}
           connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
         />
         <Flex flex="1" position="relative" overflow="hidden">
@@ -220,7 +216,12 @@ export default function Home(): ReactElement {
           onClose={onClose}
         />
         {ytReady ? <YouTubePlayer /> : null}
-        <Player />
+        <Player
+          setVisualiserFullscreen={setVisualiserFullscreen}
+          setVisualiserPrompt={setVisualiserPrompt}
+          toggleVisualiserOn={toggleVisualiserOn}
+          setToggleVisualiserOn={setToggleVisualiserOn}
+        />
       </motion.div>
 
       <Visualiser

@@ -38,8 +38,11 @@ export default function SearchResultContainer({
 }: {
   songSearchResults: AppState["songSearchResult"];
 }): ReactElement {
+  // useEffect(() => {
+  //   //Mount drag scrolling for header
+  // }, []);
   return (
-    <Flex p="0 30px" w="100%" h="100%" overflow="hidden">
+    <Flex p="0 30px" w="100%" h="100%" overflow="auto">
       {/* {results} */}
       <SearchListMaker results={songSearchResults[SPOTIFY]} id={SPOTIFY} />
       <SearchListMaker results={songSearchResults[YOUTUBE]} id={YOUTUBE} />
