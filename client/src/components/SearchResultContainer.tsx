@@ -10,6 +10,7 @@ import { AppState } from "../reducers";
 import { insertIntoArray } from "../util/insertIntoArray";
 import { SearchListMaker } from "./SearchListMaker";
 import SearchResultList from "./SearchResultList";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 const scrollbarStyle = css`
   /* width */
@@ -42,10 +43,21 @@ export default function SearchResultContainer({
   //   //Mount drag scrolling for header
   // }, []);
   return (
-    <Flex p="0 30px" w="100%" h="100%" overflow="auto">
+    <ScrollContainer
+      ignoreElements=".DraggableSearchResult"
+      hideScrollbars={false}
+      style={{
+        display: "flex",
+        padding: "0 30px",
+        width: "100%",
+        height: "100%",
+        overflow: "auto",
+      }}
+      css={scrollbarStyle}
+    >
       {/* {results} */}
       <SearchListMaker results={songSearchResults[SPOTIFY]} id={SPOTIFY} />
       <SearchListMaker results={songSearchResults[YOUTUBE]} id={YOUTUBE} />
-    </Flex>
+    </ScrollContainer>
   );
 }

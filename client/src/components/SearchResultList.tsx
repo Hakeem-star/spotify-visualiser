@@ -1,9 +1,10 @@
-import { Divider, Flex, Heading } from "@chakra-ui/react";
+import { Divider, Flex, Heading, Box } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import React, { ReactElement } from "react";
 import { remappedSearchResult } from "../types";
 import { insertIntoArray } from "../util/insertIntoArray";
 import DraggableSearchResult from "./DraggableSearchResult";
+import { DragHandleIcon } from "@chakra-ui/icons";
 
 const scrollbarStyle = css`
   ::-webkit-scrollbar {
@@ -42,11 +43,20 @@ export default function SearchResultList({
       borderRadius="10px"
       css={scrollbarStyle}
     >
-      <Heading background="white" mb="20px" pb="10px">
-        {source}
-
-        {/* <Divider mt="10px" mb="20px" /> */}
-      </Heading>
+      <Flex
+        borderTop="1px solid black"
+        borderBottom="1px solid black"
+        cursor="move"
+        align="center"
+        justify="space-between"
+        mb="20px"
+        pb="10px"
+      >
+        <Box h="100%">
+          <Heading background="white">{source}</Heading>
+        </Box>
+        <DragHandleIcon h={10} />
+      </Flex>
       <Flex
         w="100%"
         overflow="overlay"
