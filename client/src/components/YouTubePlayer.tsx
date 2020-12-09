@@ -45,8 +45,8 @@ export default function YouTubePlayer(): ReactElement {
       if ([1].some((val) => val == event.data)) {
         //If playing, paused or buffering, get the current time and duration
         //Duration and position are in seconds, not ms
-        const duration = ytPlayer.current.getDuration();
-        const position = ytPlayer.current.getCurrentTime();
+        const duration = ytPlayer.current.getDuration() * 1000;
+        const position = ytPlayer.current.getCurrentTime() * 1000;
         console.log({ duration, position });
         dispatch(setCurrentSongDetails({ duration, position }));
       }

@@ -12,6 +12,7 @@ import { changePlayerState, nextSong, prevSong } from "../actions";
 
 import { IoIosSkipBackward } from "react-icons/io";
 import {
+  Tooltip,
   Box,
   Flex,
   Grid,
@@ -29,6 +30,7 @@ import { css } from "@emotion/react";
 import { animate, motion, useMotionValue } from "framer-motion";
 import { seekSongPosition } from "../actions/externalPlayerActions";
 import { RiFullscreenLine } from "react-icons/ri";
+import msToHMS from "../util/formatMsToHMS";
 
 const calculatePosition = (duration: number, position: number) => {
   //Handles a 0/0 incident
@@ -86,7 +88,7 @@ export default function Player({
     if (duration) {
       controls.current = animate(sliderXPosition, 100, {
         type: "tween",
-        duration: duration - position,
+        duration: (duration - position) / 1000,
         ease: "linear",
         onUpdate: (val) => {
           setSliderPosition(val);
@@ -122,11 +124,14 @@ export default function Player({
           setMovingSlider(true);
         }}
         onChangeEnd={(val) => {
+          console.log({
+            mms: msToHMS((sliderPosition / 100) * duration),
+            calc: (sliderPosition / 100) * duration,
+          });
           //Seeking. Need to update position on relevant external players.
           //Making this change should force a change in the player state, which should update the songMeta state with the duration and position
-          console.log({ duration, movingSlider });
           if (movingSlider) {
-            dispatch(seekSongPosition((val / 100) * duration));
+            dispatch(seekSongPosition(((val / 100) * duration) / 1000));
             //Might need to wait for signal from player to say we can start animating slider
 
             sliderXPosition.set(val);
@@ -139,9 +144,11 @@ export default function Player({
         <SliderTrack bg="red.100">
           <SliderFilledTrack bg="tomato" />
         </SliderTrack>
-        <SliderThumb boxSize={6}>
-          <Box color="tomato" />
-        </SliderThumb>
+        <Tooltip label={msToHMS((sliderPosition / 100) * duration)}>
+          <SliderThumb boxSize={6}>
+            <Box color="tomato" />
+          </SliderThumb>
+        </Tooltip>
       </Slider>
 
       <Grid templateColumns="1fr 1.3fr 1fr" p="0 30px" alignItems="center">

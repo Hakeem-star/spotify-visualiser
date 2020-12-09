@@ -44,8 +44,8 @@ export default function SearchResultList({
       css={scrollbarStyle}
     >
       <Flex
-        borderTop="1px solid black"
-        borderBottom="1px solid black"
+        borderTop="1px solid #00000038"
+        borderBottom="1px solid #00000038"
         cursor="move"
         align="center"
         justify="space-between"

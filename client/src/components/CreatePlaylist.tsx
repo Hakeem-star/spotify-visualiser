@@ -36,32 +36,36 @@ export default function CreatePlaylist(): ReactElement {
 
   const playlists = useSelector((state: AppState) => state.playlists);
   const dispatch = useDispatch();
-  const [playListCreated, setplayListCreated] = useState(false);
-  const submittedCount = useRef({ new: 0, old: 0 });
+  const [playListCreated, setPlayListCreated] = useState(false);
+  const [submittedCount, setSubmittedCount] = useState(0);
+
+  const [nameInputValue, setNameInputValue] = useState("");
 
   useEffect(() => {
     //Makes sure this is false when component is mounted in case it was enabled somewhere else
-    setplayListCreated(false);
+    setPlayListCreated(false);
   }, []);
 
   useEffect(() => {
+    console.log({ submittedCount });
     //Cleans out the playlist state on each mount
-    if (submittedCount.current.new !== submittedCount.current.old) {
-      //If the length of the playlist has changed...but this doesn't account for edited playlists????
-      Object.keys(playlists).length && setplayListCreated(true);
+    if (submittedCount) {
+      setPlayListCreated(true);
+      //Reset playlist
       dispatch(discardPlaylist());
-      submittedCount.current.old++;
     }
-  }, [playlists, submittedCount]);
+    // }
+  }, [submittedCount]);
 
   const buttonVariant = useBreakpointValue({ base: "xs", lg: "md", xl: "xs" });
 
   return (
     // Drag item here to create playlist
     <Flex
-      borderLeft="1px solid black"
+      borderLeft="1px solid #A31709"
       p="20px 20px"
-      minW="fit-content"
+      minW="300px"
+      maxW="30%"
       h="100%"
     >
       <Flex w="100%" flexDirection="column">
@@ -70,7 +74,7 @@ export default function CreatePlaylist(): ReactElement {
         </Text>
         {/* Add more validation */}
         {playListCreated ? (
-          <CreatedPlaylistMessage setplayListCreated={setplayListCreated} />
+          <CreatedPlaylistMessage setplayListCreated={setPlayListCreated} />
         ) : (
           <Formik
             initialValues={{ name: createPlaylistState.name || "" }}
@@ -112,10 +116,10 @@ export default function CreatePlaylist(): ReactElement {
                   createPlaylistState.id
                 )
               );
-              submittedCount.current.new++;
+              setSubmittedCount(submittedCount + 1);
             }}
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, resetForm }) => (
               <Form
                 style={{
                   width: "100%",
@@ -195,7 +199,10 @@ export default function CreatePlaylist(): ReactElement {
                   </Button>
                   <Button
                     size={buttonVariant}
-                    onClick={() => dispatch(discardPlaylist())}
+                    onClick={() => {
+                      resetForm({ values: { name: "" } });
+                      dispatch(discardPlaylist());
+                    }}
                   >
                     Discard Playlist
                   </Button>

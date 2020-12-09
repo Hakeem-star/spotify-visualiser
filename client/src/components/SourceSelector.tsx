@@ -12,9 +12,14 @@ export default function SourceSelector({
   connectToSpotifyModalToggle,
 }: Props): ReactElement {
   return (
-    <Flex height="100%" align="center" ml="20px">
+    <Flex height="100%" align="center" ml="2rem">
       <Menu closeOnSelect={false}>
-        <MenuButton height="100%" as={Button} rightIcon={<ChevronDownIcon />}>
+        <MenuButton
+          variant="outline"
+          height="100%"
+          as={Button}
+          rightIcon={<ChevronDownIcon />}
+        >
           Sources
         </MenuButton>
         <MenuList minWidth="240px">

@@ -4,8 +4,12 @@ import React, { ReactElement } from "react";
 
 export const MyTextInput = ({
   label,
+  value,
+  setValue,
   ...props
 }: {
+  value?: string;
+  setValue?: React.Dispatch<React.SetStateAction<string>>;
   label: any;
   name: string;
   id?: string;

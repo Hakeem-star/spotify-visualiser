@@ -114,10 +114,11 @@ export default function useSpotifyPlayer(): void {
           player.current.getCurrentState().then((state: any) => {
             console.log({ state });
             const { duration, position } = state;
+            // values are ms
             dispatch(
               setCurrentSongDetails({
-                duration: duration / 1000,
-                position: position / 1000,
+                duration: duration,
+                position: position,
               })
             );
           });

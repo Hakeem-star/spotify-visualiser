@@ -18,18 +18,19 @@ export default function YourPlaylists(): ReactElement {
   return (
     <SimpleGrid
       autoColumns="minmax(300px,15vw)"
-      autoRows="minmax(300px,30vh)"
+      autoRows="minmax(350px,30vh)"
       justifyItems="center"
       alignItems="center"
       autoFlow="column"
-      border="1px solid red"
       w="100%"
       h="100%"
     >
       {Object.entries(playlistsState).map(([id, data]) => {
+        const countOfSongs = data.items.length;
+
         const previewCount =
           //To prevent getting 3 images in the preview
-          data.items.length > 4 ? 4 : 3;
+          countOfSongs > 4 ? 4 : countOfSongs;
         return (
           <Grid
             className="playlist__border"
@@ -104,7 +105,9 @@ export default function YourPlaylists(): ReactElement {
                 </Button>
               </Flex>
             </Grid>
-            {previewCount}
+            <Text justifySelf="end" mr="1rem">{`${countOfSongs} Song${
+              countOfSongs > 1 ? "s" : ""
+            }`}</Text>
           </Grid>
         );
       })}

@@ -79,12 +79,12 @@ export default function Header({
     <Flex
       position="sticky"
       top="0"
-      background="#46484e"
+      background="white"
       justifyContent="left"
       w="100%"
       h="7%"
       align="center"
-      borderBottom="3px solid #A31709"
+      borderBottom="2px solid #A31709"
       zIndex="100"
       padding="0.4rem 0"
     >
@@ -129,10 +129,10 @@ export default function Header({
             height="100%"
             justifyContent="flex-end"
             alignItems="center"
-            mr="4rem"
           >
             <Box
-              mr="3rem"
+              ml="2rem"
+              mr="auto"
               css={css`
                 height: calc(100% + 3px);
                 display: grid;
@@ -146,7 +146,7 @@ export default function Header({
             </Box>
 
             <Menu>
-              <MenuButton size="sm" mr="20px" as={Button}>
+              <MenuButton variant="outline" size="sm" mr="1rem" as={Button}>
                 <Flex>
                   {displayName}
                   <FaUserNinja
@@ -175,10 +175,10 @@ export default function Header({
           height="100%"
           justifyContent="flex-end"
           alignItems="center"
-          mr="4rem"
+          mr={["0rem", "1rem"]}
         >
           <Menu>
-            <MenuButton size="sm" mr="20px" as={Button}>
+            <MenuButton variant="outline" size="sm" as={Button}>
               <HamburgerIcon w={8} h={8} />
             </MenuButton>
             <MenuList>
