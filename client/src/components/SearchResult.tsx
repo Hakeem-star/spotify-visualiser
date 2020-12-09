@@ -62,7 +62,7 @@ export default function SearchResult(props: Props): ReactElement {
               overflow="hidden"
               whiteSpace="nowrap"
               textOverflow="ellipsis"
-              textShadow="0.5px 0 0 #f00, 0 -0.5px 0 #ff5e00, 0 0.5px 0 #f00, -0.5px 0 0 #ff6a00"
+              // textShadow="0.5px 0 0 #f00, 0 -0.5px 0 #ff5e00, 0 0.5px 0 #f00, -0.5px 0 0 #ff6a00"
               css={css`
                 // This needs to be animated to move the text so we can read the entire name
                 // text-indent: 1rem;

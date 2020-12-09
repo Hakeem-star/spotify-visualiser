@@ -1,20 +1,14 @@
-import { SETCREATEPLAYLISTSIDEBAR, TOGGLECREATEPLAYLISTSIDEBAR } from "./types";
+import {
+  SETCREATEPLAYLISTSIDEBAR,
+  toggleCreatePlaylistSidebarType,
+} from "./types";
 
-export function setCreatePlaylistSidebar(
-  state = true
-): {
-  type: typeof SETCREATEPLAYLISTSIDEBAR;
-  payload: boolean;
-} {
+export function toggleCreatePlaylistSidebar(
+  action: boolean,
+  type: toggleCreatePlaylistSidebarType["type"] = SETCREATEPLAYLISTSIDEBAR
+): toggleCreatePlaylistSidebarType {
   return {
-    type: SETCREATEPLAYLISTSIDEBAR,
-    payload: state,
-  };
-}
-export function toggleCreatePlaylistSidebar(): {
-  type: typeof TOGGLECREATEPLAYLISTSIDEBAR;
-} {
-  return {
-    type: TOGGLECREATEPLAYLISTSIDEBAR,
+    type,
+    payload: action,
   };
 }

@@ -22,6 +22,15 @@ interface Props {
   };
 }
 
+function setCanvasToContainerSize(audioMotionRef: any, parent: HTMLDivElement) {
+  //return function for resize event
+  return () => {
+    const parentWidth = parent.offsetWidth;
+    const parentHeight = parent.offsetHeight;
+    audioMotionRef.setCanvasSize(parentWidth, parentHeight);
+  };
+}
+
 export const Visualiser = ({
   toggleVisualiserOn,
   visualiserFullscreen,
@@ -35,6 +44,7 @@ export const Visualiser = ({
   const sourceRef = useRef<any>();
 
   useEffect(() => {
+    let resizeHandler: () => void;
     async function plugMediaToVisual() {
       try {
         const mediaDevices = window.navigator.mediaDevices as any;
@@ -44,10 +54,14 @@ export const Visualiser = ({
         });
 
         if (stream.getAudioTracks().length > 0) {
-          audioMotionRef.current = new AudioMotionAnalyzer(
-            document.getElementById("visualiser"),
-            { maxDecibels: -25, maxFreq: 22000, minDecibels: -85, minFreq: 20 }
-          );
+          audioMotionRef.current =
+            audioMotionRef.current ||
+            new AudioMotionAnalyzer(document.getElementById("visualiser"), {
+              maxDecibels: -25,
+              maxFreq: 22000,
+              minDecibels: -85,
+              minFreq: 20,
+            });
           const parent = container.current;
           const parentWidth = parent.offsetWidth;
           const parentHeight = parent.offsetHeight;
@@ -67,12 +81,22 @@ export const Visualiser = ({
 
           sourceRef.current.connect(audioMotionRef.current.analyzer);
 
-          audioMotionRef.current.analyzer.disconnect(
-            audioMotionRef.current.audioCtx.destination
-          );
           setToggleVisualiserOn(true);
-        }
 
+          resizeHandler = setCanvasToContainerSize(
+            audioMotionRef.current,
+            parent
+          );
+
+          window.addEventListener("resize", resizeHandler);
+          //This will error out if the audioMotion ref was previously created
+          try {
+            audioMotionRef.current.analyzer.disconnect(audioCtx.destination);
+          } catch (error) {
+            //If there is an error it means there was an earlier connection. Should be fine
+          }
+        }
+        //Listener to detect when we disconnect
         stream.getAudioTracks()[0].onended = () => {
           setToggleVisualiserOn(false);
           setVisualiserPrompt(false);
@@ -82,15 +106,17 @@ export const Visualiser = ({
         setVisualiserPrompt(false);
       }
     }
-    console.log({ audioMotionRef: audioMotionRef.current });
+
     if (visualiserPrompt) {
-      console.log({ container });
       plugMediaToVisual();
     } else {
-      //Need to find a way to turn it off, rather than creating another instance
+      //Attempt to disconnect
       audioMotionRef?.current?.analyzer?.disconnect();
-      console.log({ current: audioMotionRef.current });
     }
+
+    return () => {
+      resizeHandler && window.removeEventListener("resize", resizeHandler);
+    };
   }, [visualiserPrompt, container]);
 
   useEffect(() => {

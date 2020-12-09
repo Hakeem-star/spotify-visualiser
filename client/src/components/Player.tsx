@@ -108,7 +108,7 @@ export default function Player({
   }, [toggleVisualiserOn]);
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" background="white">
       <Slider
         w="95%"
         m="0 auto"

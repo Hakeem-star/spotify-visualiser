@@ -3,7 +3,6 @@ import React, { ReactElement } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { setCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
 import { editPlaylist, deletePlaylist } from "../actions/playlistActions";
 import { AppState } from "../reducers";
 

@@ -44,13 +44,11 @@ export default function SearchResultList({
       css={scrollbarStyle}
     >
       <Flex
-        borderTop="1px solid #00000038"
-        borderBottom="1px solid #00000038"
         cursor="move"
         align="center"
         justify="space-between"
         mb="20px"
-        pb="10px"
+        p="5px"
       >
         <Box h="100%">
           <Heading background="white">{source}</Heading>

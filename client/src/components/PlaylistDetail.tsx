@@ -41,7 +41,6 @@ export default function PlaylistDetail(): ReactElement {
     index: number
   ): void {
     if (dragging) {
-      console.log("CLOIIIICK");
       e.preventDefault();
       e.stopPropagation();
     } else {
@@ -127,7 +126,8 @@ export default function PlaylistDetail(): ReactElement {
           gridColumn="2/3;"
           gridRow="3/3;"
           className="SLIDEEE"
-          alignSelf="center"
+          alignSelf="end"
+          h="80%"
         >
           {/* Thumbnail slider */}
           <div style={{ overflow: "hidden", width: "100%", height: "100%" }}>

@@ -7,6 +7,8 @@ import {
   Flex,
   Text,
   useBreakpointValue,
+  CloseButton,
+  chakra,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
@@ -24,6 +26,53 @@ import SearchResult from "./SearchResult";
 import DraggableCreatePlaylistItem from "./DraggableCreatePlaylistItem";
 import { insertIntoArray } from "../util/insertIntoArray";
 
+import { motion, useAnimation } from "framer-motion";
+import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
+const MotionDiv = chakra(motion.div);
+
+// const MotionFlex = motion.custom(Flex);
+// const MotionBox = motion.custom(Box);
+
+const toggleSidebar = {
+  visible: {
+    minWidth: "300px",
+    padding: "20px 20px",
+    transition: { type: "tween" },
+  },
+  hidden: {
+    minWidth: "0px",
+    padding: "0",
+    transition: { delay: 0.2, type: "tween" },
+  },
+};
+
+const toggleInnerSidebar = {
+  visible: {
+    display: "flex",
+    opacity: 1,
+    transition: { delay: 0.2 },
+  },
+  hidden: {
+    opacity: 0,
+    transitionEnd: {
+      display: "none",
+    },
+  },
+};
+
+const toggleHandleSidebar = {
+  visible: {
+    display: "block",
+    opacity: 1,
+  },
+  hidden: {
+    opacity: 0,
+    transitionEnd: {
+      display: "none",
+    },
+  },
+};
+
 export default function CreatePlaylist(): ReactElement {
   //This might not be needed but I may be able to refactor
   // const createPlaylistSidebarOpenState = useSelector(
@@ -35,11 +84,12 @@ export default function CreatePlaylist(): ReactElement {
   //All playlists
 
   const playlists = useSelector((state: AppState) => state.playlists);
+  const createPlaylistSidebarState = useSelector(
+    (state: AppState) => state.createPlaylistSidebar
+  );
   const dispatch = useDispatch();
   const [playListCreated, setPlayListCreated] = useState(false);
   const [submittedCount, setSubmittedCount] = useState(0);
-
-  const [nameInputValue, setNameInputValue] = useState("");
 
   useEffect(() => {
     //Makes sure this is false when component is mounted in case it was enabled somewhere else
@@ -58,20 +108,75 @@ export default function CreatePlaylist(): ReactElement {
   }, [submittedCount]);
 
   const buttonVariant = useBreakpointValue({ base: "xs", lg: "md", xl: "xs" });
+  const sidebarContainerControls = useAnimation();
+  const sidebarInnerControls = useAnimation();
+  const sidebarHandleControls = useAnimation();
+
+  useEffect(() => {
+    if (createPlaylistSidebarState) {
+      sidebarContainerControls.start(toggleSidebar.visible);
+      sidebarInnerControls.start(toggleInnerSidebar.visible);
+      sidebarHandleControls.start(toggleHandleSidebar.hidden);
+    } else {
+      sidebarInnerControls.start(toggleInnerSidebar.hidden);
+      sidebarContainerControls.start(toggleSidebar.hidden).then(() => {
+        sidebarHandleControls.start(toggleHandleSidebar.visible);
+      });
+    }
+  }, [createPlaylistSidebarState]);
 
   return (
     // Drag item here to create playlist
-    <Flex
+    <MotionDiv
+      display="flex"
       borderLeft="1px solid #A31709"
-      p="20px 20px"
-      minW="300px"
+      p="0px"
+      minW="0px"
       maxW="30%"
       h="100%"
+      position="relative"
+      // css={css`
+      //   transform: translateX(${!createPlaylistSidebarState ? "100%" : "0%"});
+      //   transition: transform 1s;
+      // `}
+      animate={sidebarContainerControls}
     >
-      <Flex w="100%" flexDirection="column">
-        <Text fontSize="1.5rem" mb="20px">
-          Create Playlist
-        </Text>
+      <MotionDiv
+        position="absolute"
+        top="40%"
+        left="0"
+        transform="translateX(-100%)"
+        background="white"
+        border="1px solid grey"
+        cursor="pointer"
+        padding="0.4rem"
+        borderTopLeftRadius="0.3rem;"
+        borderBottomLeftRadius="0.3rem;"
+        animate={sidebarHandleControls}
+        onClick={() => {
+          dispatch(toggleCreatePlaylistSidebar(true));
+        }}
+      >
+        <RiPlayListAddLine fontSize="2rem" />
+      </MotionDiv>
+      <MotionDiv
+        display="none"
+        w="100%"
+        flexDirection="column"
+        animate={sidebarInnerControls}
+      >
+        <Flex justify="space-between">
+          <Text fontSize="1.5rem" mb="20px">
+            Create Playlist
+          </Text>
+
+          <CloseButton
+            onClick={() => {
+              dispatch(toggleCreatePlaylistSidebar(false));
+            }}
+            size="sm"
+          />
+        </Flex>
         {/* Add more validation */}
         {playListCreated ? (
           <CreatedPlaylistMessage setplayListCreated={setPlayListCreated} />
@@ -211,7 +316,7 @@ export default function CreatePlaylist(): ReactElement {
             )}
           </Formik>
         )}
-      </Flex>
-    </Flex>
+      </MotionDiv>
+    </MotionDiv>
   );
 }

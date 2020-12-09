@@ -143,9 +143,9 @@ export interface setCreatePlaylistSidebar {
   payload: boolean;
 }
 
-export interface toggleCreatePlaylistSidebarOpen {
-  type: typeof TOGGLECREATEPLAYLISTSIDEBAR;
-  payload?: any;
+export interface toggleCreatePlaylistSidebarType {
+  type: typeof TOGGLECREATEPLAYLISTSIDEBAR | typeof SETCREATEPLAYLISTSIDEBAR;
+  payload: boolean;
 }
 
 export interface playlistItemType {
@@ -183,7 +183,7 @@ export interface deletePlaylist {
 
 export type createPlaylistSidebarOpen =
   | setCreatePlaylistSidebar
-  | toggleCreatePlaylistSidebarOpen;
+  | toggleCreatePlaylistSidebarType;
 
 export interface metaSongDetailsPayload {
   duration: number;
