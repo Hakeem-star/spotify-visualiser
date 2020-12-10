@@ -54,6 +54,9 @@ const toggleInnerSidebar = {
   },
   hidden: {
     opacity: 0,
+    transition: {
+      duration: 0.2,
+    },
     transitionEnd: {
       display: "none",
     },
@@ -149,6 +152,7 @@ export default function CreatePlaylist(): ReactElement {
         background="white"
         border="1px solid grey"
         cursor="pointer"
+        zIndex="1"
         padding="0.4rem"
         borderTopLeftRadius="0.3rem;"
         borderBottomLeftRadius="0.3rem;"

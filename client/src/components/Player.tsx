@@ -1,3 +1,4 @@
+/** @jsx jsx */
 import React, {
   Dispatch,
   ReactElement,
@@ -26,7 +27,7 @@ import {
 } from "@chakra-ui/react";
 import { BsPlay, BsPause } from "react-icons/bs";
 import { TOGGLE_PLAY_STATE } from "../actions/types";
-import { css } from "@emotion/react";
+import { jsx, css } from "@emotion/react";
 import { animate, motion, useMotionValue } from "framer-motion";
 import { seekSongPosition } from "../actions/externalPlayerActions";
 import { RiFullscreenLine } from "react-icons/ri";
@@ -151,21 +152,41 @@ export default function Player({
         </Tooltip>
       </Slider>
 
-      <Grid templateColumns="1fr 1.3fr 1fr" p="0 30px" alignItems="center">
+      <Grid
+        templateColumns="1fr 1.3fr 1fr"
+        p="0 30px"
+        h="4rem"
+        alignItems="center"
+      >
         {/* Current track info */}
 
-        <Flex justifyContent="flex-end">
+        <Flex justifyContent="flex-end" overflow="hidden" fontSize="0.8rem">
           {context[index] ? (
-            <>
-              <Text height="100%" mr="10%">
+            <React.Fragment>
+              <Text height="100%" mr="1rem">
                 Now Playing:
               </Text>
-              <Flex direction="column">
-                <Text>{context[index].name}</Text>
-                <Text>{context[index].artist}</Text>
+              <Flex
+                direction="column"
+                overflow="hidden"
+                w="15rem"
+                css={css`
+                  p {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                  }
+                `}
+              >
+                <Tooltip label={context[index].name}>
+                  <Text>{context[index].name}</Text>
+                </Tooltip>
+                <Tooltip label={context[index].artist}>
+                  <Text>{context[index].artist}</Text>
+                </Tooltip>
                 <Text>{context[index].duration}</Text>
               </Flex>
-            </>
+            </React.Fragment>
           ) : null}
         </Flex>
 
@@ -175,12 +196,14 @@ export default function Player({
           style={{ justifySelf: "center" }}
           width="30%"
           alignSelf="center"
-          mt="auto"
           height="10vh"
           justifyContent="center"
           alignItems="center"
         >
           <IoIosSkipBackward
+            css={css`
+              height: 60%;
+            `}
             cursor="pointer"
             onClick={() => {
               dispatch(prevSong());
@@ -195,6 +218,9 @@ export default function Player({
                 controls.current?.stop();
               }}
               fontSize="6rem"
+              css={css`
+                height: 100%;
+              `}
             />
           ) : (
             <BsPlay
@@ -204,6 +230,9 @@ export default function Player({
                 //Pressing play changes the player states which forces the playhead to start animating again
               }}
               fontSize="6rem"
+              css={css`
+                height: 60%;
+              `}
             />
           )}
           <IoIosSkipBackward
