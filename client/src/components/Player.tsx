@@ -24,6 +24,7 @@ import {
   SliderTrack,
   Switch,
   Text,
+  Link as ChakLink,
 } from "@chakra-ui/react";
 import { BsPlay, BsPause } from "react-icons/bs";
 import { TOGGLE_PLAY_STATE } from "../actions/types";
@@ -32,6 +33,7 @@ import { animate, motion, useMotionValue } from "framer-motion";
 import { seekSongPosition } from "../actions/externalPlayerActions";
 import { RiFullscreenLine } from "react-icons/ri";
 import msToHMS from "../util/formatMsToHMS";
+import { Link } from "react-router-dom";
 
 const calculatePosition = (duration: number, position: number) => {
   //Handles a 0/0 incident
@@ -60,9 +62,9 @@ export default function Player({
     (state: AppState) => state.externalPlayerSongMeta
   );
 
-  const { context, index } = playerState;
+  const { context, index, playlistId } = playerState;
   const { duration, position } = songMeta;
-
+  console.log({ playlistId });
   const [sliderPosition, setSliderPosition] = useState(
     calculatePosition(duration, position)
   );
@@ -155,7 +157,7 @@ export default function Player({
       <Grid
         templateColumns="1fr 1.3fr 1fr"
         p="0 30px"
-        h="4rem"
+        h="100%"
         alignItems="center"
       >
         {/* Current track info */}
@@ -178,13 +180,20 @@ export default function Player({
                   }
                 `}
               >
-                <Tooltip label={context[index].name}>
-                  <Text>{context[index].name}</Text>
-                </Tooltip>
-                <Tooltip label={context[index].artist}>
-                  <Text>{context[index].artist}</Text>
-                </Tooltip>
-                <Text>{context[index].duration}</Text>
+                {/* If there is no playlistId, take us to a playlistDetail page to see just the song */}
+                <ChakLink
+                  as={Link}
+                  to={`/playlists/${playlistId}`}
+                  _hover={{ fontWeight: 700 }}
+                >
+                  <Tooltip label={context[index].name}>
+                    <Text>{context[index].name}</Text>
+                  </Tooltip>
+                  <Tooltip label={context[index].artist}>
+                    <Text>{context[index].artist}</Text>
+                  </Tooltip>
+                  <Text>{context[index].duration}</Text>
+                </ChakLink>
               </Flex>
             </React.Fragment>
           ) : null}
@@ -217,10 +226,7 @@ export default function Player({
                 dispatch(changePlayerState(TOGGLE_PLAY_STATE));
                 controls.current?.stop();
               }}
-              fontSize="6rem"
-              css={css`
-                height: 100%;
-              `}
+              fontSize="15rem"
             />
           ) : (
             <BsPlay
@@ -229,10 +235,7 @@ export default function Player({
                 dispatch(changePlayerState(TOGGLE_PLAY_STATE));
                 //Pressing play changes the player states which forces the playhead to start animating again
               }}
-              fontSize="6rem"
-              css={css`
-                height: 60%;
-              `}
+              fontSize="15rem"
             />
           )}
           <IoIosSkipBackward
@@ -242,6 +245,9 @@ export default function Player({
             }}
             transform="scale(-1)"
             fontSize="6rem"
+            css={css`
+              height: 60%;
+            `}
           />
         </Flex>
 

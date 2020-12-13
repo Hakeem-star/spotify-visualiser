@@ -300,18 +300,23 @@ export const songSearch = (title: string): ThunkResult<void> => {
 
 export const playSong = (
   context: playlistItemSongsType[],
-  index = 0
+  index = 0,
+  playlistId = ""
 ):
   | {
       type: playerStates;
-      payload: { context: playlistItemSongsType[]; index: number };
+      payload: {
+        context: playlistItemSongsType[];
+        index: number;
+        playlistId: string;
+      };
     }
   | Record<string, unknown> => {
   if (context) {
     if (context[index] !== undefined) {
       return {
         type: PLAY_SONG,
-        payload: { context, index },
+        payload: { context, index, playlistId },
       };
     } else {
       return { type: PLAY_SONG, payload: { context, index: 0 } };

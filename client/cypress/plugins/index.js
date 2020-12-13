@@ -15,7 +15,35 @@
 /**
  * @type {Cypress.PluginConfig}
  */
+import execa from "execa";
+const findBrowser = () => {
+  // the path is hard-coded for simplicity
+  const browserPath =
+    "C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser\\Application\\brave.exe";
+
+  return execa(browserPath, ["--version"]).then((result) => {
+    // STDOUT will be like "Brave Browser 77.0.69.135"
+    const [, version] = /Brave Browser (\d+\.\d+\.\d+\.\d+)/.exec(
+      result.stdout
+    );
+    const majorVersion = parseInt(version.split(".")[0]);
+
+    return {
+      name: "Brave",
+      channel: "stable",
+      family: "chromium",
+      displayName: "Brave",
+      version,
+      path: browserPath,
+      majorVersion,
+    };
+  });
+};
+
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-}
+  return findBrowser().then((browser) => {
+    return {
+      browsers: config.browsers.concat(browser),
+    };
+  });
+};

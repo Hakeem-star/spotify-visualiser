@@ -206,6 +206,14 @@ export interface seekPositionType {
   payload: metaSeekPayload;
 }
 
+export interface playSongReducerType {
+  play: boolean;
+  url: string;
+  context: playlistItemSongsType[];
+  index: number;
+  source: string;
+  playlistId: string;
+}
 export type metaTypes = setCurrentSongDetailsType | seekPositionType;
 
 export type AppActions =

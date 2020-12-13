@@ -49,7 +49,6 @@ export default function PlaylistDetail(): ReactElement {
       e.stopPropagation();
     }
   }
-
   if (playlist) {
     const { name, items } = playlist;
     return (
@@ -78,7 +77,7 @@ export default function PlaylistDetail(): ReactElement {
             ml="auto"
             onClick={() => {
               console.log(items);
-              dispatch(playSong(items));
+              dispatch(playSong(items, 0, id));
             }}
           >
             Play!
@@ -93,7 +92,8 @@ export default function PlaylistDetail(): ReactElement {
         >
           <Image
             onClick={() => {
-              dispatch(playSong(items, currentItemIndex));
+              console.log({ playlistId3: id });
+              dispatch(playSong(items, currentItemIndex, id));
             }}
             cursor="pointer"
             maxH="100%"

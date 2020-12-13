@@ -85,7 +85,7 @@ export default function Header({
       background="white"
       justifyContent="left"
       w="100%"
-      h="7%"
+      h="3em"
       align="center"
       borderBottom="1px solid #A31709"
       zIndex="100"

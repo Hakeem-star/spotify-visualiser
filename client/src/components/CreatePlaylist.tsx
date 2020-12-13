@@ -28,6 +28,7 @@ import { insertIntoArray } from "../util/insertIntoArray";
 
 import { motion, useAnimation } from "framer-motion";
 import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
+import { use } from "chai";
 const MotionDiv = chakra(motion.div);
 
 // const MotionFlex = motion.custom(Flex);
@@ -93,8 +94,9 @@ export default function CreatePlaylist(): ReactElement {
   const dispatch = useDispatch();
   const [playListCreated, setPlayListCreated] = useState(false);
   const [submittedCount, setSubmittedCount] = useState(0);
-
+  const mountedRecord = useRef(0);
   useEffect(() => {
+    mountedRecord.current = 0;
     //Makes sure this is false when component is mounted in case it was enabled somewhere else
     setPlayListCreated(false);
   }, []);
@@ -116,7 +118,7 @@ export default function CreatePlaylist(): ReactElement {
   const sidebarHandleControls = useAnimation();
 
   useEffect(() => {
-    if (createPlaylistSidebarState) {
+    if (createPlaylistSidebarState && mountedRecord.current) {
       sidebarContainerControls.start(toggleSidebar.visible);
       sidebarInnerControls.start(toggleInnerSidebar.visible);
       sidebarHandleControls.start(toggleHandleSidebar.hidden);
@@ -124,9 +126,17 @@ export default function CreatePlaylist(): ReactElement {
       sidebarInnerControls.start(toggleInnerSidebar.hidden);
       sidebarContainerControls.start(toggleSidebar.hidden).then(() => {
         sidebarHandleControls.start(toggleHandleSidebar.visible);
+        //Dispatch close event in case this was triggered by mounted true state
+        //When this happens, the toggle remains closed and doesn't open because the handle dispatches a value of true
+        //Which would not cause a change in state meaning this useEffect will not trigger
+        dispatch(toggleCreatePlaylistSidebar(false));
       });
     }
   }, [createPlaylistSidebarState]);
+
+  useEffect(() => {
+    mountedRecord.current = 1;
+  }, []);
 
   return (
     // Drag item here to create playlist
