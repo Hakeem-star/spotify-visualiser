@@ -1,7 +1,7 @@
 import { Text, Image, Button, Flex, Grid, Heading } from "@chakra-ui/react";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { playSong } from "../actions";
 import { AppState } from "../reducers";
 import SearchResult from "./SearchResult";
@@ -10,6 +10,7 @@ import useDragDetection from "../util/useDragDetection";
 import { css } from "@emotion/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { playlistItemSongsType } from "../actions/types";
 
 const mainSlidersettings = {
   focusOnSelect: true,
@@ -30,12 +31,48 @@ const thumbSlidersettings = {
 };
 
 export default function PlaylistDetail(): ReactElement {
+  const {
+    location: { pathname },
+  } = useHistory();
   const { id }: { id: string } = useParams();
-  const playlist = useSelector((state: AppState) => state.playlists[id]);
+
+  const playerState = useSelector((state: AppState) => state.playerState);
+  const { context, index, playlistId } = playerState;
+
+  const playlistRedux = useSelector(
+    (state: AppState) => state.playlists[id]
+  ) as {
+    name: string | playlistItemSongsType[];
+    id: string;
+    items: playlistItemSongsType[];
+  };
+  const reff = useRef({
+    name: context,
+    items: context,
+    id: playlistId,
+  });
+
+  const playlist = pathname.includes("/playlists/current")
+    ? reff.current
+    : playlistRedux;
+
   const dispatch = useDispatch();
+
   //Prevents click event on item when attempting to drag
   const { handleMouseDown, dragging } = useDragDetection();
+
+  //Controls the item displayed in image
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
+
+  useEffect(() => {
+    if (pathname.includes("/playlists/current")) {
+      //Use the index from the song clicked so the carousel starts at the right song
+      setCurrentItemIndex(index);
+    } else {
+      setCurrentItemIndex(0);
+    }
+  }, [pathname]);
+
   function handleChildClick(
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
@@ -49,11 +86,17 @@ export default function PlaylistDetail(): ReactElement {
       e.stopPropagation();
     }
   }
+
   if (playlist) {
-    const { name, items } = playlist;
+    const { items } = playlist;
+    let { name } = playlist;
+    if (typeof name !== "string") {
+      name = name[currentItemIndex].name;
+    }
+
     return (
       <Grid
-        key={name}
+        key={items[0].name}
         className="playlist-detail__container"
         templateRows="0.75fr 50% 1fr"
         templateColumns="1fr 15fr 1fr"
@@ -92,7 +135,6 @@ export default function PlaylistDetail(): ReactElement {
         >
           <Image
             onClick={() => {
-              console.log({ playlistId3: id });
               dispatch(playSong(items, currentItemIndex, id));
             }}
             cursor="pointer"
@@ -132,18 +174,21 @@ export default function PlaylistDetail(): ReactElement {
           {/* Thumbnail slider */}
           <div style={{ overflow: "hidden", width: "100%", height: "100%" }}>
             <Slider {...thumbSlidersettings}>
-              {items.map((song, index) => (
-                <div
-                  onMouseDownCapture={handleMouseDown}
-                  onClickCapture={(e) => handleChildClick(e, index)}
-                  key={song.url}
-                  className="VCOVER"
-                >
-                  <div style={{ width: "90%" }}>
-                    <SearchResult context={items} index={index} {...song} />
+              {items.map((song, index) => {
+                console.log({ song: song.url });
+                return (
+                  <div
+                    onMouseDownCapture={handleMouseDown}
+                    onClickCapture={(e) => handleChildClick(e, index)}
+                    key={song.url}
+                    className="VCOVER"
+                  >
+                    <div style={{ width: "90%" }}>
+                      <SearchResult context={items} index={index} {...song} />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </Slider>
           </div>
         </Flex>

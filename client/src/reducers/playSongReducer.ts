@@ -75,7 +75,6 @@ export const playSongReducer = (
         url: state.context[state.index + 1].url,
         source: state.context[state.index + 1].source,
         index: state.index + 1,
-        playlistId: action.payload.playlistId,
       };
     }
   }
@@ -88,7 +87,6 @@ export const playSongReducer = (
         url: state.context[state.index - 1].url,
         source: state.context[state.index - 1].source,
         index: state.index - 1,
-        playlistId: action.payload.playlistId,
       };
     }
   }
