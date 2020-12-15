@@ -15,7 +15,6 @@ export default function SearchResult(props: Props): ReactElement {
   const dispatch = useDispatch();
   const [imageLoaded, setImageLoaded] = useState(0);
   const { imageUrl, name, artist, duration, url, index } = props;
-  console.log({ imageUrl });
   return (
     <Tooltip label={name}>
       <Flex
@@ -26,7 +25,7 @@ export default function SearchResult(props: Props): ReactElement {
         borderRadius="5px"
         overflow="hidden"
         onClick={() => {
-          console.log(url);
+          console.log({ context: props.context });
           dispatch(playSong(props.context, index));
         }}
       >
@@ -37,6 +36,7 @@ export default function SearchResult(props: Props): ReactElement {
           width="100%"
           transform="translateY(-25%)"
           transition="opacity 0.1s"
+          //Loads the gradient overlay when we have an image.
           opacity={imageLoaded}
           onLoad={() => setImageLoaded(1)}
           // maxW="124px"
@@ -59,9 +59,13 @@ export default function SearchResult(props: Props): ReactElement {
             left: 0,
             width: "100%",
             height: "100%",
+            opacity: imageLoaded,
             background:
               "linear-gradient(180deg, rgb(84 84 84 / 0%) 0%, rgb(0 0 0) 0%, rgb(33 33 33 / 40%) 100%)",
+            zIndex: "-1",
+            transition: "opacity 0.3s",
           }}
+          _hover={{ _before: { opacity: 0.3 } }}
           zIndex={1}
           // style={{ mixBlendMode: "luminosity" }}
         >

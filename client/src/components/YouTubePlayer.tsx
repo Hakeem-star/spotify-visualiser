@@ -21,6 +21,7 @@ export default function YouTubePlayer(): ReactElement {
   const externalPlayerSongMeta = useSelector(
     (state: AppState) => state.externalPlayerSongMeta
   );
+  const signedIn = useSelector((state: AppState) => state.auth.isSignedIn);
 
   useEffect(() => {
     //Setup player
@@ -60,6 +61,7 @@ export default function YouTubePlayer(): ReactElement {
   useEffect(() => {
     //When the URL or the source changes
     if (playerState.source === YOUTUBE) {
+      console.log({ playerState: playerState.url });
       if (playerState.url) ytPlayer.current.loadVideoById(playerState.url);
     } else {
       //If we are not playing a Youtube video, stop the Youtube video
@@ -79,6 +81,7 @@ export default function YouTubePlayer(): ReactElement {
         if (playerState.play) {
           //If we have a video url and we have clicked on the same video, pause the video
           //Play and stop Youtube video
+
           ytPlayer.current.playVideo();
         } else {
           ytPlayer.current.pauseVideo();
@@ -101,6 +104,18 @@ export default function YouTubePlayer(): ReactElement {
       ytPlayer.current.seekTo(externalPlayerSongMeta.seekPosition, true);
     }
   }, [externalPlayerSongMeta.seekPosition]);
+
+  //If signIn status changes
+  useEffect(() => {
+    //Stop when signed out
+    if (!signedIn && ytPlayer.current) {
+      try {
+        ytPlayer.current.stopVideo();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [signedIn]);
 
   return (
     // Hide the youtube video

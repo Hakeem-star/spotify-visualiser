@@ -61,40 +61,8 @@ const viewFadeSetup = (
 };
 
 export default function Home(): ReactElement {
-  const [ytReady, setYtReady] = useState(false);
   const dispatch = useDispatch();
   const spotifyAuth = useSelector((state: AppState) => state.spotifyAuth);
-  useSpotifyPlayer();
-
-  useEffect(() => {
-    //insert the Youtube Player API src if not on page
-    const tag = document.createElement("script");
-    if (!window.YT) {
-      tag.src = "https://www.youtube.com/iframe_api";
-      tag.async = true;
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      // console.log({ first: firstScriptTag.parentNode });
-      if (firstScriptTag !== null) {
-        firstScriptTag.appendChild(tag);
-        tag.onload = () => {
-          const clearcheck = setInterval(repeatcheck, 500, 0);
-          function repeatcheck(oldvalue: number) {
-            if (window.YT.loaded !== oldvalue) {
-              // do something
-              clearInterval(clearcheck);
-              setYtReady(true);
-              console.log(
-                "check value changed from " +
-                  oldvalue +
-                  " to " +
-                  window.YT.loaded
-              );
-            }
-          }
-        };
-      }
-    }
-  }, []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -215,7 +183,6 @@ export default function Home(): ReactElement {
           onOpen={onOpen}
           onClose={onClose}
         />
-        {ytReady ? <YouTubePlayer /> : null}
         <Player
           setVisualiserFullscreen={setVisualiserFullscreen}
           setVisualiserPrompt={setVisualiserPrompt}

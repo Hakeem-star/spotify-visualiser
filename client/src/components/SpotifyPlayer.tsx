@@ -59,6 +59,7 @@ export default function useSpotifyPlayer(): void {
   const externalPlayerSongMeta = useSelector(
     (state: AppState) => state.externalPlayerSongMeta
   );
+  const signedIn = useSelector((state: AppState) => state.auth.isSignedIn);
 
   const dispatch = useDispatch();
 
@@ -195,4 +196,12 @@ export default function useSpotifyPlayer(): void {
       player.current.seek(externalPlayerSongMeta.seekPosition * 1000);
     }
   }, [externalPlayerSongMeta.seekPosition]);
+
+  //If signIn status changes
+  useEffect(() => {
+    //Stop when signed out
+    if (!signedIn && player.current) {
+      player.current.pause();
+    }
+  }, [signedIn]);
 }

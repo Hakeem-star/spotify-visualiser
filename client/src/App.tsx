@@ -11,11 +11,45 @@ import { fbAuth } from "./util/firebase_init";
 import AuthOptions from "./components/AuthOptions";
 import SignIn from "./components/Auth/SignIn";
 import SignUp from "./components/Auth/SignUp";
+import useSpotifyPlayer from "./components/SpotifyPlayer";
+import YouTubePlayer from "./components/YouTubePlayer";
 
 export default function App(): ReactElement {
   const dispatch = useDispatch();
   const isSignedIn = useSelector((state: AppState) => state.auth.isSignedIn);
   const [checkedSignIn, setCheckedSignIn] = useState(false);
+  const [ytReady, setYtReady] = useState(false);
+  useSpotifyPlayer();
+
+  useEffect(() => {
+    //insert the Youtube Player API src if not on page
+    const tag = document.createElement("script");
+    if (!window.YT) {
+      tag.src = "https://www.youtube.com/iframe_api";
+      tag.async = true;
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      // console.log({ first: firstScriptTag.parentNode });
+      if (firstScriptTag !== null) {
+        firstScriptTag.appendChild(tag);
+        tag.onload = () => {
+          const clearcheck = setInterval(repeatcheck, 500, 0);
+          function repeatcheck(oldvalue: number) {
+            if (window.YT.loaded !== oldvalue) {
+              // do something
+              clearInterval(clearcheck);
+              setYtReady(true);
+              console.log(
+                "check value changed from " +
+                  oldvalue +
+                  " to " +
+                  window.YT.loaded
+              );
+            }
+          }
+        };
+      }
+    }
+  }, []);
 
   useEffect(() => {
     //get and set cookies to store
@@ -68,6 +102,7 @@ export default function App(): ReactElement {
           </>
         )}
       </Router>
+      {ytReady ? <YouTubePlayer /> : null}
     </ChakraProvider>
   );
 }

@@ -207,6 +207,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
     const songSources = getState().songSources;
     let songResults;
 
+    let youtubeIdPath = "id.videoId";
     //if nothing is searched
     if (!title) {
       let region: any;
@@ -227,6 +228,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
             region,
           },
         });
+        youtubeIdPath = "id";
       } catch (error) {
         // if (songResults?.data[1]?.error) {
         //   return;
@@ -305,7 +307,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
           "snippet.title",
           "snippet.channelTitle",
           "snippet.publishedAt",
-          "id.videoId",
+          youtubeIdPath,
           "duration"
         );
       }
