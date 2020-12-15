@@ -1,4 +1,4 @@
-import { Divider, Flex, Heading, Box } from "@chakra-ui/react";
+import { Divider, Flex, Heading, Box, Skeleton } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import React, { ReactElement } from "react";
 import { remappedSearchResult } from "../types";
@@ -25,12 +25,14 @@ const scrollbarStyle = css`
 
 interface Props {
   source: string;
-  items: remappedSearchResult["items"];
+  items: remappedSearchResult["items"] | undefined;
+  fetching: boolean;
 }
 
 export default function SearchResultList({
   source,
   items,
+  fetching,
 }: Props): ReactElement {
   return (
     <Flex
@@ -62,19 +64,40 @@ export default function SearchResultList({
         css={scrollbarStyle}
       >
         {/* Issue is these don't create a key for the children */}
-        {insertIntoArray(
-          items.map((item, index) => {
-            return (
-              <DraggableSearchResult
-                context={items}
-                {...item}
-                index={index}
-                key={item.url + item.name}
-              />
-            );
-          }),
-          <Divider borderColor="#417AF0" m="3px 0" />
-        )}
+        {/* If fetching, show skeleton */}
+        {!fetching
+          ? items &&
+            insertIntoArray(
+              items.map((item, index) => {
+                return (
+                  <DraggableSearchResult
+                    context={items}
+                    {...item}
+                    index={index}
+                    key={item.url + item.name}
+                  />
+                );
+              }),
+              <Divider borderColor="#417AF0" m="3px 0" />
+            )
+          : //Skeletons for loading
+            insertIntoArray(
+              Array(10)
+                .fill("")
+                .map((val, index) => {
+                  return (
+                    <Skeleton
+                      key={index}
+                      //Same settings as SearchResult
+                      flexShrink={0}
+                      height="95px"
+                      w="100%"
+                      borderRadius="5px"
+                    ></Skeleton>
+                  );
+                }),
+              <Divider borderColor="#417AF0" m="3px 0" />
+            )}
       </Flex>
     </Flex>
   );

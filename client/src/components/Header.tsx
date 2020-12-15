@@ -65,7 +65,7 @@ export default function Header({
   const [searchInputValue, setSearchInputValue] = useState("");
   const debounceSearch = useRef(
     debounce((value) => {
-      dispatch(songSearch(value));
+      dispatch(songSearch(value.trim()));
     }, 1000)
   );
 
@@ -77,6 +77,12 @@ export default function Header({
   };
 
   const mobileScreenSize = useBreakpointValue({ base: true, md: false });
+
+  useEffect(() => {
+    //On mount, make a search with no value to fetch the popular/most listened songs
+    dispatch(songSearch(""));
+  }, []);
+
   return (
     <Flex
       as="header"

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateSongSources } from "../actions";
 import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
+import { updateSongSourcesType } from "../types";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
@@ -22,7 +23,7 @@ export default function SourceSelectorOptions({
     //Check the box when we confirm signin for Spotify
     if (spotifyAuth.isSignedIn) {
       if (!songSources.includes(SPOTIFY)) {
-        const newState = [SPOTIFY, YOUTUBE];
+        const newState = [SPOTIFY, YOUTUBE] as updateSongSourcesType;
         dispatch(updateSongSources(newState));
       }
     }

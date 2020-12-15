@@ -1,5 +1,4 @@
 export default function parseDuration(PT) {
-  console.log({ PT });
   if (["PT0S", "P0D"].some((val) => val === PT)) {
     return "Live";
   }

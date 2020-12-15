@@ -9,8 +9,8 @@ import { SPOTIFY, YOUTUBE } from "../actions/types";
 import { AppState } from "../reducers";
 import { insertIntoArray } from "../util/insertIntoArray";
 import { SearchListMaker } from "./SearchListMaker";
-import SearchResultList from "./SearchResultList";
 import ScrollContainer from "react-indiana-drag-scroll";
+import { useSelector } from "react-redux";
 
 const scrollbarStyle = css`
   /* width */
@@ -39,9 +39,11 @@ export default function SearchResultContainer({
 }: {
   songSearchResults: AppState["songSearchResult"];
 }): ReactElement {
-  // useEffect(() => {
-  //   //Mount drag scrolling for header
-  // }, []);
+  const selectedSources = useSelector((state: AppState) => state.songSources);
+  // const keys = Object.keys(songSearchResults) as (
+  //   | typeof SPOTIFY
+  //   | typeof YOUTUBE
+  // )[];
   return (
     <ScrollContainer
       ignoreElements=".DraggableSearchResult"
@@ -55,9 +57,15 @@ export default function SearchResultContainer({
       }}
       css={scrollbarStyle}
     >
-      {/* {results} */}
-      <SearchListMaker results={songSearchResults[SPOTIFY]} id={SPOTIFY} />
-      <SearchListMaker results={songSearchResults[YOUTUBE]} id={YOUTUBE} />
+      {/* Iterate through the results and create a new column for each source */}
+      {selectedSources.map((val) => (
+        <SearchListMaker
+          key={val}
+          fetching={songSearchResults.fetching}
+          results={songSearchResults[val]}
+          id={val}
+        />
+      ))}
     </ScrollContainer>
   );
 }

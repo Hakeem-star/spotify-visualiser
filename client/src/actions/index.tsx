@@ -21,6 +21,7 @@ import {
   PREV_SONG,
   GUEST,
   SPOTIFY_SIGN_IN_FAILED,
+  FETCHING_SONG_SEARCH,
 } from "./types";
 import { Dispatch } from "redux";
 import { AppState } from "../reducers";
@@ -195,43 +196,66 @@ export const spotifySignIn = (): ThunkResult<void> => {
 
 export const songSearch = (title: string): ThunkResult<void> => {
   console.log("searching for song " + title);
+  //Need to set state to indicate a search is being made
 
   return async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
+    dispatch({
+      type: FETCHING_SONG_SEARCH,
+      payload: true,
+    });
     const spotifyToken = getCookie("ACCESS_TOKEN");
     const songSources = getState().songSources;
     let songResults;
 
+    //if nothing is searched
     if (!title) {
-      dispatch({
-        type: SONG_SEARCH,
-        payload: { [SPOTIFY]: null, [YOUTUBE]: null },
-      });
-      return;
-    }
+      let region: any;
+      try {
+        //Get the users Region
+        region = (await axios.get("http://ip-api.com/json")).data.countryCode;
+      } catch (error) {
+        console.log(error.response.data);
+        region = "US";
+      }
+      try {
+        //Get geo location if not already in state,
 
-    try {
-      songResults = await axios.get(
-        `http://localhost:3000/search/?q=${title}`,
-        {
+        songResults = await axios.get(`http://localhost:3000/search/popular`, {
           params: {
             spotifyToken,
             sources: songSources,
+            region,
           },
-        }
-      );
-    } catch (error) {
-      // if (songResults?.data[1]?.error) {
-      //   return;
-      // }
-      console.log(error.response.data);
-      return;
+        });
+      } catch (error) {
+        // if (songResults?.data[1]?.error) {
+        //   return;
+        // }
+        console.log(error.response.data);
+        return;
+      }
+    } else {
+      try {
+        songResults = await axios.get(
+          `http://localhost:3000/search/?q=${title}`,
+          {
+            params: {
+              spotifyToken,
+              sources: songSources,
+            },
+          }
+        );
+      } catch (error) {
+        // if (songResults?.data[1]?.error) {
+        //   return;
+        // }
+        console.log(error.response.data);
+        return;
+      }
     }
     console.log({ songResults: songResults });
-
     //Sanitise results
     const arrangedResults = {} as songSearchResult;
-
-    console.log({ res: songResults }, songResults.data);
 
     if (songResults.data.spotifyResults) {
       arrangedResults[SPOTIFY] =
@@ -250,14 +274,17 @@ export const songSearch = (title: string): ThunkResult<void> => {
           "uri",
           "duration"
         );
-    } else {
-      arrangedResults[SPOTIFY] = null;
     }
+
+    // else {
+    //   arrangedResults[SPOTIFY] = null;
+    // }
 
     if (songResults.data.youtubeResults) {
       if (songResults.data.youtubeResults.error) {
         arrangedResults[YOUTUBE] = songResults.data.youtubeResults;
       } else {
+        //server side instead?
         //change the format of the images in the response
         songResults.data.youtubeResults.items.forEach((item: any) => {
           const imageSizes = Object.values(item.snippet.thumbnails).sort(
@@ -265,10 +292,9 @@ export const songSearch = (title: string): ThunkResult<void> => {
               return b.width - a.width;
             }
           );
-          // console.log({ imageSizes });
-          item.snippet.thumbnails = { ...imageSizes };
+          item.snippet.thumbnails = [...imageSizes];
         });
-        console.log(songResults.data.youtubeResults);
+
         arrangedResults[YOUTUBE] = remapSongSearchResult(
           YOUTUBE,
           songResults.data.youtubeResults,
@@ -283,17 +309,20 @@ export const songSearch = (title: string): ThunkResult<void> => {
           "duration"
         );
       }
-    } else {
-      arrangedResults[YOUTUBE] = null;
     }
-
-    console.log({ arrangedResults });
+    // else {
+    //   arrangedResults[YOUTUBE] = null;
+    // }
 
     //Next page tokens
 
     dispatch({
       type: SONG_SEARCH,
       payload: arrangedResults,
+    });
+    dispatch({
+      type: FETCHING_SONG_SEARCH,
+      payload: false,
     });
   };
 };

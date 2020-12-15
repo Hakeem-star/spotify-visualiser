@@ -2,7 +2,7 @@ import { AppActions, UPDATE_SONG_SOURCE } from "../actions/types";
 import { updateSongSourcesType } from "../types";
 //This needs to keep track of the sources ticked on the checkboxes
 
-const DEFAULT_STATE = ["YOUTUBE"];
+const DEFAULT_STATE = ["YOUTUBE"] as updateSongSourcesType;
 
 export const updateSongSourcesReducer = (
   state = DEFAULT_STATE,

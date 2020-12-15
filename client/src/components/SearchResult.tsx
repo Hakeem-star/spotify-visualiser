@@ -15,13 +15,12 @@ export default function SearchResult(props: Props): ReactElement {
   const dispatch = useDispatch();
   const [imageLoaded, setImageLoaded] = useState(0);
   const { imageUrl, name, artist, duration, url, index } = props;
-
+  console.log({ imageUrl });
   return (
     <Tooltip label={name}>
       <Flex
         position="relative"
         height="95px"
-        background="#0004A3"
         color="white"
         w="100%"
         borderRadius="5px"
@@ -53,7 +52,16 @@ export default function SearchResult(props: Props): ReactElement {
           p="5px"
           w="50%"
           flex="1"
-          background="linear-gradient(180deg, rgb(84 84 84 / 0%) 0%, rgb(0 0 0) 0%, rgb(33 33 33 / 40%) 100%)"
+          _before={{
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background:
+              "linear-gradient(180deg, rgb(84 84 84 / 0%) 0%, rgb(0 0 0) 0%, rgb(33 33 33 / 40%) 100%)",
+          }}
           zIndex={1}
           // style={{ mixBlendMode: "luminosity" }}
         >

@@ -14,7 +14,6 @@ interface Props extends playlistItemSongsType {
 
 export default function DraggableSearchResult(props: Props): ReactElement {
   const { imageUrl, index, name } = props;
-  console.log({ imageUrl });
   return (
     <Draggable
       draggableId={imageUrl[0].url + name}

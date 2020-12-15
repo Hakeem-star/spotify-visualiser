@@ -64,7 +64,6 @@ export default function Player({
 
   const { context, index, playlistId } = playerState;
   const { duration, position } = songMeta;
-  console.log({ playlistId });
   const [sliderPosition, setSliderPosition] = useState(
     calculatePosition(duration, position)
   );
@@ -127,10 +126,6 @@ export default function Player({
           setMovingSlider(true);
         }}
         onChangeEnd={(val) => {
-          console.log({
-            mms: msToHMS((sliderPosition / 100) * duration),
-            calc: (sliderPosition / 100) * duration,
-          });
           //Seeking. Need to update position on relevant external players.
           //Making this change should force a change in the player state, which should update the songMeta state with the duration and position
           if (movingSlider) {

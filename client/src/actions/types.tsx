@@ -8,6 +8,7 @@ import {
 } from "../types";
 
 export const SONG_SEARCH = "SONG_SEARCH";
+export const FETCHING_SONG_SEARCH = "FETCHING_SONG_SEARCH";
 export const PLAY_SONG = "PLAY_SONG";
 export const NEXT_SONG = "NEXT_SONG";
 export const PREV_SONG = "PREV_SONG";
@@ -80,14 +81,23 @@ export type AuthActionTypes =
   | signInAsGuestType
   | failedAuthForm;
 
-export interface songSearch {
+interface searchingForSong {
   type: typeof SONG_SEARCH;
   payload: songSearchResult;
 }
+interface fetchingSong {
+  type: typeof FETCHING_SONG_SEARCH;
+  payload: boolean;
+}
+
+export type songSearch = searchingForSong | fetchingSong;
+
 export interface songSources {
   type: typeof UPDATE_SONG_SOURCE;
   payload: updateSongSourcesType;
 }
+
+export type sourcesTypes = typeof SPOTIFY | typeof YOUTUBE;
 
 export type SongSearchTypes = songSearch | songSources;
 

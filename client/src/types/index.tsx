@@ -1,6 +1,12 @@
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../reducers";
-import { AppActions, GUEST } from "../actions/types";
+import {
+  AppActions,
+  GUEST,
+  sourcesTypes,
+  SPOTIFY,
+  YOUTUBE,
+} from "../actions/types";
 
 export interface userData {
   country: string;
@@ -156,14 +162,12 @@ export interface remappedSearchResult extends songSearchError {
   previous: string | null;
   items: {
     source: string;
-    imageUrl: Record<
-      number,
-      {
-        height: number;
-        url: string;
-        width: number;
-      }
-    >;
+    imageUrl: {
+      height: number;
+      url: string;
+      width: number;
+    }[];
+
     name: string;
     artist: string;
     year: string;
@@ -172,10 +176,17 @@ export interface remappedSearchResult extends songSearchError {
   }[];
 }
 
-export interface songSearchResult {
-  SPOTIFY: remappedSearchResult | null;
-  YOUTUBE: remappedSearchResult | null;
-}
+// export type songSearchResult =
+//   | Record<sourcesTypes, remappedSearchResult | null>
+//   | Record<string, never>;
+
+export type songSearchResult = Record<
+  sourcesTypes,
+  remappedSearchResult | null
+> & {
+  fetching: boolean;
+};
+
 export interface spotifyAuthState {
   isSignedIn: boolean | null;
   userData: userData | null;
@@ -198,6 +209,6 @@ export interface noTokenError {
   };
 }
 
-export type updateSongSourcesType = string[];
+export type updateSongSourcesType = (typeof SPOTIFY | typeof YOUTUBE)[];
 
 export type ThunkResult<R> = ThunkAction<R, AppState, unknown, AppActions>;
