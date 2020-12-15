@@ -34,7 +34,7 @@ import React, {
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiFireWave } from "react-icons/gi";
-import { RiPlayListFill } from "react-icons/ri";
+import { RiPlayListFill, RiPlayListAddLine } from "react-icons/ri";
 import { BsMusicNote } from "react-icons/bs";
 
 import { Link, useHistory } from "react-router-dom";
@@ -49,6 +49,7 @@ import SourceSelectorOptions from "./SourceSelectorOptions";
 import { HamburgerIcon } from "@chakra-ui/icons";
 
 import { GUEST } from "../actions/types";
+import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
@@ -66,6 +67,8 @@ export default function Header({
   const debounceSearch = useRef(
     debounce((value) => {
       dispatch(songSearch(value.trim()));
+      //Take us to the homepage to see the search results when a search is performed
+      if (history.location.pathname !== "/") history.push("/");
     }, 1000)
   );
 
@@ -144,7 +147,6 @@ export default function Header({
             <Link
               css={css`
                 margin-left: 2rem;
-                margin-right: auto;
                 height: 100%;
               `}
               to="/playlists"
@@ -162,6 +164,33 @@ export default function Header({
                 >
                   <Text mr="1rem">Playlists</Text>
                   <RiPlayListFill />
+                </Flex>
+              </Button>
+            </Link>
+            <Link
+              css={css`
+                margin-left: 2rem;
+                margin-right: auto;
+                height: 100%;
+              `}
+              to="/"
+              onClick={() => {
+                dispatch(toggleCreatePlaylistSidebar(true));
+              }}
+            >
+              <Button h="100%" variant="outline">
+                <Flex
+                  h="100%"
+                  css={css`
+                    display: flex;
+                    align-self: flex-start;
+                    white-space: nowrap;
+                  `}
+                  justify="space-between"
+                  align="center"
+                >
+                  <Text mr="1rem">Create a Playlist</Text>
+                  <RiPlayListAddLine />
                 </Flex>
               </Button>
             </Link>
@@ -190,6 +219,7 @@ export default function Header({
           </Flex>
         </React.Fragment>
       ) : (
+        // On Mobile
         <Flex
           flex="1"
           height="100%"
@@ -206,6 +236,23 @@ export default function Header({
                 <SourceSelectorOptions
                   connectToSpotifyModalToggle={connectToSpotifyModalToggle}
                 />
+              </MenuGroup>
+              <MenuGroup title="Playlists">
+                <MenuItem
+                  onClick={() => {
+                    history.push("/playlists");
+                  }}
+                >
+                  Your Playlists
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    dispatch(toggleCreatePlaylistSidebar(true));
+                    history.push("/");
+                  }}
+                >
+                  Create a Playlist
+                </MenuItem>
               </MenuGroup>
               <MenuGroup title="Account">
                 <MenuItem

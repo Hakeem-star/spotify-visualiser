@@ -29,6 +29,7 @@ import { insertIntoArray } from "../util/insertIntoArray";
 import { motion, useAnimation } from "framer-motion";
 import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
 import { use } from "chai";
+import { useHistory } from "react-router-dom";
 const MotionDiv = chakra(motion.div);
 
 // const MotionFlex = motion.custom(Flex);
@@ -37,12 +38,12 @@ const MotionDiv = chakra(motion.div);
 const toggleSidebar = {
   visible: {
     minWidth: "300px",
-    padding: "20px 20px",
+    padding: "20px",
     transition: { type: "tween" },
   },
   hidden: {
     minWidth: "0px",
-    padding: "0",
+    padding: "0px",
     transition: { delay: 0.2, type: "tween" },
   },
 };
@@ -82,6 +83,7 @@ export default function CreatePlaylist(): ReactElement {
   // const createPlaylistSidebarOpenState = useSelector(
   //   (state: AppState) => state.createPlaylistSidebar
   // );
+  const history = useHistory();
   const createPlaylistState = useSelector(
     (state: AppState) => state.createPlaylist
   );
@@ -95,6 +97,7 @@ export default function CreatePlaylist(): ReactElement {
   const [playListCreated, setPlayListCreated] = useState(false);
   const [submittedCount, setSubmittedCount] = useState(0);
   const mountedRecord = useRef(0);
+
   useEffect(() => {
     mountedRecord.current = 0;
     //Makes sure this is false when component is mounted in case it was enabled somewhere else
@@ -118,7 +121,24 @@ export default function CreatePlaylist(): ReactElement {
   const sidebarHandleControls = useAnimation();
 
   useEffect(() => {
-    if (createPlaylistSidebarState && mountedRecord.current) {
+    console.log({
+      createPlaylistSidebarState,
+      history,
+      mountedRecord: mountedRecord.current,
+    });
+    //If the animation is happening on mount, just set the values
+    if (!mountedRecord.current) {
+      if (createPlaylistSidebarState) {
+        sidebarContainerControls.set(toggleSidebar.visible);
+        sidebarInnerControls.set(toggleInnerSidebar.visible);
+        sidebarHandleControls.set(toggleHandleSidebar.hidden);
+      } else {
+        sidebarInnerControls.set(toggleInnerSidebar.hidden);
+        sidebarContainerControls.set(toggleSidebar.hidden);
+        sidebarHandleControls.set(toggleHandleSidebar.visible);
+      }
+    } else if (createPlaylistSidebarState) {
+      //If the animation is not happening on mount, Animate!
       sidebarContainerControls.start(toggleSidebar.visible);
       sidebarInnerControls.start(toggleInnerSidebar.visible);
       sidebarHandleControls.start(toggleHandleSidebar.hidden);
@@ -129,7 +149,10 @@ export default function CreatePlaylist(): ReactElement {
         //Dispatch close event in case this was triggered by mounted true state
         //When this happens, the toggle remains closed and doesn't open because the handle dispatches a value of true
         //Which would not cause a change in state meaning this useEffect will not trigger
-        dispatch(toggleCreatePlaylistSidebar(false));
+        console.log({
+          createPlaylistSidebarStateDOING: createPlaylistSidebarState,
+        });
+        // dispatch(toggleCreatePlaylistSidebar(false));
       });
     }
   }, [createPlaylistSidebarState]);
@@ -143,8 +166,6 @@ export default function CreatePlaylist(): ReactElement {
     <MotionDiv
       display="flex"
       borderLeft="1px solid #A31709"
-      p="0px"
-      minW="0px"
       maxW="30%"
       h="100%"
       position="relative"

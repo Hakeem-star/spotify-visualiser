@@ -24,6 +24,7 @@ export default function YourPlaylists(): ReactElement {
       w="100%"
       h="100%"
     >
+      {/* Playlist Item */}
       {Object.entries(playlistsState).map(([id, data]) => {
         const countOfSongs = data.items.length;
 
