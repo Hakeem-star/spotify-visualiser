@@ -34,4 +34,4 @@ search(app);
 console.log("Listening on 3000");
 app.listen(port);
 
-// exports.app = functions.https.onRequest(app);
+// exports.widgets = functions.https.onRequest(app);

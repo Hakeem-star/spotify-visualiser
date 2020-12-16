@@ -32,15 +32,17 @@ export const playlistDragDropReducer = (
       }
       //Add the new item in the correct part of the array
       stateCopy.splice(
-        action.payload.droppableDestination.index,
+        //if there is no dropableDestination index, then use the of the array as the index
+        action.payload.droppableDestination?.index || state.items.length - 1,
         0,
         action.payload.item
       );
       return { ...state, items: stateCopy };
 
     case REORDER:
-      //Assign first in array to "remove" variable
+      //Assign first item in array to "removed" variable
       const [removed] = stateCopy.splice(action.payload.startIndex, 1);
+      //Place it back into the array at the index
       stateCopy.splice(action.payload.endIndex, 0, removed);
       return { ...state, items: stateCopy };
 

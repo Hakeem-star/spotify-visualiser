@@ -1,20 +1,70 @@
 /** @jsx jsx */
-import { Flex, Image, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Flex, Grid, Image, Text, Tooltip } from "@chakra-ui/react";
 import { css, jsx } from "@emotion/react";
 import { ReactElement, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { playSong } from "../actions";
+import {
+  addToDragNDrop,
+  removeFromDragNDrop,
+} from "../actions/createPlaylistDragDropActions";
 import { playlistItemSongsType } from "../actions/types";
+import { CgPlayListCheck } from "react-icons/cg";
+import { BsPlay, BsPause } from "react-icons/bs";
+import { AppState } from "../reducers";
 
 interface Props extends playlistItemSongsType {
   index?: number;
   context: playlistItemSongsType[];
+  playlistItem?: boolean;
 }
 
 export default function SearchResult(props: Props): ReactElement {
   const dispatch = useDispatch();
   const [imageLoaded, setImageLoaded] = useState(0);
-  const { imageUrl, name, artist, duration, url, index } = props;
+  const createPLaylistItems = useSelector(
+    (state: AppState) => state.createPlaylist.items
+  );
+
+  const playerState = useSelector((state: AppState) => state.playerState);
+  const {
+    imageUrl,
+    name,
+    artist,
+    duration,
+    url,
+    index,
+    source,
+    playlistItem,
+  } = props;
+
+  const [inPlaylist, setInPlaylist] = useState(() =>
+    Boolean(createPLaylistItems.find((item) => item.url === url))
+  );
+
+  function PlayState() {
+    if (playerState.url === url) {
+      return playerState.play ? (
+        <BsPause
+          style={{ width: "40%", height: "40%", opacity: 0.3 }}
+          title="Pause"
+        />
+      ) : (
+        <BsPlay
+          style={{ width: "40%", height: "40%", opacity: 0.3 }}
+          title="Play"
+        />
+      );
+    }
+
+    return (
+      <BsPlay
+        style={{ width: "40%", height: "40%", opacity: 0.3 }}
+        title="Play"
+      />
+    );
+  }
+
   return (
     <Tooltip label={name}>
       <Flex
@@ -28,7 +78,93 @@ export default function SearchResult(props: Props): ReactElement {
           console.log({ context: props.context });
           dispatch(playSong(props.context, index));
         }}
+        //remove dark gradient on hover
+        css={css`
+          :hover {
+            .SearchResult__image::before {
+              opacity: 0.3;
+            }
+          }
+          .PlayBox,
+          .CheckBox {
+            :hover {
+              svg {
+                transform: scale(1.5);
+              }
+            }
+            svg {
+              transition: transform 0.3s;
+            }
+          }
+        `}
       >
+        {/* If checkbox option is ticked... */}
+        {/* Checkbox and playbox for secondary method of adding to playlist */}
+        {playlistItem ? (
+          <Flex
+            cursor="pointer"
+            position="absolute"
+            top="0"
+            left="0"
+            width="100%"
+            h="100%"
+            zIndex="2"
+          >
+            <Grid
+              w="50%"
+              h="100%"
+              placeItems="center"
+              className="CheckBox"
+              position="relative"
+              onClick={(e) => {
+                e.stopPropagation();
+                //This should also open the createPlaylist sidebar when clicked
+                //Need to check if it already exists in playlist so we know to remove it when clicked
+                if (inPlaylist) {
+                  dispatch(removeFromDragNDrop(index || 0));
+                  setInPlaylist(false);
+                } else {
+                  dispatch(
+                    addToDragNDrop({ droppableId: source, index: index || 0 })
+                  );
+                  setInPlaylist(true);
+                }
+              }}
+            >
+              <CgPlayListCheck
+                title="Add to Playlist"
+                id="mask"
+                style={{
+                  width: "40%",
+                  height: "40%",
+                  opacity: 0.3,
+                }}
+                css={css`
+                  transition: filter 0.3s;
+                  //Last path is the tick. Select that and make it green
+                  path:last-child {
+                    color: ${`${inPlaylist ? "green" : "inherit"}`};
+                    transition: color 0.3s;
+                  }
+                `}
+              />
+            </Grid>
+
+            <Grid
+              w="50%"
+              h="100%"
+              placeItems="center"
+              className="PlayBox"
+              onClick={(e) => {
+                //Prevent the click event from going to other div, so playsong isn't dispatched twice
+                e.stopPropagation();
+                dispatch(playSong(props.context, index));
+              }}
+            >
+              {PlayState()}
+            </Grid>
+          </Flex>
+        ) : null}
         <Image
           position="absolute"
           top={0}
@@ -52,6 +188,7 @@ export default function SearchResult(props: Props): ReactElement {
           p="5px"
           w="50%"
           flex="1"
+          className="SearchResult__image"
           _before={{
             content: '""',
             position: "absolute",
@@ -65,9 +202,7 @@ export default function SearchResult(props: Props): ReactElement {
             zIndex: "-1",
             transition: "opacity 0.3s",
           }}
-          _hover={{ _before: { opacity: 0.3 } }}
           zIndex={1}
-          // style={{ mixBlendMode: "luminosity" }}
         >
           <Flex alignItems="center" h="50%">
             <Text

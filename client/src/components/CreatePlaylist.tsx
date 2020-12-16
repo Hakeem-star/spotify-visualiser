@@ -22,7 +22,6 @@ import { MyTextInput } from "./Auth/ForkitTextInput";
 import CreatedPlaylistMessage from "./CreatedPlaylistMessage";
 import { RiFullscreenLine, RiPlayListAddLine } from "react-icons/ri";
 import { jsx, css } from "@emotion/react";
-import SearchResult from "./SearchResult";
 import DraggableCreatePlaylistItem from "./DraggableCreatePlaylistItem";
 import { insertIntoArray } from "../util/insertIntoArray";
 

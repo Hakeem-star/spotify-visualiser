@@ -22,9 +22,10 @@ export function reorderDragNDrop(
 
 export function addToDragNDrop(
   droppableSource: DraggableLocation,
-  droppableDestination: DraggableLocation
+  droppableDestination?: DraggableLocation
 ): ThunkResult<void> {
   return (dispatch: Dispatch<AppActions>, getState) => {
+    //Convert the dropable id to the actual source string
     const musicOBJSource = droppableSource.droppableId.includes(SPOTIFY)
       ? SPOTIFY
       : YOUTUBE;
@@ -34,6 +35,12 @@ export function addToDragNDrop(
     if (searchResults !== null) {
       const sourceClone = Array.from(searchResults.items);
       const item = sourceClone[droppableSource.index];
+      if (!droppableDestination) {
+        droppableDestination = {
+          index: sourceClone.length - 1,
+          droppableId: "",
+        };
+      }
 
       dispatch({
         type: ADDTODRAGNDROP,
@@ -42,6 +49,7 @@ export function addToDragNDrop(
     }
   };
 }
+
 export function discardPlaylist(): AppActions {
   return { type: DISCARDPLAYLIST };
 }

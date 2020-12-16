@@ -67,6 +67,7 @@ export default function Header({
   const debounceSearch = useRef(
     debounce((value) => {
       dispatch(songSearch(value.trim()));
+
       //Take us to the homepage to see the search results when a search is performed
       if (history.location.pathname !== "/") history.push("/");
     }, 1000)
