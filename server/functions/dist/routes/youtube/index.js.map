@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../src/routes/youtube/index.ts"],"names":[],"mappings":";;;;;AAAA,kDAA0B;AAE1B,kBAAe,eAAK,CAAC,MAAM,CAAC;IAC1B,OAAO,EAAE,uCAAuC;IAChD,MAAM,EAAE;QACN,UAAU,EAAE,EAAE;QACd,IAAI,EAAE,OAAO;QACb,eAAe,EAAE,IAAI;QACrB,GAAG,EAAE,OAAO,CAAC,GAAG,CAAC,eAAe;KACjC;CACF,CAAC,CAAC"}

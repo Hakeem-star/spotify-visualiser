@@ -1,6 +1,6 @@
 import express from "express";
 
-// const functions = require("firebase-functions");
+const functions = require("firebase-functions");
 
 var cors = require("cors");
 var cookieParser = require("cookie-parser");
@@ -34,4 +34,4 @@ search(app);
 console.log("Listening on 3000");
 app.listen(port);
 
-// exports.widgets = functions.https.onRequest(app);
+exports.app = functions.https.onRequest(app);
