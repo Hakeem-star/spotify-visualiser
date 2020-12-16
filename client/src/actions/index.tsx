@@ -221,13 +221,16 @@ export const songSearch = (title: string): ThunkResult<void> => {
       try {
         //Get geo location if not already in state,
 
-        songResults = await axios.get(`http://localhost:3000/search/popular`, {
-          params: {
-            spotifyToken,
-            sources: songSources,
-            region,
-          },
-        });
+        songResults = await axios.get(
+          `http://localhost:3000/api/search/popular`,
+          {
+            params: {
+              spotifyToken,
+              sources: songSources,
+              region,
+            },
+          }
+        );
         youtubeIdPath = "id";
       } catch (error) {
         // if (songResults?.data[1]?.error) {
@@ -239,7 +242,7 @@ export const songSearch = (title: string): ThunkResult<void> => {
     } else {
       try {
         songResults = await axios.get(
-          `http://localhost:3000/search/?q=${title}`,
+          `http://localhost:3000/api/search/?q=${title}`,
           {
             params: {
               spotifyToken,

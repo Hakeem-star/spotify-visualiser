@@ -43,7 +43,7 @@ export default function ConnectToSpotifyModal({
               Log in to Spotify to get started{" "}
               <span style={{ color: "red" }}>{PLAYER_NAME}</span>
             </Text>
-            <CLink href="http://localhost:3000/spotify/login">
+            <CLink href="http://localhost:3000/api/spotify/login">
               Sync Up <FaSpotify fontSize="50px" />
             </CLink>
           </ModalBody>

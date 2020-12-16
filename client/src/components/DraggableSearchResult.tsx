@@ -29,8 +29,9 @@ export default function DraggableSearchResult(props: Props): ReactElement {
               {...provided.draggableProps}
               ref={provided.innerRef}
               className="DraggableSearchResult"
+              position="relative"
             >
-              <SearchResult {...props} />
+              <SearchResult playlistItem {...props} />
             </Flex>
             {/* The duplicated component below is rendered so we don't get a stutter when we try to load the image */}
             <Box
@@ -44,7 +45,7 @@ export default function DraggableSearchResult(props: Props): ReactElement {
                 }
               `}
             >
-              <SearchResult {...props} />
+              <SearchResult playlistItem {...props} />
             </Box>
           </React.Fragment>
         );

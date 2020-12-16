@@ -36,7 +36,7 @@ export default function DraggableCreatePlaylistItem(
                 "transition-duration: 0.001s !important;"}
               `}
             >
-              <SearchResult {...props} />
+              <SearchResult playlistItem {...props} />
             </Flex>
           </React.Fragment>
         );
