@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCbyA-7bgkqp-Oyyf8BZfjkN5nfqPY1V_A",
+  apiKey: "AIzaSyAkN2999mBaMqBcMNCHsqJpM8aay9aLhHY",
   authDomain: "spotify-visualiser-293211.firebaseapp.com",
   databaseURL: "https://spotify-visualiser-293211.firebaseio.com",
   projectId: "spotify-visualiser-293211",

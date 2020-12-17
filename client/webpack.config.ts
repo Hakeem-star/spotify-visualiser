@@ -58,15 +58,17 @@ const config: webpack.Configuration = {
     port: 4000,
     historyApiFallback: true,
     hot: true,
-    proxy: {
-      "/api": {
-        target:
-          "https://us-central1-spotify-visualiser-293211.cloudfunctions.net/app",
-        pathRewrite: { "^/api/": "/" },
-        secure: true,
-        logLevel: "debug",
-      },
-    },
+    // proxy: {
+    //   "/api/**": {
+    //     target:
+    //       "https://us-central1-spotify-visualiser-293211.cloudfunctions.net/app",
+    //     // target: "http://localhost:3000",
+
+    //     // pathRewrite: { "^/api/": "/" },
+    //     secure: true,
+    //     changeOrigin: true,
+    //   },
+    // },
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({

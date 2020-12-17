@@ -28,6 +28,7 @@ refresh_1.default(app);
 login_2.default(app);
 search_1.default(app);
 console.log("Listening on 3000");
+//Disable app.listen in deployed version
 app.listen(port);
 exports.app = functions.https.onRequest(app);
 //# sourceMappingURL=index.js.map

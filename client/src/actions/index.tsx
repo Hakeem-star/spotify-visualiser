@@ -169,7 +169,7 @@ export const spotifySignIn = (): ThunkResult<void> => {
           try {
             //Get the new access token using the refresh token
             const accessToken = await axios.get(
-              "http://localhost:3000/spotify/refresh_token",
+              "http://localhost:3000/api/spotify/refresh_token",
               {
                 params: { refresh_token: spotifyRefreshToken },
               }
@@ -206,7 +206,6 @@ export const songSearch = (title: string): ThunkResult<void> => {
     const spotifyToken = getCookie("ACCESS_TOKEN");
     const songSources = getState().songSources;
     let songResults;
-
     let youtubeIdPath = "id.videoId";
     //if nothing is searched
     if (!title) {
@@ -220,17 +219,13 @@ export const songSearch = (title: string): ThunkResult<void> => {
       }
       try {
         //Get geo location if not already in state,
-
-        songResults = await axios.get(
-          `http://localhost:3000/api/search/popular`,
-          {
-            params: {
-              spotifyToken,
-              sources: songSources,
-              region,
-            },
-          }
-        );
+        songResults = await axios.get(`/api/search/popular`, {
+          params: {
+            spotifyToken,
+            sources: songSources,
+            region,
+          },
+        });
         youtubeIdPath = "id";
       } catch (error) {
         // if (songResults?.data[1]?.error) {

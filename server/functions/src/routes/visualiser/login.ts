@@ -5,7 +5,7 @@ const db = admin.firestore();
 //Get data for user (using user id) from firestore which client will retrieve from cookies set by spotify auth
 
 export default async (app) => {
-  app.get("/login/:user", async (req, res) => {
+  app.get("/api/login/:user", async (req, res) => {
     //may need to send additional info via payload
 
     const docRef = db.collection("users").doc(req.params.user);

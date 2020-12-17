@@ -4,7 +4,7 @@ var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
 var querystring = require("querystring");
 
 export default (app) => {
-  app.get("/spotify/refresh_token", function (req, res) {
+  app.get("/api/spotify/refresh_token", function (req, res) {
     // requesting access token from refresh token
     var refresh_token = req.query.refresh_token;
     console.log({ refresh_token: req.query });

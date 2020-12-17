@@ -38,7 +38,7 @@ import { RiPlayListFill, RiPlayListAddLine } from "react-icons/ri";
 import { BsMusicNote } from "react-icons/bs";
 
 import { Link, useHistory } from "react-router-dom";
-import { signOut, songSearch } from "../actions";
+import { signOut, songSearch, updateSongSources } from "../actions";
 import { debounce } from "../util/debounce";
 import { AppState } from "../reducers";
 import { FaUserNinja } from "react-icons/fa";
@@ -48,8 +48,9 @@ import SourceSelectorOptions from "./SourceSelectorOptions";
 
 import { HamburgerIcon } from "@chakra-ui/icons";
 
-import { GUEST } from "../actions/types";
+import { GUEST, SPOTIFY, YOUTUBE } from "../actions/types";
 import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
+import { updateSongSourcesType } from "../types";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
@@ -86,6 +87,19 @@ export default function Header({
     //On mount, make a search with no value to fetch the popular/most listened songs
     dispatch(songSearch(""));
   }, []);
+
+  const spotifyAuth = useSelector((state: AppState) => state.spotifyAuth);
+  const songSources = useSelector((state: AppState) => state.songSources);
+
+  //If spotify login changes, perform the same search so the new results from sources shows up
+  useEffect(() => {
+    //Check the box when we confirm signin for Spotify
+    if (spotifyAuth.isSignedIn) {
+      if (!songSources.includes(SPOTIFY)) {
+        dispatch(songSearch(searchInputValue));
+      }
+    }
+  }, [spotifyAuth.isSignedIn]);
 
   return (
     <Flex

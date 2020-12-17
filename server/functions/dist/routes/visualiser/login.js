@@ -14,7 +14,7 @@ admin.initializeApp();
 const db = admin.firestore();
 //Get data for user (using user id) from firestore which client will retrieve from cookies set by spotify auth
 exports.default = (app) => __awaiter(void 0, void 0, void 0, function* () {
-    app.get("/login/:user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    app.get("/api/login/:user", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //may need to send additional info via payload
         const docRef = db.collection("users").doc(req.params.user);
         const doc = yield docRef.get();

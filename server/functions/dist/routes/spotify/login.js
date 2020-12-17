@@ -18,7 +18,7 @@ var generateRandomString = function (length) {
     return text;
 };
 exports.default = (app) => {
-    app.get("/spotify/login", function (req, res) {
+    app.get("/api/spotify/login", function (req, res) {
         var state = generateRandomString(16);
         res.cookie(stateKey, state);
         // your application requests authorization

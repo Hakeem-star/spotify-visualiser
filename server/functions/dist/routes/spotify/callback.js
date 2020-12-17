@@ -19,7 +19,7 @@ var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
 var redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
 var querystring = require("querystring");
 exports.default = (app) => {
-    app.get("/spotify/callback", function (req, res) {
+    app.get("/api/spotify/callback", function (req, res) {
         // your application requests refresh and access tokens
         // after checking the state parameter
         var code = req.query.code || null;
@@ -53,7 +53,7 @@ exports.default = (app) => {
                 });
                 //Write data to cookies before redirecting so they can be picked up on client side
                 //create or load an associated account on firebase
-                console.log({ userInfoResponse });
+                // console.log({ userInfoResponse });
                 res.cookie("ACCESS_TOKEN", access_token);
                 res.cookie("REFRESH_TOKEN", refresh_token);
                 res.cookie("REFRESH_CODE", code);

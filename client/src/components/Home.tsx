@@ -67,44 +67,10 @@ export default function Home(): ReactElement {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    // const spotifyAccessToken = getCookie("ACCESS_TOKEN");
-
+    //TODO
+    //Attempt to sign into Spotify. I would expect this to keep us signed in at all times but it doesn't seem to
     dispatch(spotifySignIn());
-    // ////Open Spotify Modal when we land on homepage
-    // const getSpotifyUser = async () => {
-    //   try {
-    //     //Check if the user has a token in the cookie (indicating a previous sign in)
-    //     const spotifyAccessToken = getCookie("ACCESS_TOKEN");
-    //     //If no cookie exists, throw an error. When caught the modal prompting Spotify will show up
-    //     if (!spotifyAccessToken) {
-    //       throw "No cookie";
-    //     }
-    //     //If a cookie exists, attempt to get a profile
-    //     await axios.get("https://api.spotify.com/v1/me", {
-    //       headers: { Authorization: "Bearer " + spotifyAccessToken },
-    //     });
-    //     //if unsuccessful, an error will be thrown and a refresh token will be retrieved
-    //   } catch (error) {
-    //     //If its a 401 indicating an expired access token, attempt to get a new one
-    //     if (error?.response?.data.error.status === 401) {
-    //       const spotifyRefreshToken = getCookie("REFRESH_TOKEN");
-    //       console.log({ spotifyRefreshToken });
-    //       const newAccessToken = await axios.get(
-    //         "http://localhost:3000/spotify/refresh_token",
-    //         { params: { refresh_token: spotifyRefreshToken } }
-    //       );
-    //       console.log(newAccessToken);
-    //       onOpen();
-    //     }
-    //     //if it's any other type of error, open the modal
-    //     console.error(error);
-    //     onOpen();
-    //   }
-    // };
-    // getSpotifyUser();
-  }, []);
 
-  useEffect(() => {
     //Get saved playlists
     //Check if guest
     dispatch(savePlaylist());
