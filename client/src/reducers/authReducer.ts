@@ -51,6 +51,8 @@ export const appAuthReducer: Reducer<appAuthState> = (
 ) => {
   switch (action.type) {
     case SIGN_IN:
+      console.log({ AUTH: action.type, two: action?.payload });
+
       return {
         ...state,
         isSignedIn: true,

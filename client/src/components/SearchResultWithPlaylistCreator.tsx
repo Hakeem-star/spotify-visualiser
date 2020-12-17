@@ -40,8 +40,8 @@ export default function SearchResultWithPlaylistCreator(): ReactElement {
         }
       }}
     >
-      <SearchResultContainer songSearchResults={songSearchResults} />
       <CreatePlaylist />
+      <SearchResultContainer songSearchResults={songSearchResults} />
     </DragDropContext>
   );
 }

@@ -80,6 +80,7 @@ const config: (env: any, argv: any) => webpack.Configuration = (env, argv) => {
       historyApiFallback: true,
       compress: true,
       port: 4000,
+      host: "0.0.0.0",
       hot: true,
     },
     plugins: [

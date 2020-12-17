@@ -13,11 +13,10 @@ import Header from "./Header";
 import YouTubePlayer from "./YouTubePlayer";
 import Player from "./Player";
 import ConnectToSpotifyModal from "./ConnectToSpotifyModal";
-import useSpotifyPlayer from "./SpotifyPlayer";
 import { Visualiser } from "./Visualiser";
 
 import SearchResultWithPlaylistCreator from "./SearchResultWithPlaylistCreator";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import YourPlaylists from "./YourPlaylists";
 import PlaylistDetail from "./PlaylistDetail";
 import { AppState } from "../reducers";

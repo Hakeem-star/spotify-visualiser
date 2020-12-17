@@ -1,5 +1,13 @@
 /** @jsx jsx */
-import { Box, Flex, Grid, Image, Text, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  Image,
+  Text,
+  Tooltip,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { css, jsx } from "@emotion/react";
 import { ReactElement, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +20,7 @@ import { playlistItemSongsType } from "../actions/types";
 import { CgPlayListCheck } from "react-icons/cg";
 import { BsPlay, BsPause } from "react-icons/bs";
 import { AppState } from "../reducers";
+import { useMobileBreakpoint } from "../util/mobileBreakpoint";
 
 interface Props extends playlistItemSongsType {
   index?: number;
@@ -25,6 +34,7 @@ export default function SearchResult(props: Props): ReactElement {
   const createPLaylistItems = useSelector(
     (state: AppState) => state.createPlaylist.items
   );
+  const mobileScreenSize = useMobileBreakpoint();
 
   const playerState = useSelector((state: AppState) => state.playerState);
   const {
@@ -66,7 +76,7 @@ export default function SearchResult(props: Props): ReactElement {
   }
 
   return (
-    <Tooltip label={name}>
+    <Tooltip label={name} isDisabled={mobileScreenSize}>
       <Flex
         position="relative"
         height="95px"

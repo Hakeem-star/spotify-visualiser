@@ -84,23 +84,20 @@ export const signIn = (
       if (!doc.exists) {
         displayName = email;
       } else {
-        console.log("Document data:", doc.data());
-        displayName = doc.data()?.displyName;
+        displayName = doc.data()?.displayName;
       }
       dispatch({
         type: SIGN_IN,
         payload: { email, displayName },
       });
     } catch (error) {
-      if (error) {
-        //Reset form
-        setSubmitting(false);
-        console.error("OOps Error", error);
-        dispatch({
-          type: FAILED_AUTH_FORM,
-          payload: error.message,
-        });
-      }
+      //Reset form
+      setSubmitting(false);
+      console.error({ SIGNINERROR: error });
+      dispatch({
+        type: FAILED_AUTH_FORM,
+        payload: error.message,
+      });
     }
   };
 };

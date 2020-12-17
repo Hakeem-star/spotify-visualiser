@@ -76,16 +76,18 @@ export default function useSpotifyPlayer(): void {
   useEffect(() => {
     window.onSpotifyWebPlaybackSDKReady = () => {
       const token = getCookie("ACCESS_TOKEN");
+      console.log({ token });
       player.current = new window.Spotify.Player({
         name: PLAYER_NAME,
         getOAuthToken: (cb: (a: string | undefined) => void) => {
           cb(token);
         },
       });
-
+      console.log({ token: player.current });
       // Error handling
       player.current.addListener("initialization_error", ({ message }: any) => {
-        console.error(message);
+        console.log({ player: player.current });
+        console.error("initialization_error", message);
       });
       player.current.addListener("authentication_error", ({ message }: any) => {
         console.error(message);

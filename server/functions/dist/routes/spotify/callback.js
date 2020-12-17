@@ -62,7 +62,9 @@ exports.default = (app) => {
                     USER_NAME: userInfoResponse.data.display_name,
                     expires_in,
                 };
-                res.redirect(__1.envWebsiteURL() +
+                res.redirect(
+                // "http://192.168.1.184:4000" +
+                __1.envWebsiteURL() +
                     "?spotifyLogIn=1;&" +
                     querystring.stringify(credentials));
                 // // we can also pass the token to the browser to make requests from there

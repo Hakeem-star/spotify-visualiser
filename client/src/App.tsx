@@ -71,6 +71,7 @@ export default function App(): ReactElement {
   useEffect(() => {
     //get and set cookies to store
     fbAuth.onAuthStateChanged(function (user) {
+      console.log({ USER: [user?.email, user?.displayName, user] });
       //Check if User on FireBase
       if (user?.email && user.displayName) {
         dispatch(alreadySignedIn(user.email, user.displayName));
@@ -91,6 +92,7 @@ export default function App(): ReactElement {
         guestSignInStatus && dispatch(alreadySignedIn(GUEST, GUEST));
       }
       setCheckedSignIn(true);
+      history.push("/");
     });
   }, []);
 

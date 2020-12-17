@@ -29,6 +29,7 @@ import { motion, useAnimation } from "framer-motion";
 import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
 import { use } from "chai";
 import { useHistory } from "react-router-dom";
+import { useMobileBreakpoint } from "../util/mobileBreakpoint";
 const MotionDiv = chakra(motion.div);
 
 // const MotionFlex = motion.custom(Flex);
@@ -96,7 +97,8 @@ export default function CreatePlaylist(): ReactElement {
   const [playListCreated, setPlayListCreated] = useState(false);
   const [submittedCount, setSubmittedCount] = useState(0);
   const mountedRecord = useRef(0);
-
+  //Allows me to set styles for mobile sizes
+  const mobileScreenSize = useMobileBreakpoint();
   useEffect(() => {
     mountedRecord.current = 0;
     //Makes sure this is false when component is mounted in case it was enabled somewhere else
@@ -167,6 +169,7 @@ export default function CreatePlaylist(): ReactElement {
       borderLeft="1px solid #A31709"
       maxW="30%"
       h="100%"
+      zIndex="100"
       position="relative"
       // css={css`
       //   transform: translateX(${!createPlaylistSidebarState ? "100%" : "0%"});
@@ -177,15 +180,15 @@ export default function CreatePlaylist(): ReactElement {
       <MotionDiv
         position="absolute"
         top="40%"
-        left="0"
-        transform="translateX(-100%)"
+        right="0"
+        transform="translateX(100%)"
         background="white"
         border="1px solid grey"
         cursor="pointer"
-        zIndex="1"
+        zIndex="100"
         padding="0.4rem"
-        borderTopLeftRadius="0.3rem;"
-        borderBottomLeftRadius="0.3rem;"
+        borderTopRightRadius="0.3rem;"
+        borderBottomRightRadius="0.3rem;"
         animate={sidebarHandleControls}
         onClick={() => {
           dispatch(toggleCreatePlaylistSidebar(true));

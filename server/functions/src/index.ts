@@ -1,7 +1,7 @@
 import express from "express";
 const port = process.env.PORT || 3000;
-
-export const environment = "DEV";
+//CHANGE FOR ENVIRONEMNT "DEV" OR "PROD"
+export let environment = "DEV";
 
 export function envServerURL() {
   const ENV_URLS = {
@@ -15,13 +15,17 @@ export function envServerURL() {
 export function envWebsiteURL() {
   const ENV_URLS = {
     DEV: `http://localhost:4000`,
-    PROD: "https://spotify-visualiser-293211--preview-name-zwcii31o.web.app/",
+    PROD: "https://spotify-visualiser-293211.web.app/",
+    // "https://spotify-visualiser-293211--preview-name-zwcii31o.web.app/",
   };
   return ENV_URLS[environment];
 }
 
-//DISABLE FOR DEV
-// const functions = require("firebase-functions");
+let functions;
+
+if (environment === "PROD") {
+  functions = require("firebase-functions");
+}
 
 var cors = require("cors");
 var cookieParser = require("cookie-parser");
@@ -56,8 +60,9 @@ loginVisualiser(app);
 search(app);
 
 console.log("Listening on 3000");
-//DISABLE FOR PROD ENV
-app.listen(port);
 
-//DISABLE FOR DEV ENV
-// exports.app = functions.https.onRequest(app);
+if (environment === "PROD") {
+  exports.app = functions.https.onRequest(app);
+} else {
+  app.listen(port);
+}

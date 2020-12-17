@@ -51,6 +51,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import { GUEST, SPOTIFY, YOUTUBE } from "../actions/types";
 import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
 import { updateSongSourcesType } from "../types";
+import { useMobileBreakpoint } from "../util/mobileBreakpoint";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
@@ -64,6 +65,7 @@ export default function Header({
   const displayName = useSelector(
     (state: AppState) => state.auth.userData?.displayName || GUEST
   );
+  console.log({ displayName });
   const [searchInputValue, setSearchInputValue] = useState("");
   const debounceSearch = useRef(
     debounce((value) => {
@@ -81,7 +83,7 @@ export default function Header({
     debounceSearch.current(event.target.value);
   };
 
-  const mobileScreenSize = useBreakpointValue({ base: true, md: false });
+  const mobileScreenSize = useMobileBreakpoint();
 
   useEffect(() => {
     //On mount, make a search with no value to fetch the popular/most listened songs
