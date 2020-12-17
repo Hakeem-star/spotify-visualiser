@@ -27,7 +27,6 @@ export default function ConnectToSpotifyModal({
   useEffect(() => {
     //We need to control the opening of the modal
   }, []);
-
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -43,7 +42,7 @@ export default function ConnectToSpotifyModal({
               Log in to Spotify to get started{" "}
               <span style={{ color: "red" }}>{PLAYER_NAME}</span>
             </Text>
-            <CLink href="http://localhost:3000/api/spotify/login">
+            <CLink href={`${SERVER_URL}/api/spotify/login`}>
               Sync Up <FaSpotify fontSize="50px" />
             </CLink>
           </ModalBody>

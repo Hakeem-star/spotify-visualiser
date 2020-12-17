@@ -1,18 +1,19 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { ChakraProvider, Flex, Text } from "@chakra-ui/react";
-
+import queryString from "query-string";
 import { useDispatch, useSelector } from "react-redux";
 import { alreadySignedIn } from "./actions";
 import Home from "./components/Home";
 import { AppState } from "./reducers";
 import { GUEST } from "./actions/types";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Route, useHistory, useLocation } from "react-router-dom";
 import { fbAuth } from "./util/firebase_init";
 import AuthOptions from "./components/AuthOptions";
 import SignIn from "./components/Auth/SignIn";
 import SignUp from "./components/Auth/SignUp";
 import useSpotifyPlayer from "./components/SpotifyPlayer";
 import YouTubePlayer from "./components/YouTubePlayer";
+import { getCookie, setCookie } from "./util/cookie";
 
 export default function App(): ReactElement {
   const dispatch = useDispatch();
@@ -20,6 +21,22 @@ export default function App(): ReactElement {
   const [checkedSignIn, setCheckedSignIn] = useState(false);
   const [ytReady, setYtReady] = useState(false);
   useSpotifyPlayer();
+  const history = useHistory();
+  const urlPath = window.location;
+  //get Cookie from Spotify sign in redirect and set as cookie
+  useEffect(() => {
+    if (urlPath.search.includes("spotifyLogIn")) {
+      const parsed = queryString.parse(urlPath.search);
+      Object.keys(parsed).forEach((name) => {
+        const value = parsed[name];
+        const expiryValue = parsed["expires_in"];
+        if (typeof value === "string") {
+          setCookie(name, value, Number(expiryValue));
+        }
+      });
+      history.push("/");
+    }
+  }, []);
 
   useEffect(() => {
     //insert the Youtube Player API src if not on page
@@ -86,22 +103,21 @@ export default function App(): ReactElement {
     </ChakraProvider>
   ) : (
     <ChakraProvider resetCSS>
-      <Router>
-        {/* if not signed in, take me to the auth screen */}
-        {isSignedIn ? (
-          //Route might be too loose. Will need to use a Switch statement later
-          <>
-            <Route path="/" component={Home} />
-          </>
-        ) : (
-          //Auth Routes
-          <>
-            <Route exact path="/" component={AuthOptions} />
-            <Route path="/sign-in" component={SignIn} />
-            <Route path="/new-account" component={SignUp} />
-          </>
-        )}
-      </Router>
+      {/* if not signed in, take me to the auth screen */}
+      {isSignedIn ? (
+        //Route might be too loose. Will need to use a Switch statement later
+        <>
+          <Route path="/" component={Home} />
+        </>
+      ) : (
+        //Auth Routes
+        <>
+          <Route exact path="/" component={AuthOptions} />
+          <Route path="/sign-in" component={SignIn} />
+          <Route path="/new-account" component={SignUp} />
+        </>
+      )}
+
       {ytReady ? <YouTubePlayer /> : null}
     </ChakraProvider>
   );

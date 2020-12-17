@@ -1,10 +1,10 @@
 import axios from "axios";
+import { envServerURL, envWebsiteURL } from "../..";
 var stateKey = "spotify_auth_state";
 var client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
 var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
-var redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
+var redirect_uri = `${envServerURL()}/api/spotify/callback`; // Your redirect uri
 var querystring = require("querystring");
-
 export default (app) => {
   app.get("/api/spotify/callback", function (req, res) {
     // your application requests refresh and access tokens
@@ -42,7 +42,8 @@ export default (app) => {
         )
         .then(async (axiosRes) => {
           var access_token = axiosRes.data.access_token,
-            refresh_token = axiosRes.data.refresh_token;
+            refresh_token = axiosRes.data.refresh_token,
+            expires_in = axiosRes.data.expires_in;
 
           interface axiRes {
             country: string;
@@ -69,18 +70,22 @@ export default (app) => {
           );
 
           //Write data to cookies before redirecting so they can be picked up on client side
-          //create or load an associated account on firebase
 
-          // console.log({ userInfoResponse });
+          const credentials = {
+            ACCESS_TOKEN: access_token,
+            REFRESH_TOKEN: refresh_token,
+            REFRESH_CODE: code,
+            USER_EMAIL: JSON.stringify(userInfoResponse.data.email),
+            USER_ID: JSON.stringify(userInfoResponse.data.id),
+            USER_NAME: userInfoResponse.data.display_name,
+            expires_in,
+          };
 
-          res.cookie("ACCESS_TOKEN", access_token);
-          res.cookie("REFRESH_TOKEN", refresh_token);
-          res.cookie("REFRESH_CODE", code);
-          res.cookie("USER_EMAIL", JSON.stringify(userInfoResponse.data.email));
-          res.cookie("USER_ID", JSON.stringify(userInfoResponse.data.id));
-          res.cookie("USER_NAME", userInfoResponse.data.display_name);
-
-          res.redirect("http://localhost:4000/");
+          res.redirect(
+            envWebsiteURL() +
+              "?spotifyLogIn=1;&" +
+              querystring.stringify(credentials)
+          );
 
           // // we can also pass the token to the browser to make requests from there
           // res.redirect(

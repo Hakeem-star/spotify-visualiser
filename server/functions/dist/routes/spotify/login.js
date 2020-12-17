@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const __1 = require("../..");
 var stateKey = "spotify_auth_state";
 var client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
-var redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
+var redirect_uri = `${__1.envServerURL()}/api/spotify/callback`; // Your redirect uri
 var querystring = require("querystring");
 /**
  * Generates a random string containing numbers and letters

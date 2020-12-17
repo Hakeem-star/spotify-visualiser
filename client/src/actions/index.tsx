@@ -33,6 +33,7 @@ import {
 } from "../types";
 import { remapSongSearchResult } from "../util/remapSongSearchResult";
 import { fbAuth, fbStore } from "../util/firebase_init";
+import axiosServer from "../util/axiosServer";
 
 export const signUp = (
   email: string,
@@ -137,7 +138,7 @@ export const signOut = (displayName: string): ThunkResult<void> => {
         type: SIGN_OUT,
       });
     } catch (error) {
-      console.error("OOps Error", error);
+      console.error({ FIREBASEAUTHERROR: error });
     }
   };
 };
@@ -168,8 +169,8 @@ export const spotifySignIn = (): ThunkResult<void> => {
           const spotifyRefreshToken = getCookie("REFRESH_TOKEN");
           try {
             //Get the new access token using the refresh token
-            const accessToken = await axios.get(
-              "http://localhost:3000/api/spotify/refresh_token",
+            const accessToken = await axiosServer.get(
+              "/api/spotify/refresh_token",
               {
                 params: { refresh_token: spotifyRefreshToken },
               }
@@ -212,14 +213,24 @@ export const songSearch = (title: string): ThunkResult<void> => {
       let region: any;
       try {
         //Get the users Region
-        region = (await axios.get("http://ip-api.com/json")).data.countryCode;
+        //Try catch does not catch ERR_BLOCKED_BY_CLIENT errors, only then.catch does
+        axios
+          .get("https://freegeoip.app/json/")
+          .then((e) => {
+            region = e.data.country_code;
+          })
+          .catch((error) => {
+            console.log({ stupid: error });
+          });
       } catch (error) {
-        console.log(error.response.data);
-        region = "US";
+        console.log({ IPAPI: error.response.data });
       }
+
       try {
+        region = region || "GB";
+        console.log({ region });
         //Get geo location if not already in state,
-        songResults = await axios.get(`/api/search/popular`, {
+        songResults = await axiosServer.get(`/api/search/popular`, {
           params: {
             spotifyToken,
             sources: songSources,
@@ -231,20 +242,17 @@ export const songSearch = (title: string): ThunkResult<void> => {
         // if (songResults?.data[1]?.error) {
         //   return;
         // }
-        console.log(error.response.data);
+        console.log({ POPULAR: error.response.data });
         return;
       }
     } else {
       try {
-        songResults = await axios.get(
-          `http://localhost:3000/api/search/?q=${title}`,
-          {
-            params: {
-              spotifyToken,
-              sources: songSources,
-            },
-          }
-        );
+        songResults = await axiosServer.get(`/api/search/?q=${title}`, {
+          params: {
+            spotifyToken,
+            sources: songSources,
+          },
+        });
       } catch (error) {
         // if (songResults?.data[1]?.error) {
         //   return;

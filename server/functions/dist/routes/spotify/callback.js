@@ -13,10 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
+const __1 = require("../..");
 var stateKey = "spotify_auth_state";
 var client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
 var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
-var redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
+var redirect_uri = `${__1.envServerURL()}/api/spotify/callback`; // Your redirect uri
 var querystring = require("querystring");
 exports.default = (app) => {
     app.get("/api/spotify/callback", function (req, res) {
@@ -46,21 +47,24 @@ exports.default = (app) => {
                 grant_type: "authorization_code",
             }), authOptions)
                 .then((axiosRes) => __awaiter(this, void 0, void 0, function* () {
-                var access_token = axiosRes.data.access_token, refresh_token = axiosRes.data.refresh_token;
+                var access_token = axiosRes.data.access_token, refresh_token = axiosRes.data.refresh_token, expires_in = axiosRes.data.expires_in;
                 // use the access token to access the Spotify Web API
                 const userInfoResponse = yield axios_1.default.get("https://api.spotify.com/v1/me", {
                     headers: { Authorization: "Bearer " + access_token },
                 });
                 //Write data to cookies before redirecting so they can be picked up on client side
-                //create or load an associated account on firebase
-                // console.log({ userInfoResponse });
-                res.cookie("ACCESS_TOKEN", access_token);
-                res.cookie("REFRESH_TOKEN", refresh_token);
-                res.cookie("REFRESH_CODE", code);
-                res.cookie("USER_EMAIL", JSON.stringify(userInfoResponse.data.email));
-                res.cookie("USER_ID", JSON.stringify(userInfoResponse.data.id));
-                res.cookie("USER_NAME", userInfoResponse.data.display_name);
-                res.redirect("http://localhost:4000/");
+                const credentials = {
+                    ACCESS_TOKEN: access_token,
+                    REFRESH_TOKEN: refresh_token,
+                    REFRESH_CODE: code,
+                    USER_EMAIL: JSON.stringify(userInfoResponse.data.email),
+                    USER_ID: JSON.stringify(userInfoResponse.data.id),
+                    USER_NAME: userInfoResponse.data.display_name,
+                    expires_in,
+                };
+                res.redirect(__1.envWebsiteURL() +
+                    "?spotifyLogIn=1;&" +
+                    querystring.stringify(credentials));
                 // // we can also pass the token to the browser to make requests from there
                 // res.redirect(
                 //   "/#" +

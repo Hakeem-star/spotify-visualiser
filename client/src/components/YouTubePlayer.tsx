@@ -66,7 +66,7 @@ export default function YouTubePlayer(): ReactElement {
     } else {
       //If we are not playing a Youtube video, stop the Youtube video
       try {
-        ytPlayer.current.stopVideo();
+        ytPlayer?.current?.stopVideo();
       } catch (error) {
         console.log(error);
       }
@@ -89,7 +89,7 @@ export default function YouTubePlayer(): ReactElement {
     } else {
       //If we are not playing a Youtube video, stop the Youtube video
       try {
-        ytPlayer.current.stopVideo();
+        ytPlayer?.current?.stopVideo();
       } catch (error) {
         console.log(error);
       }
