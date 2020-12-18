@@ -8,9 +8,8 @@ import React, {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Flex, useDisclosure } from "@chakra-ui/react";
-import Header from "./Header";
-import YouTubePlayer from "./YouTubePlayer";
+import { Box, Flex, useDisclosure } from "@chakra-ui/react";
+import SideNav from "./SideNav";
 import Player from "./Player";
 import ConnectToSpotifyModal from "./ConnectToSpotifyModal";
 import { Visualiser } from "./Visualiser";
@@ -23,8 +22,10 @@ import { AppState } from "../reducers";
 import { savePlaylist } from "../actions/playlistActions";
 import { spotifySignIn } from "../actions";
 import { AnimationControls, motion, useAnimation } from "framer-motion";
-import { css } from "@emotion/react";
 import { debounce } from "../util/debounce";
+import Header from "./Header";
+import { useMobileBreakpoint } from "../util/mobileBreakpoint";
+import { SearchBar } from "./SearchBar";
 
 declare global {
   interface Window {
@@ -96,6 +97,8 @@ export default function Home(): ReactElement {
 
   const controls = useAnimation();
 
+  const mobileScreenSize = useMobileBreakpoint();
+
   useEffect(() => {
     //Pass through setToggleVisualiserOn so we can use the latest state when debounced
     const viewFade = viewFadeSetup(controls, setToggleVisualiserOn);
@@ -116,22 +119,35 @@ export default function Home(): ReactElement {
       {/* Fade out everything after inactive for 5 seconds when visualiser is on */}
       <motion.div
         style={{
-          display: "flex",
+          display: `${mobileScreenSize ? "flex" : "grid"}`,
           flexDirection: "column",
           height: "100%",
           overflow: "hidden",
+          gridTemplate: "45px auto 120px / 230px auto",
         }}
         animate={controls}
       >
-        <Header
-          connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
-        />
-        <Flex flex="1" position="relative" overflow="hidden">
-          {/* {console.log({ CAN: canvasContainerRef.current })} */}
+        {/* Change header to sidenav when device changes */}
 
-          {/* <SourceSelector
-          connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
-        /> */}
+        {mobileScreenSize ? (
+          <Header
+            connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
+          />
+        ) : (
+          <>
+            {/* Show Sidebar and search bar on top when on desktop */}
+            <Box gridArea="1/2/2/3">
+              <SearchBar />
+            </Box>
+            <Box gridArea="1/1/2/2">
+              <SideNav
+                connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
+              />
+            </Box>
+          </>
+        )}
+
+        <Flex flex="1" position="relative" overflow="hidden">
           {/* //If a search is being made, display search Results component */}
           <Switch>
             <Route path="/playlists/:id/" component={PlaylistDetail} />
@@ -148,12 +164,14 @@ export default function Home(): ReactElement {
           onOpen={onOpen}
           onClose={onClose}
         />
-        <Player
-          setVisualiserFullscreen={setVisualiserFullscreen}
-          setVisualiserPrompt={setVisualiserPrompt}
-          toggleVisualiserOn={toggleVisualiserOn}
-          setToggleVisualiserOn={setToggleVisualiserOn}
-        />
+        <Box gridArea="3/1/-1/-1">
+          <Player
+            setVisualiserFullscreen={setVisualiserFullscreen}
+            setVisualiserPrompt={setVisualiserPrompt}
+            toggleVisualiserOn={toggleVisualiserOn}
+            setToggleVisualiserOn={setToggleVisualiserOn}
+          />
+        </Box>
       </motion.div>
 
       <Visualiser

@@ -28,18 +28,18 @@ Use the Media Session API to provide the option of controlling the music with th
 
 Player stops animating when tab is changed - is this js or framer? Framer bug (JS stops when tab is changed)
 
-Rather than having the titles above the results list, have the icons instead
+Rather than having the titles above the results list, have the icons of the source instead
 
 Include Icon on search results when they are in playlist
 
-Have the search results show up horizontally on desktop and vertical on mobile - Takes up more screen real estate
-
 Playhead continues playing at times for some reason 
+
+Playhead animation jittery??
+
+Add option to drag and drop song onto player to play
 
 When navigating to playlist detail for a playing song, try to have the thumbnail scrollbar start at the songs position
 Clicking on the current song should take you to the above position even if you are already on the playlist/current page
-
-Playhead animation jittery??
 
 Add visualiser options
 
