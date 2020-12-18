@@ -34,7 +34,7 @@ import { seekSongPosition } from "../actions/externalPlayerActions";
 import { RiFullscreenLine } from "react-icons/ri";
 import msToHMS from "../util/formatMsToHMS";
 import { Link } from "react-router-dom";
-
+import { useMobileBreakpoint } from "../util/mobileBreakpoint";
 const calculatePosition = (duration: number, position: number) => {
   //Handles a 0/0 incident
   if (!duration && !position) {
@@ -76,6 +76,7 @@ export default function Player({
 
   const [visualiserSwitch, setVisualiserSwitch] = useState(false);
 
+  const mobileScreenSize = useMobileBreakpoint();
   useEffect(() => {
     //Set the start time to 0 when a new song is played
     //If url changed, stop the animation and set it to 0, we then wait for duration & position to update in the next useEffect, to start the animation
@@ -198,7 +199,7 @@ export default function Player({
           className="player-actions"
           overflow="hidden"
           style={{ justifySelf: "center" }}
-          width="30%"
+          width={useMobileBreakpoint() ? "100%" : "30%"}
           alignSelf="center"
           height="10vh"
           justifyContent="center"
@@ -245,60 +246,70 @@ export default function Player({
             `}
           />
         </Flex>
-
-        {/* Next track info */}
-        <Flex width="30%">
-          <Box
-            className="visualiser"
-            width="100%"
-            css={css`
-              height: calc(100% + 3px);
-              display: flex;
-              align-self: flex-start;
-              transition: border 0.3s ease;
-              align-items: center;
-              align-self: center;
-              cursor: pointer;
-            `}
-            onClick={() => {
-              //This is set to false in the visualiser component
-              setVisualiserPrompt(true);
-            }}
+        {/* Disable visualiser on mobile */}
+        {mobileScreenSize ? null : (
+          //  Next track info
+          <Tooltip
+            label={
+              visualiserSwitch
+                ? "Stop sharing your screen to disable"
+                : "Make sure to select 'Share audio'"
+            }
           >
-            <Text mr="auto">Visualiser</Text>
-            <Switch
-              ml="10px"
-              isChecked={visualiserSwitch}
-              css={css`
-                > span {
-                  background: #a31709;
-                }
-              `}
-              size="md"
-              id="Visualiser"
-            />
-          </Box>
-          <Box
-            w={visualiserSwitch ? "60px" : "0px"}
-            h="100%"
-            ml="1rem"
-            className="fullscreen"
-          >
-            {toggleVisualiserOn && (
-              <Grid
-                placeItems="center"
-                height="100%"
-                fontSize="1.5rem"
-                cursor="pointer"
+            <Flex width="30%">
+              <Box
+                className="visualiser"
+                width="100%"
+                css={css`
+                  height: calc(100% + 3px);
+                  display: flex;
+                  align-self: flex-start;
+                  transition: border 0.3s ease;
+                  align-items: center;
+                  align-self: center;
+                  cursor: pointer;
+                `}
                 onClick={() => {
-                  setVisualiserFullscreen(true);
+                  //This is set to false in the visualiser component
+                  setVisualiserPrompt(true);
                 }}
               >
-                <RiFullscreenLine />
-              </Grid>
-            )}
-          </Box>
-        </Flex>
+                <Text mr="auto">Visualiser</Text>
+                <Switch
+                  ml="10px"
+                  isChecked={visualiserSwitch}
+                  css={css`
+                    > span {
+                      background: #a31709;
+                    }
+                  `}
+                  size="md"
+                  id="Visualiser"
+                />
+              </Box>
+              <Box
+                w={visualiserSwitch ? "60px" : "0px"}
+                h="100%"
+                ml="1rem"
+                className="fullscreen"
+              >
+                {toggleVisualiserOn && (
+                  <Grid
+                    placeItems="center"
+                    height="100%"
+                    fontSize="1.5rem"
+                    cursor="pointer"
+                    onClick={() => {
+                      setVisualiserFullscreen(true);
+                    }}
+                  >
+                    <RiFullscreenLine />
+                  </Grid>
+                )}
+              </Box>
+            </Flex>
+          </Tooltip>
+        )}
       </Grid>
     </Flex>
   );

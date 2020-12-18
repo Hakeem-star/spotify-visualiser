@@ -99,6 +99,7 @@ export default function CreatePlaylist(): ReactElement {
   const mountedRecord = useRef(0);
   //Allows me to set styles for mobile sizes
   const mobileScreenSize = useMobileBreakpoint();
+
   useEffect(() => {
     mountedRecord.current = 0;
     //Makes sure this is false when component is mounted in case it was enabled somewhere else

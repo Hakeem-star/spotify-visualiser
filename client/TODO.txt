@@ -1,0 +1,48 @@
+Create playlist sidebar seems to stay open after creating and navigating  - Done
+
+Add link to playlist on the player - done
+
+Home page needs something on it, so it's not just blank - 
+maybe an intro message or just a background or a most popular from sources - Done
+
+Loading states for search results - done
+
+Fix blue background on songresults and work on transitions - done
+
+Add way to initiate create playlist from your playlist page - done
+
+Add secondary option for creation playlists. Rather than drag and drop, add a checkbox option - Done
+
+When you enable visualiser, we need a prompt reminding then to share audio - done
+
+Deploy to firebase - done
+
+Bug with equaliser - does not quit sometimes - Not a bug. You need to Stop sharing for it to stop. We need a prompt to tell us that. - done
+
+It should automatically keep you signed into Spotify
+
+For transitions from your playlist to details, it'll be layers created from color thief. 
+It would depend on the amount of songs shown on the front of the playlist item 
+
+Use the Media Session API to provide the option of controlling the music with the browser
+
+Player stops animating when tab is changed - is this js or framer? Framer bug (JS stops when tab is changed)
+
+Rather than having the titles above the results list, have the icons instead
+
+Include Icon on search results when they are in playlist
+
+Have the search results show up horizontally on desktop and vertical on mobile - Takes up more screen real estate
+
+Playhead continues playing at times for some reason 
+
+When navigating to playlist detail for a playing song, try to have the thumbnail scrollbar start at the songs position
+Clicking on the current song should take you to the above position even if you are already on the playlist/current page
+
+Playhead animation jittery??
+
+Add visualiser options
+
+Results in search list might not be keeping up to date with items in playlist - confirmation of addition in playlist breaks for some reason
+
+Try to prevent blocking of inputs as results are loading (might not be possible, but we can always optimise)

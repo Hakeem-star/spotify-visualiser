@@ -43,7 +43,7 @@
     "body-scroll-lock": "3.0.3"
   },
   "scripts": {
-    "start": "webpack serve --mode production --env production",
+    "start": "webpack serve --mode development --env development",
     "test": "jest --watch",
     "build": "webpack --mode production",
     "deployTemp": "firebase hosting:channel:deploy preview-name",
