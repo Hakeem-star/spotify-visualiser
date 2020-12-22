@@ -7,8 +7,8 @@ import React, {
   SetStateAction,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { Box, Flex, useDisclosure } from "@chakra-ui/react";
+import { css } from "@emotion/react";
+import { Box, Flex, Grid, Heading, useDisclosure } from "@chakra-ui/react";
 import SideNav from "./SideNav";
 import Player from "./Player";
 import ConnectToSpotifyModal from "./ConnectToSpotifyModal";
@@ -26,6 +26,16 @@ import { debounce } from "../util/debounce";
 import Header from "./Header";
 import { useMobileBreakpoint } from "../util/mobileBreakpoint";
 import { SearchBar } from "./SearchBar";
+import { DragDropContext } from "react-beautiful-dnd";
+import {
+  removeFromDragNDrop,
+  reorderDragNDrop,
+  addToDragNDrop,
+} from "../actions/createPlaylistDragDropActions";
+import CreatePlaylist from "./CreatePlaylist";
+import PopularResults from "./PopularResults";
+import RecentlyListened from "./RecentlyListened";
+import SearchResultContainer from "./SearchResultContainer";
 
 declare global {
   interface Window {
@@ -63,7 +73,9 @@ const viewFadeSetup = (
 export default function Home(): ReactElement {
   const dispatch = useDispatch();
   const spotifyAuth = useSelector((state: AppState) => state.spotifyAuth);
-
+  const songSearchResults = useSelector(
+    (state: AppState) => state.songSearchResult
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -115,74 +127,162 @@ export default function Home(): ReactElement {
   }, [toggleVisualiserOn, controls]);
 
   return (
-    <Flex direction="column" h="100vh" ref={canvasContainerRef as any}>
-      {/* Fade out everything after inactive for 5 seconds when visualiser is on */}
-      <motion.div
-        style={{
-          display: `${mobileScreenSize ? "flex" : "grid"}`,
-          flexDirection: "column",
-          height: "100%",
-          overflow: "hidden",
-          gridTemplate: "45px auto 120px / 230px auto",
-        }}
-        animate={controls}
-      >
-        {/* Change header to sidenav when device changes */}
+    <DragDropContext
+      onDragEnd={({ source, destination }) => {
+        // dropped outside the list
+        if (!destination) {
+          dispatch(removeFromDragNDrop(source.index));
+          return;
+          //delete from playlist
+        }
+        //If it's from the created playlist...reorder
+        if (
+          source.droppableId === "createPlaylist" &&
+          destination.droppableId === "createPlaylist"
+        ) {
+          dispatch(reorderDragNDrop(source.index, destination.index));
+          return;
+        }
 
-        {mobileScreenSize ? (
-          <Header
-            connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
+        //If it is a different column
+        if (destination.droppableId === "createPlaylist") {
+          dispatch(addToDragNDrop(source, destination));
+        }
+      }}
+    >
+      <Flex direction="column" h="100vh" ref={canvasContainerRef as any}>
+        {/* Fade out everything after inactive for 5 seconds when visualiser is on */}
+        <motion.div
+          style={{
+            display: `${mobileScreenSize ? "flex" : "grid"}`,
+            flexDirection: "column",
+            height: "100%",
+            overflow: "hidden",
+            gridTemplate: "auto 120px / 230px auto",
+          }}
+          animate={controls}
+        >
+          {/* Change header to sidenav when device changes */}
+          {/* NAVIGATION */}
+
+          {mobileScreenSize ? (
+            <Header
+              connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
+            />
+          ) : (
+            <>
+              {/* Show Sidebar and search bar on top when on desktop */}
+              <Box gridArea="1/1/2/2" position="relative">
+                <SideNav
+                  connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
+                />
+                <CreatePlaylist />
+              </Box>
+            </>
+          )}
+
+          {/* MAIN CONTENT*/}
+          <Grid
+            templateColumns="65% 1fr"
+            templateRows="3rem minmax(25rem,1fr) 1fr"
+            flex="1"
+            position="relative"
+            overflow="hidden"
+            gridArea="1/2/2/3"
+            p="30px"
+          >
+            {!mobileScreenSize ? (
+              <Box>
+                <SearchBar />
+              </Box>
+            ) : null}
+            <Switch>
+              <Route path="/search">
+                <Box
+                  gridArea="2/1/4/3"
+                  css={css`
+                    & > .SearchResultList__VerticalStack {
+                      flex-wrap: wrap;
+                      gap: 20px;
+                    }
+                    & > .DraggableSearchResult {
+                      margin: 0;
+                      &__skeleton {
+                        margin: 0;
+                      }
+                    }
+                  `}
+                >
+                  <SearchResultContainer
+                    songSearchResults={songSearchResults}
+                  />
+                </Box>
+              </Route>
+              {/* Current playlist */}
+
+              <Route path="/current">
+                <Box className="FOOOOOL" gridArea="2/1/4/3">
+                  <PlaylistDetail />
+                </Box>
+              </Route>
+
+              {/* Content for the home page */}
+              <Route path="/">
+                <Flex direction="column" gridArea="2/1/3/2">
+                  <PopularResults />
+                </Flex>
+
+                <Flex direction="column" gridArea="1/2/3/3">
+                  <Heading fontSize="md">Recently Listened</Heading>
+                  <RecentlyListened />
+                </Flex>
+
+                <Flex direction="column" gridArea="3/1/4/3">
+                  <Heading fontSize="md">Playlists</Heading>
+                  <YourPlaylists />
+                </Flex>
+              </Route>
+            </Switch>
+
+            {/* If a search is being made, display search Results component */}
+
+            {/* <Switch>
+              <Route path="/playlists/:id/" component={PlaylistDetail} />
+
+              <Route path="/playlists" component={YourPlaylists} />
+
+              <Route path="/" component={SearchResultWithPlaylistCreator} />
+            </Switch> */}
+          </Grid>
+
+          {/* Modal to prompt connection to Spotify */}
+          <ConnectToSpotifyModal
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
           />
-        ) : (
-          <>
-            {/* Show Sidebar and search bar on top when on desktop */}
-            <Box gridArea="1/2/2/3">
-              <SearchBar />
-            </Box>
-            <Box gridArea="1/1/2/2">
-              <SideNav
-                connectToSpotifyModalToggle={{ open: onOpen, close: onClose }}
-              />
-            </Box>
-          </>
-        )}
 
-        <Flex flex="1" position="relative" overflow="hidden">
-          {/* //If a search is being made, display search Results component */}
-          <Switch>
-            <Route path="/playlists/:id/" component={PlaylistDetail} />
+          {/* PLAYER */}
+          <Box gridArea="2/1/-1/-1">
+            <Player
+              setVisualiserFullscreen={setVisualiserFullscreen}
+              setVisualiserPrompt={setVisualiserPrompt}
+              toggleVisualiserOn={toggleVisualiserOn}
+              setToggleVisualiserOn={setToggleVisualiserOn}
+            />
+          </Box>
+        </motion.div>
 
-            <Route path="/playlists" component={YourPlaylists} />
-
-            <Route path="/" component={SearchResultWithPlaylistCreator} />
-          </Switch>
-        </Flex>
-
-        {/* Modal to prompt connection to Spotify */}
-        <ConnectToSpotifyModal
-          isOpen={isOpen}
-          onOpen={onOpen}
-          onClose={onClose}
+        <Visualiser
+          setVisualiserFullscreen={setVisualiserFullscreen}
+          visualiserFullscreen={visualiserFullscreen}
+          setVisualiserPrompt={setVisualiserPrompt}
+          visualiserPrompt={visualiserPrompt}
+          toggleVisualiserOn={toggleVisualiserOn}
+          setToggleVisualiserOn={setToggleVisualiserOn}
+          container={canvasContainerRef as any}
         />
-        <Box gridArea="3/1/-1/-1">
-          <Player
-            setVisualiserFullscreen={setVisualiserFullscreen}
-            setVisualiserPrompt={setVisualiserPrompt}
-            toggleVisualiserOn={toggleVisualiserOn}
-            setToggleVisualiserOn={setToggleVisualiserOn}
-          />
-        </Box>
-      </motion.div>
-
-      <Visualiser
-        setVisualiserFullscreen={setVisualiserFullscreen}
-        visualiserFullscreen={visualiserFullscreen}
-        setVisualiserPrompt={setVisualiserPrompt}
-        visualiserPrompt={visualiserPrompt}
-        toggleVisualiserOn={toggleVisualiserOn}
-        setToggleVisualiserOn={setToggleVisualiserOn}
-        container={canvasContainerRef as any}
-      />
-    </Flex>
+      </Flex>
+    </DragDropContext>
   );
 }

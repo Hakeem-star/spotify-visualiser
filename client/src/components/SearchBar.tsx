@@ -37,7 +37,7 @@ export const SearchBar = (): ReactElement => {
       dispatch(songSearch(value.trim()));
 
       //Take us to the homepage to see the search results when a search is performed
-      if (history.location.pathname !== "/") history.push("/");
+      if (history.location.pathname !== "/search") history.push("/search");
     }, 1000)
   );
 

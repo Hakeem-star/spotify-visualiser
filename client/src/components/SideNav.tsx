@@ -1,52 +1,24 @@
 /** @jsx jsx */
 import {
-  InputRightElement,
-  Box,
   Button,
   Flex,
-  Grid,
-  Input,
-  InputGroup,
-  List,
-  ListItem,
-  Text,
-  Link as ChakLink,
+  Link,
   Menu,
   MenuButton,
-  MenuDivider,
-  MenuItemOption,
   MenuList,
-  MenuOptionGroup,
   MenuItem,
-  InputRightAddon,
-  Switch,
-  useBreakpointValue,
-  MenuGroup,
+  VStack,
+  Avatar,
 } from "@chakra-ui/react";
-import React, {
-  Dispatch,
-  ReactElement,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { AiOutlineSearch } from "react-icons/ai";
-import { GiFireWave } from "react-icons/gi";
-import { RiPlayListFill, RiPlayListAddLine } from "react-icons/ri";
-import { BsMusicNote } from "react-icons/bs";
+import React, { ReactElement } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Link, useHistory } from "react-router-dom";
-import { signOut, songSearch, updateSongSources } from "../actions";
-import { debounce } from "../util/debounce";
+import { useHistory, Link as RouterLink } from "react-router-dom";
+import { signOut } from "../actions";
 import { AppState } from "../reducers";
 import { FaUserNinja } from "react-icons/fa";
 import { jsx, css } from "@emotion/react";
 import SourceSelector from "./SourceSelector";
-import SourceSelectorOptions from "./SourceSelectorOptions";
-
-import { HamburgerIcon } from "@chakra-ui/icons";
 
 import { GUEST } from "../actions/types";
 import { toggleCreatePlaylistSidebar } from "../actions/createPlaylistSidebarActions";
@@ -65,171 +37,76 @@ export default function SideNav({
     (state: AppState) => state.auth.userData?.displayName || GUEST
   );
 
-  const mobileScreenSize = useMobileBreakpoint();
-
   return (
     <Flex
+      direction="column"
       position="sticky"
       top="0"
       background="white"
       justifyContent="left"
       w="100%"
       h="100%"
-      align="center"
+      align="flex-start"
       borderBottom="1px solid #A31709"
       zIndex="100"
-      padding="0.4rem 0"
+      padding="2.4rem 20%"
     >
-      <Box
-        cursor="pointer"
-        className="logo"
-        style={{ placeItems: "center" }}
-        minW="10%"
-        h="100%"
-        overflow="hidden"
-        display="grid"
-        onClick={() => {
-          history.push("/");
-        }}
-      >
-        <GiFireWave fontSize={70} />
-      </Box>
-
-      {!mobileScreenSize ? (
-        <React.Fragment>
-          <SourceSelector
-            connectToSpotifyModalToggle={connectToSpotifyModalToggle}
-          />
-          <Flex
-            flex="1"
-            height="100%"
-            justifyContent="flex-end"
-            alignItems="center"
-          >
-            <Link
-              css={css`
-                margin-left: 2rem;
-                height: 100%;
-              `}
-              to="/playlists"
-            >
-              <Button h="100%" variant="outline">
-                <Flex
-                  h="100%"
-                  css={css`
-                    display: flex;
-                    align-self: flex-start;
-                    white-space: nowrap;
-                  `}
-                  justify="space-between"
-                  align="center"
-                >
-                  <Text mr="1rem">Playlists</Text>
-                  <RiPlayListFill />
-                </Flex>
-              </Button>
-            </Link>
-            <Link
-              css={css`
-                margin-left: 2rem;
-                margin-right: auto;
-                height: 100%;
-              `}
-              to="/"
-              onClick={() => {
-                dispatch(toggleCreatePlaylistSidebar(true));
-              }}
-            >
-              <Button h="100%" variant="outline">
-                <Flex
-                  h="100%"
-                  css={css`
-                    display: flex;
-                    align-self: flex-start;
-                    white-space: nowrap;
-                  `}
-                  justify="space-between"
-                  align="center"
-                >
-                  <Text mr="1rem">Create a Playlist</Text>
-                  <RiPlayListAddLine />
-                </Flex>
-              </Button>
-            </Link>
-            <Menu>
-              <MenuButton variant="outline" size="sm" mr="1rem" as={Button}>
-                <Flex>
-                  {displayName}
-                  <FaUserNinja
-                    css={css`
-                      margin-left: 10px;
-                    `}
-                  />
-                </Flex>
-              </MenuButton>
-              <MenuList>
-                <MenuItem
-                  onClick={() => {
-                    dispatch(signOut(displayName));
-                    history.push("/");
-                  }}
-                >
-                  Log out
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
-        </React.Fragment>
-      ) : (
-        // On Mobile
-        <Flex
-          flex="1"
-          height="100%"
-          justifyContent="flex-end"
-          alignItems="center"
-          mr={["0rem", "1rem"]}
+      <VStack spacing={4} align="flex-start">
+        <VStack
+          align="center"
+          css={css`
+            margin-bottom: 50px;
+            align-self: center;
+          `}
         >
+          <Avatar icon={<FaUserNinja />}></Avatar>
           <Menu>
             <MenuButton variant="outline" size="sm" as={Button}>
-              <HamburgerIcon w={8} h={8} />
+              <Flex>{displayName}</Flex>
             </MenuButton>
             <MenuList>
-              <MenuGroup title="Sources">
-                <SourceSelectorOptions
-                  connectToSpotifyModalToggle={connectToSpotifyModalToggle}
-                />
-              </MenuGroup>
-              <MenuGroup title="Playlists">
-                <MenuItem
-                  onClick={() => {
-                    history.push("/playlists");
-                  }}
-                >
-                  Your Playlists
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    dispatch(toggleCreatePlaylistSidebar(true));
-                    history.push("/");
-                  }}
-                >
-                  Create a Playlist
-                </MenuItem>
-              </MenuGroup>
-              <MenuGroup title="Account">
-                <MenuItem
-                  onClick={() => {
-                    dispatch(signOut(displayName));
-                    history.push("/");
-                  }}
-                >
-                  Log out
-                </MenuItem>
-              </MenuGroup>
+              <MenuItem
+                onClick={() => {
+                  dispatch(signOut(displayName));
+                  history.push("/");
+                }}
+              >
+                Log out
+              </MenuItem>
             </MenuList>
           </Menu>
+        </VStack>
+
+        <Link as={RouterLink} to="/">
+          Home
+        </Link>
+
+        <Flex
+          height="min-content"
+          align="center"
+          css={css`
+            button {
+              padding-left: 0;
+            }
+          `}
+        >
+          <SourceSelector
+            variant="none"
+            connectToSpotifyModalToggle={connectToSpotifyModalToggle}
+          />
         </Flex>
-      )}
+
+        <Link mr="1rem">Playlists</Link>
+
+        <Link
+          onClick={() => {
+            dispatch(toggleCreatePlaylistSidebar(true));
+          }}
+          mr="1rem"
+        >
+          Create a Playlist
+        </Link>
+      </VStack>
     </Flex>
   );
 }

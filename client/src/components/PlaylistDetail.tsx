@@ -1,7 +1,17 @@
-import { Text, Image, Button, Flex, Grid, Heading } from "@chakra-ui/react";
+import {
+  Text,
+  Image,
+  Button,
+  Flex,
+  Grid,
+  Heading,
+  VStack,
+  Box,
+  HStack,
+} from "@chakra-ui/react";
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { Redirect, useHistory, useParams } from "react-router-dom";
 import { playSong } from "../actions";
 import { AppState } from "../reducers";
 import SearchResult from "./SearchResult";
@@ -11,6 +21,7 @@ import { css } from "@emotion/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { playlistItemSongsType } from "../actions/types";
+import { SearchListMaker } from "./SearchListMaker";
 
 const mainSlidersettings = {
   focusOnSelect: true,
@@ -52,9 +63,7 @@ export default function PlaylistDetail(): ReactElement {
     id: playlistId,
   });
 
-  const playlist = pathname.includes("/playlists/current")
-    ? reff.current
-    : playlistRedux;
+  const playlist = pathname.includes("/current") ? reff.current : playlistRedux;
 
   const dispatch = useDispatch();
 
@@ -65,7 +74,7 @@ export default function PlaylistDetail(): ReactElement {
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
 
   useEffect(() => {
-    if (pathname.includes("/playlists/current")) {
+    if (pathname.includes("/current")) {
       //Use the index from the song clicked so the carousel starts at the right song
       setCurrentItemIndex(index);
     } else {
@@ -91,43 +100,91 @@ export default function PlaylistDetail(): ReactElement {
     const { items } = playlist;
     let { name } = playlist;
     if (typeof name !== "string") {
-      name = name[currentItemIndex].name;
+      // name = name[currentItemIndex].name;
+      name = "Current Queue";
     }
 
     return (
       <Grid
         key={items[0].name}
         className="playlist-detail__container"
-        templateRows="0.75fr 50% 1fr"
-        templateColumns="1fr 15fr 1fr"
+        templateRows="100px minmax(500px,3fr) auto"
+        templateColumns="1fr 1.6fr"
         w="100%"
         h="100%"
+        p="50px 7% 0"
       >
         <Flex
-          className="playlist-detail__title"
+          maxWidth="100%"
           gridColumn="2/3;"
-          gridRow="1/2;"
-          justifySelf="center;"
-          alignSelf="center;"
-          width="50%"
-          m="auto 0"
-          style={{ alignSelf: "start" }}
+          gridRow="3/3;"
+          className="SLIDEEE"
+          h="80%"
+          gridArea="1/1/4/2"
+          flexDirection="column"
+          overflow="visible"
+          css={css`
+            .SearchResultList__VerticalStack {
+              flex-wrap: wrap;
+              gap: 20px;
+              overflow: scroll;
+              min-height: 350px;
+              height: 750px;
+              padding-bottom: 150px;
+            }
+            .DraggableSearchResult {
+              margin: 0;
+              &__skeleton {
+                margin: 0;
+              }
+            }
+          `}
         >
-          <Heading textAlign="left" flex={1}>
-            {name}
-          </Heading>
-          <Button
-            ml="auto"
-            onClick={() => {
-              console.log(items);
-              dispatch(playSong(items, 0, id));
-            }}
-          >
-            Play!
-          </Button>
+          <VStack>
+            <HStack>
+              <Heading textAlign="left" flex={1}>
+                {name}
+              </Heading>
+              <Button
+                onClick={() => {
+                  console.log(items);
+                  dispatch(playSong(items, 0, id));
+                }}
+              >
+                Play!
+              </Button>
+            </HStack>
+            <Text>
+              {items.length + " song" + (items.length > 1 ? "s" : "")}
+            </Text>
+          </VStack>
+          <SearchListMaker
+            results={{ next: "", previous: "", items }}
+            fetching={false}
+            id={""}
+          />
+
+          {/* Thumbnail slider */}
+          {/* <VStack style={{ overflow: "auto", width: "100%", height: "100%" }}>
+            {items.map((song, index) => {
+              return (
+                <Box
+                  w="100%"
+                  onMouseDownCapture={handleMouseDown}
+                  onClickCapture={(e) => handleChildClick(e, index)}
+                  key={song.url}
+                  className="VCOVER"
+                >
+                  <SearchResult context={items} index={index} {...song} />
+                </Box>
+              );
+            })}
+          </VStack> */}
         </Flex>
-        <Flex
-          w="50%"
+
+        <VStack
+          gridArea="1/2/-1/-1"
+          w="100%"
           justify="space-between"
           gridColumn="2/3"
           gridRow="2/2"
@@ -139,14 +196,14 @@ export default function PlaylistDetail(): ReactElement {
             }}
             cursor="pointer"
             maxH="100%"
-            h="100%"
             src={items[currentItemIndex].imageUrl[0].url}
           />
           <Flex
             alignSelf="center"
             transform="translateY(-50%)"
-            textAlign="right"
+            textAlign="left"
             direction="column"
+            w="100%"
             css={css`
               p {
                 margin-bottom: 1rem;
@@ -156,45 +213,17 @@ export default function PlaylistDetail(): ReactElement {
             <Text title={items[currentItemIndex].name}>
               {items[currentItemIndex].name}
             </Text>
-            <Text title={items[currentItemIndex].artist}>
-              {items[currentItemIndex].artist}
-            </Text>
-            <Text>{items[currentItemIndex].duration}</Text>
+            <HStack justify="space-between">
+              <Text title={items[currentItemIndex].artist}>
+                {items[currentItemIndex].artist}
+              </Text>
+              <Text>{items[currentItemIndex].duration}</Text>
+            </HStack>
           </Flex>
-        </Flex>
-        <Flex
-          maxWidth="100%"
-          overflow="hidden"
-          gridColumn="2/3;"
-          gridRow="3/3;"
-          className="SLIDEEE"
-          alignSelf="end"
-          h="80%"
-        >
-          {/* Thumbnail slider */}
-          <div style={{ overflow: "hidden", width: "100%", height: "100%" }}>
-            <Slider {...thumbSlidersettings}>
-              {items.map((song, index) => {
-                console.log({ song: song.url });
-                return (
-                  <div
-                    onMouseDownCapture={handleMouseDown}
-                    onClickCapture={(e) => handleChildClick(e, index)}
-                    key={song.url}
-                    className="VCOVER"
-                  >
-                    <div style={{ width: "90%" }}>
-                      <SearchResult context={items} index={index} {...song} />
-                    </div>
-                  </div>
-                );
-              })}
-            </Slider>
-          </div>
-        </Flex>
+        </VStack>
       </Grid>
     );
   } else {
-    return <div></div>;
+    return <Redirect to="/" />;
   }
 }

@@ -166,37 +166,17 @@ export default function CreatePlaylist(): ReactElement {
   return (
     // Drag item here to create playlist
     <MotionDiv
+      position="absolute"
+      top="0"
+      left="0"
       display="flex"
       borderLeft="1px solid #A31709"
       maxW="30%"
       h="100%"
       zIndex="100"
-      position="relative"
-      // css={css`
-      //   transform: translateX(${!createPlaylistSidebarState ? "100%" : "0%"});
-      //   transition: transform 1s;
-      // `}
+      background="white"
       animate={sidebarContainerControls}
     >
-      <MotionDiv
-        position="absolute"
-        top="40%"
-        right="0"
-        transform="translateX(100%)"
-        background="white"
-        border="1px solid grey"
-        cursor="pointer"
-        zIndex="100"
-        padding="0.4rem"
-        borderTopRightRadius="0.3rem;"
-        borderBottomRightRadius="0.3rem;"
-        animate={sidebarHandleControls}
-        onClick={() => {
-          dispatch(toggleCreatePlaylistSidebar(true));
-        }}
-      >
-        <RiPlayListAddLine fontSize="2rem" />
-      </MotionDiv>
       <MotionDiv
         display="none"
         w="100%"

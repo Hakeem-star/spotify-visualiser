@@ -7,27 +7,27 @@ import SourceSelectorOptions from "./SourceSelectorOptions";
 
 interface Props {
   connectToSpotifyModalToggle: { open: () => void; close: () => void };
+  variant?: string;
 }
 export default function SourceSelector({
   connectToSpotifyModalToggle,
+  variant = "variant",
 }: Props): ReactElement {
   return (
-    <Flex height="100%" align="center" ml="2rem">
-      <Menu closeOnSelect={false}>
-        <MenuButton
-          variant="outline"
-          height="100%"
-          as={Button}
-          rightIcon={<ChevronDownIcon />}
-        >
-          Sources
-        </MenuButton>
-        <MenuList minWidth="240px">
-          <SourceSelectorOptions
-            connectToSpotifyModalToggle={connectToSpotifyModalToggle}
-          />
-        </MenuList>
-      </Menu>
-    </Flex>
+    <Menu closeOnSelect={false}>
+      <MenuButton
+        variant={variant}
+        height="100%"
+        as={Button}
+        rightIcon={<ChevronDownIcon />}
+      >
+        Sources
+      </MenuButton>
+      <MenuList minWidth="240px">
+        <SourceSelectorOptions
+          connectToSpotifyModalToggle={connectToSpotifyModalToggle}
+        />
+      </MenuList>
+    </Menu>
   );
 }

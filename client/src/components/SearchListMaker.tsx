@@ -39,7 +39,7 @@ export const SearchListMaker = ({
       droppableId={`${id}SearchResultContainer`}
     >
       {(provided) => (
-        <Flex maxW="40%" w="26%" minW="250px">
+        <Flex minW="300px">
           <Flex
             direction="row"
             overflow="overlay"
@@ -54,7 +54,6 @@ export const SearchListMaker = ({
               items={results?.items}
             />
           </Flex>
-          <VerticalResultsDivider key={id + "VerticalResultsDivider"} />
         </Flex>
       )}
     </Droppable>

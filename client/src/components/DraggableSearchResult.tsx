@@ -24,6 +24,8 @@ export default function DraggableSearchResult(props: Props): ReactElement {
         return (
           <React.Fragment>
             <Flex
+              maxW="300px"
+              w="13vw"
               alignContent="center"
               {...provided.dragHandleProps}
               {...provided.draggableProps}
@@ -35,6 +37,8 @@ export default function DraggableSearchResult(props: Props): ReactElement {
             </Flex>
             {/* The duplicated component below is rendered so we don't get a stutter when we try to load the image */}
             <Box
+              maxW="300px"
+              w="13vw"
               className="HIDDEN"
               css={css`
                 display: ${snapshot.isDragging ? "block" : "none"};

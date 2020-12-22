@@ -1,4 +1,12 @@
-import { Divider, Flex, Heading, Box, Skeleton } from "@chakra-ui/react";
+import {
+  Divider,
+  Flex,
+  Heading,
+  Box,
+  Skeleton,
+  HStack,
+  StackDivider,
+} from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import React, { ReactElement } from "react";
 import { remappedSearchResult } from "../types";
@@ -53,22 +61,18 @@ export default function SearchResultList({
         p="5px"
       >
         <Box h="100%">
-          <Heading background="white">{source}</Heading>
+          <Heading fontSize="sm" background="white">
+            {source}
+          </Heading>
         </Box>
-        <DragHandleIcon h={10} />
       </Flex>
-      <Flex
-        w="100%"
-        overflow="overlay"
-        flexDirection="column"
-        css={scrollbarStyle}
-      >
+      <Flex w="100%" overflow="overlay" css={scrollbarStyle}>
         {/* Issue is these don't create a key for the children */}
         {/* If fetching, show skeleton */}
-        {!fetching
-          ? items &&
-            insertIntoArray(
-              items.map((item, index) => {
+        {!fetching ? (
+          items && (
+            <HStack className="SearchResultList__VerticalStack">
+              {items.map((item, index) => {
                 return (
                   <DraggableSearchResult
                     context={items}
@@ -77,27 +81,29 @@ export default function SearchResultList({
                     key={item.url + item.name}
                   />
                 );
-              }),
-              <Divider borderColor="#417AF0" m="3px 0" />
-            )
-          : //Skeletons for loading
-            insertIntoArray(
-              Array(10)
-                .fill("")
-                .map((val, index) => {
-                  return (
-                    <Skeleton
-                      key={index}
-                      //Same settings as SearchResult
-                      flexShrink={0}
-                      height="95px"
-                      w="100%"
-                      borderRadius="5px"
-                    ></Skeleton>
-                  );
-                }),
-              <Divider borderColor="#417AF0" m="3px 0" />
-            )}
+              })}
+            </HStack>
+          )
+        ) : (
+          //Skeletons for loading
+          <HStack className="SearchResultList__VerticalStack">
+            {Array(10)
+              .fill("")
+              .map((val, index) => {
+                return (
+                  <Skeleton
+                    className="DraggableSearchResult__skeleton"
+                    key={index}
+                    //Same settings as SearchResult
+                    flexShrink={0}
+                    height="95px"
+                    w="300px"
+                    borderRadius="5px"
+                  ></Skeleton>
+                );
+              })}
+          </HStack>
+        )}
       </Flex>
     </Flex>
   );

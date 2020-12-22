@@ -16,13 +16,14 @@ export default function YourPlaylists(): ReactElement {
   }, [playlistsState]);
   return (
     <SimpleGrid
-      autoColumns="minmax(300px,15vw)"
+      autoColumns="300px"
       autoRows="minmax(350px,30vh)"
       justifyItems="center"
       alignItems="center"
       autoFlow="column"
       w="100%"
       h="100%"
+      overflow="auto"
     >
       {/* Playlist Item */}
       {Object.entries(playlistsState).map(([id, data]) => {
@@ -37,7 +38,6 @@ export default function YourPlaylists(): ReactElement {
             key={data.name}
             width="100%"
             height="100%"
-            border="1px solid #dfdfdf"
             placeItems="center"
           >
             <Grid
@@ -50,6 +50,8 @@ export default function YourPlaylists(): ReactElement {
               border="1px solid #ffefeb"
               borderRadius="10px"
               boxShadow="2px 3px 3px 0px #f3b8ac82"
+              templateRows="1fr 5fr 1fr"
+              templateColumns="100%"
             >
               <Text padding="7px 0">{data.name}</Text>
               {/* generate image based on first 4 songs in items */}
@@ -58,8 +60,10 @@ export default function YourPlaylists(): ReactElement {
                   history.push(`/playlists/${id}`);
                 }}
                 // templateColumns="repeat(auto-fit, minmax(50%, 1fr))"
-                w="200px"
-                h="200px"
+                w="100%"
+                h="100%"
+                maxW="200px"
+                maxH="200px"
                 borderRadius="5px"
                 boxShadow="inset 1px 1px 13px 0px black"
                 overflow="hidden"

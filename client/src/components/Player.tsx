@@ -179,7 +179,7 @@ export default function Player({
                 {/* If there is no playlistId, take us to a playlistDetail page to see just the song */}
                 <ChakLink
                   as={Link}
-                  to={`/playlists/${playlistId || "current"}`}
+                  to={`${playlistId ? "/playlists/playlistId" : "/current"}`}
                   _hover={{ fontWeight: 700 }}
                 >
                   <Tooltip label={context[index].name}>

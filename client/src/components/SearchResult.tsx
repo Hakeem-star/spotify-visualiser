@@ -85,7 +85,6 @@ export default function SearchResult(props: Props): ReactElement {
         borderRadius="5px"
         overflow="hidden"
         onClick={() => {
-          console.log({ context: props.context });
           dispatch(playSong(props.context, index));
         }}
         //remove dark gradient on hover
@@ -175,6 +174,7 @@ export default function SearchResult(props: Props): ReactElement {
             </Grid>
           </Flex>
         ) : null}
+
         <Image
           position="absolute"
           top={0}

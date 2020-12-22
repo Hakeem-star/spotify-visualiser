@@ -152,9 +152,12 @@ export default function Header({
       </InputGroup>
       {!mobileScreenSize ? (
         <React.Fragment>
-          <SourceSelector
-            connectToSpotifyModalToggle={connectToSpotifyModalToggle}
-          />
+          <Flex height="100%" align="center" ml="2rem">
+            <SourceSelector
+              connectToSpotifyModalToggle={connectToSpotifyModalToggle}
+            />
+          </Flex>
+
           <Flex
             flex="1"
             height="100%"

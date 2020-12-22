@@ -38,6 +38,7 @@ export default function SearchResultContainer({
   songSearchResults,
 }: {
   songSearchResults: AppState["songSearchResult"];
+  wrapped?: boolean;
 }): ReactElement {
   const selectedSources = useSelector((state: AppState) => state.songSources);
   // const keys = Object.keys(songSearchResults) as (
@@ -50,7 +51,7 @@ export default function SearchResultContainer({
       hideScrollbars={false}
       style={{
         display: "flex",
-        padding: "0 30px",
+        flexDirection: "column",
         width: "100%",
         height: "100%",
         overflow: "auto",
